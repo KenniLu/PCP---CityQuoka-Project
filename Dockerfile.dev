@@ -1,0 +1,23 @@
+# Dockerfile.dev
+FROM node:18-alpine
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Create app directory and set permissions
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+# Switch to non-root user
+USER node
+
+# Set working directory
+WORKDIR /home/node/app
+
+# We don't copy any files here because we'll mount them via docker-compose
+# This is just to establish the environment
+
+# Expose the default Payload port
+EXPOSE 3000
+
+# Command to start development server
+CMD ["pnpm", "dev"]

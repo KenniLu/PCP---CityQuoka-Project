@@ -65,6 +65,15 @@ export const Posts: CollectionConfig = {
       required: true,
     },
     {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      access: {
+        read: () => true
+      }
+    },
+    {
       type: 'tabs',
       tabs: [
         {
@@ -86,6 +95,22 @@ export const Posts: CollectionConfig = {
               }),
               label: false,
               required: true,
+            },
+            {
+              name: 'summary',
+              type: 'richText',
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => {
+                  return [
+                    ...rootFeatures,
+                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                    FixedToolbarFeature(),
+                    InlineToolbarFeature(),
+                  ]
+                },
+              }),
+              label: 'Summary',
+              required: false,
             },
           ],
           label: 'Content',
