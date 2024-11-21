@@ -89,10 +89,15 @@ export default {
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
+        'quokka-yellow': '#FFAD00',
+        'quokka-purple': '#B079FA',
+        'quokka-green': '#00CA44',
       },
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        acumin: ['var(--font-acumin)'],
+        author: ['var(--font-author)'],
       },
       keyframes: {
         'accordion-down': {
