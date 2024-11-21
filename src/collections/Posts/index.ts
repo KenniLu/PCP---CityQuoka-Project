@@ -112,6 +112,13 @@ export const Posts: CollectionConfig = {
               label: 'Summary',
               required: false,
             },
+            {
+              name: 'programmes',
+              type: 'relationship',
+              relationTo: 'programmes',
+              hasMany: true,
+              required: false
+            },
           ],
           label: 'Content',
         },
@@ -141,6 +148,24 @@ export const Posts: CollectionConfig = {
               },
               hasMany: true,
               relationTo: 'categories',
+            },
+            {
+              name: 'tags',
+              type: 'array',
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                },
+              ],
+              required: false,
+            },
+            {
+              name: 'venue',
+              type: 'relationship',
+              relationTo: 'venues',
+              hasMany: false,
+              required: false
             },
           ],
           label: 'Meta',
