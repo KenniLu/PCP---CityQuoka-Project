@@ -23,10 +23,12 @@ export const HeroCarouselBlock: React.FC<
   const fetchedPosts = await payload.find({
     collection: 'posts',
     select: {
+      id: true,
       title: true,
       hero_title: true,
       hero_subtitle: true,
-      image: true
+      image: true,
+      slug: true,
     },
     depth: 3,
     limit,
@@ -39,14 +41,5 @@ export const HeroCarouselBlock: React.FC<
 
   posts = fetchedPosts.docs
 
-  return (
-    <div className="my-16" id={`block-${id}`}>
-      {/* {introContent && (
-        <div className="container mb-16">
-          <RichText className="ml-0 max-w-[48rem]" content={introContent} enableGutter={false} />
-        </div>
-      )} */}
-      <CollectionHeroCarousel posts={posts} />
-    </div>
-  )
+  return <CollectionHeroCarousel posts={posts} />
 }
