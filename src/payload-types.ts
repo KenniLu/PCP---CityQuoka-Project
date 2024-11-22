@@ -125,7 +125,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | HeroCarouselBlock)[];
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
@@ -416,6 +416,8 @@ export interface Post {
       }[]
     | null;
   venue?: (number | null) | Venue;
+  hero_title?: string | null;
+  hero_subtitle?: string | null;
   meta?: {
     title?: string | null;
     image?: (number | null) | Media;
@@ -727,6 +729,16 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroCarouselBlock".
+ */
+export interface HeroCarouselBlock {
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -996,6 +1008,13 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        carousel?:
+          | T
+          | {
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1032,6 +1051,8 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
       };
   venue?: T;
+  hero_title?: T;
+  hero_subtitle?: T;
   meta?:
     | T
     | {
