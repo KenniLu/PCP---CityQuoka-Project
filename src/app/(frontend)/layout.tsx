@@ -11,7 +11,7 @@ import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
+// import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
@@ -114,7 +114,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
-        <InitTheme />
+        {/* <InitTheme /> */}
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
