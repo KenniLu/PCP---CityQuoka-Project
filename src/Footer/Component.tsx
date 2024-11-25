@@ -65,8 +65,8 @@ export async function Footer() {
             <Image
               src="/icons/tiktok.svg"
               alt="TikTok"
-              width={45}
-              height={45}
+              width={32}
+              height={32}
               className="object-contain shrink-0 aspect-[0.94]"
             />
           </button>
@@ -74,8 +74,8 @@ export async function Footer() {
             <Image
               src="/icons/instagram.svg"
               alt="Instagram"
-              width={45}
-              height={45}
+              width={32}
+              height={32}
               className="object-contain shrink-0 aspect-[0.94]"
             />
           </button>

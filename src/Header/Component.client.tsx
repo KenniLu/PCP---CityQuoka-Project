@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
+import { SessionMenu } from '@/components/SessionMenu';
 
 // import { Logo } from '@/components/Logo/Logo'
 // import { HeaderNav } from './Nav'
@@ -44,10 +45,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
     <header>
     <div className="flex flex-col w-full bg-white py-4 px-2">
       <div className="flex flex-col self-center w-full max-w-[1122px] max-md:max-w-full bg-white">
-        <div className="flex gap-2.5 self-end text-lg tracking-tight leading-snug text-black max-md:mr-0.5">
-          <div className="grow my-auto">SignUp / LogIn</div>
-          <button className="flex shrink-0 w-10 h-10 rounded-full bg-zinc-300"></button>
-        </div>
+        <SessionMenu/>
         <Image
           className="object-contain self-center max-w-full aspect-[3.37]"
           src="/logo.svg"

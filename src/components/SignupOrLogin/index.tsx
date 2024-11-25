@@ -52,14 +52,14 @@ const SignUpOrLogIn = () => {
             }}
           >
             <button className="bg-white p-2 rounded-full ">
-              <Image src="/icons/gmail.svg" alt="Google" width={24} height={24} />
+              <Image src="/icons/gmail.svg" alt="Google" width={32} height={32} />
             </button>
           </form>
           <button className="bg-white p-2 rounded-full ">
-            <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} />
+            <Image src="/icons/facebook.svg" alt="Facebook" width={32} height={32} />
           </button>
           <button className="bg-white p-2 rounded-full ">
-            <Image src="/icons/apple.svg" alt="Apple" width={24} height={24} />
+            <Image src="/icons/apple.svg" alt="Apple" width={32} height={32} />
           </button>
         </div>
       </div>
