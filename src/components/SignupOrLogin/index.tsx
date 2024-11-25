@@ -1,5 +1,6 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react'
+import Image from 'next/image'
+import { signIn } from '@/auth'
 
 const SignUpOrLogIn = () => {
   return (
@@ -14,9 +15,8 @@ const SignUpOrLogIn = () => {
 
         {/* Main content */}
         <h2 className="text-black text-2xl leading-snug py-4 px-4 sm:px-[90px] font-medium">
-          Unlock Your Sydney: Get personalised recommendations, save your
-          favourites, and be the first to know about upcoming events, special
-          offers, and more.
+          Unlock Your Sydney: Get personalised recommendations, save your favourites, and be the
+          first to know about upcoming events, special offers, and more.
         </h2>
 
         <h3 className="text-black text-2xl font-semibold mt-4 sm:text-3xl">
@@ -45,34 +45,26 @@ const SignUpOrLogIn = () => {
 
         <div className="mt-6 flex justify-center gap-6">
           {/* Social Icons */}
+          <form
+            action={async () => {
+              'use server'
+              await signIn('google')
+            }}
+          >
+            <button className="bg-white p-2 rounded-full ">
+              <Image src="/icons/gmail.svg" alt="Google" width={24} height={24} />
+            </button>
+          </form>
           <button className="bg-white p-2 rounded-full ">
-            <Image
-              src="/icons/gmail.svg"
-              alt="Google"
-              width={24}
-              height={24}
-            />
+            <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} />
           </button>
           <button className="bg-white p-2 rounded-full ">
-            <Image
-              src="/icons/facebook.svg"
-              alt="Facebook"
-              width={24}
-              height={24}
-            />
-          </button>
-          <button className="bg-white p-2 rounded-full ">
-            <Image
-              src="/icons/apple.svg"
-              alt="Apple"
-              width={24}
-              height={24}
-            />
+            <Image src="/icons/apple.svg" alt="Apple" width={24} height={24} />
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignUpOrLogIn;
+export default SignUpOrLogIn
