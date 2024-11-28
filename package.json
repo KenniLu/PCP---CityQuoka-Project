@@ -1,7 +1,7 @@
 {
   "name": "cityquokka-cms",
   "version": "1.0.0",
-  "description": "Website template for Payload",
+  "description": "City Quokka CMS",
   "license": "MIT",
   "type": "module",
   "scripts": {

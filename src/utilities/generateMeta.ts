@@ -15,8 +15,8 @@ export const generateMeta = async (args: { doc: Page | Post }): Promise<Metadata
     `${getServerSideURL()}`
 
   const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+    ? doc?.meta?.title + ' | City Quokka'
+    : 'City Quokka'
 
   return {
     description: doc?.meta?.description,
