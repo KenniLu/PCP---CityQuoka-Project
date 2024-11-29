@@ -7,8 +7,8 @@ frontend:
         - pnpm install
     build:
       commands:
-        - mkdir -p /opt/certs
-        - cp certs/us-east-1-bundle.pem /opt/certs
+        - sudo mkdir -p /opt/certs
+        - sudo cp certs/us-east-1-bundle.pem /opt/certs
         - pnpm run payload migrate && pnpm run build
   artifacts:
     baseDirectory: .next
