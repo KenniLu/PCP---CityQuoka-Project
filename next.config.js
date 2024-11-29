@@ -27,6 +27,7 @@ const nextConfig = {
   redirects,
   webpack: (config) => {
     config.resolve.alias['@'] = join(__dirname, 'src')
+    config.resolve.alias['src'] = join(__dirname, 'src')
     return config
   }
 }
