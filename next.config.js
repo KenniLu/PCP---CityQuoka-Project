@@ -20,6 +20,10 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.join(__dirname, 'src')
+    return config
+  }
 }
 
 export default withPayload(nextConfig)
