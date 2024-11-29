@@ -6,6 +6,7 @@ frontend:
         - pwd             # Print working directory
         - ls -la         # List all files
         - ls -ltr ./src/providers/*
+        - cat tsconfig.json
         - npm install -g pnpm
         - pnpm install
     build:
