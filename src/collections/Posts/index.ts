@@ -177,7 +177,7 @@ export const Posts: CollectionConfig = {
                 if( !value && data.tags?.some((_tag) => _tag['name']==='hero')){
                   return ('Hero Title is needed when Post is a hero')
                 }
-                true
+                return true
               }
             },
             {
@@ -190,7 +190,7 @@ export const Posts: CollectionConfig = {
                 if( !value && data.tags?.some((_tag) => _tag['name']==='hero')){
                   return ('Hero Subtitle is needed when Post is a hero')
                 }
-                true
+                return true
               }
             },
           ],

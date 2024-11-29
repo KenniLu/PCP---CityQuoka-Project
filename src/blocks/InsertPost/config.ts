@@ -21,11 +21,11 @@ export const InsertPost: Block = {
       admin: {
         allowCreate: false,
       },
-      validate: async (value, { id }) => {
+      validate: async (value, { id }: {id?: any}) => {
         if (!value) {
           return 'Post is required'
         }
-        if (parseInt(value) === parseInt(id)) {
+        if ( id && parseInt(value) === parseInt(id)) {
           return 'Self reference to current post is not allowed'
         }
         return true

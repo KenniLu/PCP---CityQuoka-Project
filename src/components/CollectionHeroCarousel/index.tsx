@@ -9,10 +9,8 @@ import {
 } from '@/components/ui/carousel'
 import Image from 'next/image'
 
-import type { Post } from '@/payload-types'
+import type { Post, Media } from '@/payload-types'
 import { CMSLink } from '../Link'
-
-// import { Card } from '@/components/Card'
 
 export type Props = {
   posts: Partial<Post>[]
@@ -26,7 +24,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
       <CarouselContent>
         {posts.map((post) => {
           const { image, hero_title, hero_subtitle, slug } = post
-          const { small, medium } = image.sizes
+          const { small, medium } = (image as Media)?.sizes || {}
           return (
             <CarouselItem key={post.id}>
               <div className="flex self-center w-full bg-white">
@@ -34,7 +32,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                 <div className="flex flex-col relative max-md:hidden w-[682px]">
                   <Image
                     fill
-                    src={medium.url}
+                    src={medium?.url || ''}
                     alt="Sample Image"
                     className="object-cover rounded-md"
                     sizes="(max-width: 685px) 100vw, 685px"
