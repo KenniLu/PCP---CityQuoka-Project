@@ -3,6 +3,8 @@ frontend:
   phases:
     preBuild:
       commands:
+        - pwd             # Print working directory
+        - ls -la         # List all files
         - npm install -g pnpm
         - pnpm install
     build:
