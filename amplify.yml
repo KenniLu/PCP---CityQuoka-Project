@@ -3,14 +3,21 @@ frontend:
   phases:
     preBuild:
       commands:
-        - rm -rf .next
+        - pwd
+        - ls -la
+        - echo "=== Provider Directory Structure ==="
+        - ls -la ./src/providers
+        - echo "=== HeaderTheme Directory Structure ==="
+        - ls -la ./src/providers/HeaderTheme || echo "HeaderTheme directory not found"
+        - echo "=== TSConfig Content ==="
+        - cat tsconfig.json
         - npm install -g pnpm
         - pnpm install
     build:
       commands:
         - sudo mkdir -p /opt/certs
         - sudo cp certs/us-east-1-bundle.pem /opt/certs
-        - pnpm run payload migrate && pnpm run build
+        - NEXT_TELEMETRY_DISABLED=1 pnpm run payload migrate && pnpm run build
   artifacts:
     baseDirectory: .next
     files:
