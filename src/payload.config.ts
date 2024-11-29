@@ -11,7 +11,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
-import { Programmes} from './collections/Programmes'
+import { Programmes } from './collections/Programmes'
 import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
 import { Footer } from './Footer/config'
@@ -19,9 +19,27 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import fs from 'node:fs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const getPostgresSslConfig = () => {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.IS_LOCAL ||
+    !process.env.POSTGRES_SSL_CERT_PATH
+  ) {
+    return {}
+  }
+
+  return {
+    ssl: {
+      rejectUnauthorized: false,
+      cert: fs.readFileSync(process.env.POSTGRES_SSL_CERT_PATH).toString(),
+    },
+  }
+}
 
 export default buildConfig({
   admin: {
@@ -65,6 +83,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      ...getPostgresSslConfig(),
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users, Events, Programmes, Venues],
