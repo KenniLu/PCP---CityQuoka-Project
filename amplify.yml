@@ -16,7 +16,8 @@ frontend:
         - cp -r certs .next/
         - echo "Final build structure:"
         - ls -la
-        - ls -la certs/
+        - ls -la .next
+        - ls -la .next/certs
   artifacts:
     baseDirectory: .next
     files:

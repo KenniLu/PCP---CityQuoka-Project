@@ -37,9 +37,14 @@ const getPostgresSslConfig = () => {
 
   console.log('Current working directory:', process.cwd());
   console.log('Full cert path:', certPath);
-  console.log('Does cert exist?', fs.existsSync(certPath));
-  console.log('Directory contents:', fs.readdirSync(path.dirname(certPath)));
-  
+  console.log('Current Directory contents:', fs.readdirSync(process.cwd()));
+  const certsParentPath = path.join(process.cwd(), 'certs')
+  if(fs.existsSync(certsParentPath)){
+    console.log('Cert Directory contents:', fs.readdirSync(certsParentPath));
+  }else{
+    console.log('Certs is missing in cwd()')
+  }
+
   return {
     ssl: {
       rejectUnauthorized: false,
