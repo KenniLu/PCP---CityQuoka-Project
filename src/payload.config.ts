@@ -34,6 +34,12 @@ const getPostgresSslConfig = () => {
   }
 
   const certPath = path.join(process.cwd(), process.env.POSTGRES_SSL_CERT_PATH)
+
+  console.log('Current working directory:', process.cwd());
+  console.log('Full cert path:', certPath);
+  console.log('Does cert exist?', fs.existsSync(certPath));
+  console.log('Directory contents:', fs.readdirSync(path.dirname(certPath)));
+  
   return {
     ssl: {
       rejectUnauthorized: false,
