@@ -3,14 +3,12 @@ frontend:
   phases:
     preBuild:
       commands:
-        - pwd
-        - ls -la
-        - echo "=== Provider Directory Structure ==="
-        - ls -la ./src/providers
-        - echo "=== HeaderTheme Directory Structure ==="
-        - ls -la ./src/providers/HeaderTheme || echo "HeaderTheme directory not found"
-        - echo "=== TSConfig Content ==="
-        - cat tsconfig.json
+        - echo "AUTH_SECRET=$AUTH_SECRET" >> .env
+        - echo "PAYLOAD_SECRET=$PAYLOAD_SECRET" >> .env
+        - echo "DATABASE_URI=$DATABASE_URI" >> .env
+        - echo "NODE_ENV=$NODE_ENV" >> .env
+        - echo "POSTGRES_SSL_CERT_PATH=$POSTGRES_SSL_CERT_PATH" >> .env
+
         - npm install -g pnpm
         - pnpm install
     build:
@@ -24,4 +22,5 @@ frontend:
       - '**/*'
   cache:
     paths:
+      - .next/cache/**/*
       - node_modules/**/*
