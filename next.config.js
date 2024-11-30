@@ -20,10 +20,6 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-  webpack: (config) => {
-    console.log(`CONFIG.RESOLVE.ALIAS IS ${JSON.stringify(config.resolve.alias)}`)
-    return config
-  }
 }
 
 export default withPayload(nextConfig)
