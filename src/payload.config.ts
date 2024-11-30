@@ -33,10 +33,11 @@ const getPostgresSslConfig = () => {
     return {}
   }
 
+  const certPath = path.join(process.cwd(), 'process.env.POSTGRES_SSL_CERT_PATH')
   return {
     ssl: {
       rejectUnauthorized: false,
-      cert: fs.readFileSync(process.env.POSTGRES_SSL_CERT_PATH).toString(),
+      cert: fs.readFileSync(certPath).toString(),
     },
   }
 }
