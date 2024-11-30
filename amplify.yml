@@ -7,8 +7,6 @@ frontend:
         - pnpm install
     build:
       commands:
-        - sudo mkdir -p /opt/certs
-        - sudo cp certs/us-east-1-bundle.pem /opt/certs
         - echo "AUTH_SECRET=$AUTH_SECRET" >> .env
         - echo "PAYLOAD_SECRET=$PAYLOAD_SECRET" >> .env
         - echo "DATABASE_URI=$DATABASE_URI" >> .env
@@ -19,7 +17,6 @@ frontend:
     baseDirectory: .next
     files:
       - '**/*'
-      - 'opt/certs/*'
   cache:
     paths:
       - .next/cache/**/*
