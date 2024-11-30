@@ -19,6 +19,7 @@ frontend:
     baseDirectory: .next
     files:
       - '**/*'
+      - 'opt/certs/*'
   cache:
     paths:
       - .next/cache/**/*
