@@ -3,18 +3,17 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "AUTH_SECRET=$AUTH_SECRET" >> .env
-        - echo "PAYLOAD_SECRET=$PAYLOAD_SECRET" >> .env
-        - echo "DATABASE_URI=$DATABASE_URI" >> .env
-        - echo "NODE_ENV=$NODE_ENV" >> .env
-        - echo "POSTGRES_SSL_CERT_PATH=$POSTGRES_SSL_CERT_PATH" >> .env
-
         - npm install -g pnpm
         - pnpm install
     build:
       commands:
         - sudo mkdir -p /opt/certs
         - sudo cp certs/us-east-1-bundle.pem /opt/certs
+        - echo "AUTH_SECRET=$AUTH_SECRET" >> .env
+        - echo "PAYLOAD_SECRET=$PAYLOAD_SECRET" >> .env
+        - echo "DATABASE_URI=$DATABASE_URI" >> .env
+        - echo "NODE_ENV=$NODE_ENV" >> .env
+        - echo "POSTGRES_SSL_CERT_PATH=$POSTGRES_SSL_CERT_PATH" >> .env
         - NEXT_TELEMETRY_DISABLED=1 pnpm run payload migrate && pnpm run build
   artifacts:
     baseDirectory: .next
