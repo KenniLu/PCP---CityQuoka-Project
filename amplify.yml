@@ -13,7 +13,6 @@ frontend:
         - echo "NODE_ENV=$NODE_ENV" >> .env
         - echo "POSTGRES_SSL_CERT_PATH=$POSTGRES_SSL_CERT_PATH" >> .env
         - NEXT_TELEMETRY_DISABLED=1 pnpm run payload migrate && pnpm run build
-        - cp -r public .next/
         - cp -r certs .next/
   artifacts:
     baseDirectory: .next
