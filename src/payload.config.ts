@@ -19,6 +19,9 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { s3Storage } from '@payloadcms/storage-s3'
+import { getS3StorageConfig } from './config/s3Config'
+
 import fs from 'node:fs'
 
 const filename = fileURLToPath(import.meta.url)
@@ -35,14 +38,10 @@ const getPostgresSslConfig = () => {
 
   const certPath = path.join(process.cwd(), process.env.POSTGRES_SSL_CERT_PATH)
 
-  console.log('Current working directory:', process.cwd());
-  console.log('Full cert path:', certPath);
-  console.log('Current Directory contents:', fs.readdirSync(process.cwd()));
-  const certsParentPath = path.join(process.cwd(), 'certs')
-  if(fs.existsSync(certsParentPath)){
-    console.log('Cert Directory contents:', fs.readdirSync(certsParentPath));
-  }else{
-    console.log('Certs is missing in cwd()')
+  // Verify cert directory exists
+  const certsParentPath = path.dirname(certPath)
+  if (!fs.existsSync(certsParentPath)) {
+    throw new Error(`Certificate directory not found: ${certsParentPath}`)
   }
 
   return {
@@ -103,7 +102,14 @@ export default buildConfig({
   globals: [Header, Footer],
   plugins: [
     ...plugins,
-    // storage-adapter-placeholder
+    s3Storage({
+      collections: {
+        media: {
+          prefix: 'media',
+        },
+      },
+      ...getS3StorageConfig(),
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,

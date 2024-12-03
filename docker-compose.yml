@@ -1,5 +1,4 @@
-version: '3'
-
+# version: '3'
 services:
   db:
     image: postgres:17.1
@@ -9,10 +8,23 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
       - '../dumps:/tmp/dumps'
+  localstack:
+    container_name: "CQ-local-localstack"
+    image: localstack/localstack
+    ports:
+      - '127.0.0.1:4566:4566' # LocalStack Gateway
+      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+    volumes:
+      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - ./localstack-init:/etc/localstack/init/ready.d
   app:
     build:
       context: .
@@ -24,9 +36,10 @@ services:
       - node_modules:/home/node/app/node_modules
     depends_on:
       - db
+      - localstack
     env_file:
       - .env
-    user: node  # This should match your host user ID
+    user: node # This should match your host user ID
     command: sh -c "pnpm install && pnpm dev"
 
 volumes:

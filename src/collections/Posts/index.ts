@@ -171,10 +171,10 @@ export const Posts: CollectionConfig = {
               name: 'hero_title',
               type: 'text',
               admin: {
-                condition: (_, siblingData) => siblingData.tags?.some((_tag) => _tag['name']==='hero')
+                condition: (_, siblingData) => siblingData?.tags?.some((_tag) => _tag['name']==='hero')
               },
               validate: (value, {data}) => {
-                if( !value && data.tags?.some((_tag) => _tag['name']==='hero')){
+                if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
                   return ('Hero Title is needed when Post is a hero')
                 }
                 return true
@@ -184,10 +184,10 @@ export const Posts: CollectionConfig = {
               name: 'hero_subtitle',
               type: 'text',
               admin: {
-                condition: (_, siblingData) => siblingData.tags?.some((_tag) => _tag['name']==='hero')
+                condition: (_, siblingData) => siblingData?.tags?.some((_tag) => _tag['name']==='hero')
               },
               validate: (value, {data}) => {
-                if( !value && data.tags?.some((_tag) => _tag['name']==='hero')){
+                if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
                   return ('Hero Subtitle is needed when Post is a hero')
                 }
                 return true
