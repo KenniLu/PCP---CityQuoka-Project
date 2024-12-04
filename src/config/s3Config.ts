@@ -1,5 +1,5 @@
 // src/config/s3Config.ts
-import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { S3ClientConfig } from '@aws-sdk/client-s3';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -8,15 +8,15 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const baseS3Config: Partial<S3ClientConfig> = {
   region: process.env.AWS_REGION || 'us-east-1',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
   },
 };
 
 // Development-specific configuration
 const developmentConfig: Partial<S3ClientConfig> = {
   ...baseS3Config,
-  endpoint: process.env.S3_ENDPOINT || 'http://localhost:4566',
+  endpoint: process.env.S3_ENDPOINT,
   forcePathStyle: true,
 };
 
@@ -36,8 +36,8 @@ export const s3Config = isProduction ? productionConfig : developmentConfig;
 // Helper function to get the appropriate bucket name
 export const getS3BucketName = () => {
   return isDevelopment
-    ? process.env.DEV_S3_BUCKET || 'cq-local-bucket'
-    : process.env.PROD_S3_BUCKET || 'cq-production-bucket';
+    ? process.env.DEV_S3_BUCKET
+    : process.env.PROD_S3_BUCKET
 };
 
 // Payload plugin configuration

@@ -21,6 +21,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { getS3StorageConfig } from './config/s3Config'
+import { Logo } from '@/components/Logo/Logo'
 
 import fs from 'node:fs'
 
@@ -54,6 +55,23 @@ const getPostgresSslConfig = () => {
 
 export default buildConfig({
   admin: {
+    meta: {
+      title: 'City Quokka',
+      description: 'City Quokka',
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/svg',
+          url: '/favicon.svg'
+        }
+      ],
+      titleSuffix: 'Admin',
+      openGraph: {
+        description: 'City Quokka - Admin Panel',
+        siteName: 'City Quokka',
+        title: 'City Quokka Admin Panel'
+      }
+    },
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
@@ -61,6 +79,9 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: ['@/components/BeforeDashboard'],
+      graphics: {
+        Logo: '@/components/CustomLogo'
+      }
     },
     importMap: {
       baseDir: path.resolve(dirname),

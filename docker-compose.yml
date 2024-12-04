@@ -12,19 +12,26 @@ services:
     volumes:
       - 'postgres:/var/lib/postgresql/data'
       - '../dumps:/tmp/dumps'
-  localstack:
-    container_name: "CQ-local-localstack"
-    image: localstack/localstack
-    ports:
-      - '127.0.0.1:4566:4566' # LocalStack Gateway
-      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+  minio:
+    image: minio/minio:latest
+    env_file:
+      - .env
     environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
+      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
+      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"  # S3 API port
+      - "9001:9001"  # Web Console port
     volumes:
-      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-      - ./localstack-init:/etc/localstack/init/ready.d
+      - minio-data:/data
+      - ./minio-init:/minio-init
+    entrypoint: >
+      /bin/sh -c "
+      chmod +x /minio-init/init-bucket.sh;
+      /minio-init/init-bucket.sh & 
+      minio server --console-address ':9001' /data
+      "
   app:
     build:
       context: .
@@ -36,7 +43,7 @@ services:
       - node_modules:/home/node/app/node_modules
     depends_on:
       - db
-      - localstack
+      - minio
     env_file:
       - .env
     user: node # This should match your host user ID
@@ -46,3 +53,4 @@ volumes:
   data:
   node_modules:
   postgres:
+  minio-data:
