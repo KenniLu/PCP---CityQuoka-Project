@@ -43,6 +43,6 @@ export const getS3BucketName = () => {
 // Payload plugin configuration
 export const getS3StorageConfig = () => ({
   // client: s3Client,
-  bucket: getS3BucketName(),
+  bucket: getS3BucketName() as string,
   config: s3Config
 });
