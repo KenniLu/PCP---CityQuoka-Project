@@ -32,16 +32,16 @@ const getPostgresSslConfig = () => {
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.IS_LOCAL ||
-    !process.env.POSTGRES_SSL_CERT_PATH
+    !process.env.POSTGRES_SSL_CERT_FILE
   ) {
     return {}
   }
 
-  const certPath = path.join(process.cwd(), process.env.POSTGRES_SSL_CERT_PATH)
-
-  // Verify cert directory exists
-  const certsParentPath = path.dirname(certPath)
-  if (!fs.existsSync(certsParentPath)) {
+  const certPath = path.join(process.cwd(), 'certs', process.env.POSTGRES_SSL_CERT_FILE)
+  const certsParentPath = path.join(process.cwd(), 'certs')
+  if (fs.existsSync(certsParentPath)) {
+    console.log('certs directory contents:', fs.readdirSync(certsParentPath))
+  } else {
     throw new Error(`Certificate directory not found: ${certsParentPath}`)
   }
 
@@ -62,15 +62,15 @@ export default buildConfig({
         {
           rel: 'icon',
           type: 'image/svg',
-          url: '/favicon.svg'
-        }
+          url: '/favicon.svg',
+        },
       ],
       titleSuffix: 'Admin',
       openGraph: {
         description: 'City Quokka - Admin Panel',
         siteName: 'City Quokka',
-        title: 'City Quokka Admin Panel'
-      }
+        title: 'City Quokka Admin Panel',
+      },
     },
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
@@ -80,8 +80,8 @@ export default buildConfig({
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: ['@/components/BeforeDashboard'],
       graphics: {
-        Logo: '@/components/CustomLogo'
-      }
+        Logo: '@/components/CustomLogo',
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),
