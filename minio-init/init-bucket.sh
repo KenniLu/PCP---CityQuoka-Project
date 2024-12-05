@@ -4,7 +4,7 @@
 sleep 3
 
 # Configure MinIO client
-mc alias set myminio ${S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+mc alias set myminio ${S3_ENDPOINT} ${_AWS_ACCESS_KEY_ID} ${_AWS_SECRET_ACCESS_KEY}
 
 # Check if bucket exists and create if it doesn't
 if ! mc ls myminio/${DEV_S3_BUCKET} > /dev/null 2>&1; then

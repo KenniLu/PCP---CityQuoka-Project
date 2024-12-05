@@ -19,10 +19,12 @@ export type Props = {
 export const CollectionHeroCarousel: React.FC<Props> = (props) => {
   const { posts } = props
 
+  const colour_lookups = ['quokka-green','quokka-yellow','quokka-purple']
+
   return (
     <Carousel className="w-full max-w-[1122px] mx-auto">
       <CarouselContent>
-        {posts.map((post) => {
+        {posts.map((post, indx) => {
           const { image, hero_title, hero_subtitle, slug } = post
           const { small, medium } = (image as Media)?.sizes || {}
           return (
@@ -40,7 +42,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                 </div>
                 {/* Content Container */}
                 <div className="flex flex-col ml-auto max-md:w-full max-md:px-5">
-                  <div className="flex flex-col items-start pt-28 pr-1 pb-56 pl-12 ml-auto text-black bg-green-500 rounded-md max-md:py-24 max-md:pl-5 max-md:max-w-full w-[440px] h-[543px]">
+                  <div className={`flex flex-col items-start pt-28 pr-1 pb-56 pl-12 ml-auto text-black bg-${colour_lookups[indx%3]} rounded-md max-md:py-24 max-md:pl-5 max-md:max-w-full w-[440px] h-[543px]`}>
                     <div className="flex-col">
                       <div className="text-black text-[25px] font-author font-bold leading-[33.25px] tracking-[-1.05px] uppercase pb-4 flex justify-between items-center w-full">
                         <div className="flex-1">{hero_title}</div>

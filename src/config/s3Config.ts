@@ -6,10 +6,10 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Base configuration that's common across environments
 const baseS3Config: Partial<S3ClientConfig> = {
-  region: process.env.AWS_REGION || 'us-east-1',
+  region: process.env._AWS_REGION || 'us-east-1',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+    accessKeyId: process.env._AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env._AWS_SECRET_ACCESS_KEY as string,
   },
 };
 
