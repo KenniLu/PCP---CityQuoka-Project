@@ -12,6 +12,10 @@ frontend:
         - echo "DATABASE_URI=$DATABASE_URI" >> .env
         - echo "NODE_ENV=$NODE_ENV" >> .env
         - echo "POSTGRES_SSL_CERT_FILE=$POSTGRES_SSL_CERT_FILE" >> .env
+        - echo "_AWS_REGION=$_AWS_REGION" >> .env
+        - echo "_AWS_ACCESS_KEY_ID=$_AWS_ACCESS_KEY_ID" >> .env
+        - echo "_AWS_SECRET_ACCESS_KEY=$_AWS_SECRET_ACCESS_KEY" >> .env
+        - echo "PROD_S3_BUCKET=$PROD_S3_BUCKET" >> .env
         - NEXT_TELEMETRY_DISABLED=1 pnpm run payload migrate && pnpm run build
         - cp -r certs .next/
   artifacts:
