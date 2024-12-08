@@ -279,3 +279,8 @@ If you have any issues or questions, reach out to us on [Discord](https://discor
 pnpm run payload migrate:create initial
 pnpm run payload migrate
 ``
+
+
+# Other Useful Links
+
+# This discussion is about regenerating images when a new size is defined on the collection : https://github.com/payloadcms/payload/discussions/1834#discussioncomment-10234972

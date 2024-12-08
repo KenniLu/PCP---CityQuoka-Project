@@ -1,4 +1,3 @@
-// import { cn } from 'src/utilities/cn'
 import React from 'react'
 import {
   Carousel,
@@ -7,9 +6,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import Image from 'next/image'
 
-import type { Post, Media } from '@/payload-types'
+import ResponsiveImage from '../ResponsiveImage'
+import type { Post, Media as MediaType } from '@/payload-types'
 import { CMSLink } from '../Link'
 
 export type Props = {
@@ -19,30 +18,26 @@ export type Props = {
 export const CollectionHeroCarousel: React.FC<Props> = (props) => {
   const { posts } = props
 
-  const colour_lookups = ['quokka-green','quokka-yellow','quokka-purple']
+  const colour_lookups = ['quokka-green', 'quokka-yellow', 'quokka-purple']
 
   return (
     <Carousel className="w-full max-w-[1122px] mx-auto">
       <CarouselContent>
         {posts.map((post, indx) => {
           const { image, hero_title, hero_subtitle, slug } = post
-          const { small, medium } = (image as Media)?.sizes || {}
+
           return (
             <CarouselItem key={post.id}>
               <div className="flex self-center w-full bg-white">
-                {/* Image Container (Hidden on mobile) */}
-                <div className="flex flex-col relative max-md:hidden w-[682px]">
-                  <Image
-                    fill
-                    src={medium?.url || ''}
-                    alt="Sample Image"
-                    className="object-cover rounded-md"
+                  <ResponsiveImage
+                    media={image as MediaType}
+                    alt={post.title!}
                     sizes="(max-width: 685px) 100vw, 685px"
                   />
-                </div>
-                {/* Content Container */}
                 <div className="flex flex-col ml-auto max-md:w-full max-md:px-5">
-                  <div className={`flex flex-col items-start pt-28 pr-1 pb-56 pl-12 ml-auto text-black bg-${colour_lookups[indx%3]} rounded-md max-md:py-24 max-md:pl-5 max-md:max-w-full w-[440px] h-[543px]`}>
+                  <div
+                    className={`flex flex-col items-start pt-28 pr-1 pb-56 pl-12 ml-auto text-black bg-${colour_lookups[indx % 3]} rounded-md max-md:py-24 max-md:pl-5 max-md:max-w-full w-[440px] h-[543px]`}
+                  >
                     <div className="flex-col">
                       <div className="text-black text-[25px] font-author font-bold leading-[33.25px] tracking-[-1.05px] uppercase pb-4 flex justify-between items-center w-full">
                         <div className="flex-1">{hero_title}</div>
@@ -53,15 +48,6 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                         </div>
                       )}
                     </div>
-                    {/* Learn More Button */}
-                    {/* <button className="flex w-[112.32px] h-[36px] p-[14.009px_22.415px] justify-center items-center gap-[14.009px] flex-shrink-0 rounded-[6px] bg-white text-black font-semibold whitespace-nowrap">
-                      Learn More
-                    </button> */}
-                    {/* <CMSLink>
-                      <button className="flex w-[112.32px] h-[36px] p-[14.009px_22.415px] justify-center items-center gap-[14.009px] flex-shrink-0 rounded-[6px] bg-white text-black font-semibold whitespace-nowrap">
-                        Learn More
-                      </button>
-                    </CMSLink> */}
                     <CMSLink
                       className="flex w-[112.32px] h-[36px] p-[14.009px_22.415px] justify-center items-center gap-[14.009px] flex-shrink-0 rounded-[6px] bg-white text-black font-semibold whitespace-nowrap"
                       type={'reference'}
@@ -69,8 +55,6 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                       label={'Learn More'}
                       appearance={'default'}
                     />
-
-                    {/* </CMSLink> */}
                   </div>
                 </div>
               </div>
