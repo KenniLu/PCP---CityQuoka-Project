@@ -377,21 +377,60 @@ export interface Post {
   id: number;
   title: string;
   image?: (number | null) | Media;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+  content?:
+    | (
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'PostContentBlock';
+          }
+        | {
+            listType?: ('numbered' | 'bulleted' | 'none') | null;
+            useSeparator?: boolean | null;
+            postLinks?:
+              | {
+                  postLink: {
+                    post: number | Post;
+                    content?: {
+                      root: {
+                        type: string;
+                        children: {
+                          type: string;
+                          version: number;
+                          [k: string]: unknown;
+                        }[];
+                        direction: ('ltr' | 'rtl') | null;
+                        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                        indent: number;
+                        version: number;
+                      };
+                      [k: string]: unknown;
+                    } | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'PostGroupBlock';
+          }
+      )[]
+    | null;
   summary?: {
     root: {
       type: string;
@@ -408,7 +447,6 @@ export interface Post {
     [k: string]: unknown;
   } | null;
   programmes?: (number | Programme)[] | null;
-  relatedPosts?: (number | Post)[] | null;
   categories?: (number | Category)[] | null;
   tags?:
     | {
@@ -417,6 +455,7 @@ export interface Post {
       }[]
     | null;
   venue?: (number | null) | Venue;
+  hero_image?: (number | null) | Media;
   hero_title?: string | null;
   hero_subtitle?: string | null;
   meta?: {
@@ -1038,10 +1077,38 @@ export interface PagesSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   image?: T;
-  content?: T;
+  content?:
+    | T
+    | {
+        PostContentBlock?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        PostGroupBlock?:
+          | T
+          | {
+              listType?: T;
+              useSeparator?: T;
+              postLinks?:
+                | T
+                | {
+                    postLink?:
+                      | T
+                      | {
+                          post?: T;
+                          content?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
   summary?: T;
   programmes?: T;
-  relatedPosts?: T;
   categories?: T;
   tags?:
     | T
@@ -1050,6 +1117,7 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
       };
   venue?: T;
+  hero_image?: T;
   hero_title?: T;
   hero_subtitle?: T;
   meta?:
@@ -1593,31 +1661,6 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "InsertPost".
- */
-export interface InsertPost {
-  post: number | Post;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'insertPost';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

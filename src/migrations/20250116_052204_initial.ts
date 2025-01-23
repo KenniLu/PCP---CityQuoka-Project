@@ -26,7 +26,9 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_blocks_archive_populate_by" AS ENUM('collection', 'selection');
   CREATE TYPE "public"."enum__pages_v_blocks_archive_relation_to" AS ENUM('posts');
   CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum_posts_blocks_post_group_block_list_type" AS ENUM('numbered', 'bulleted', 'none');
   CREATE TYPE "public"."enum_posts_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__posts_v_blocks_post_group_block_list_type" AS ENUM('numbered', 'bulleted', 'none');
   CREATE TYPE "public"."enum__posts_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum_redirects_to_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_forms_confirmation_type" AS ENUM('message', 'redirect');
@@ -290,6 +292,33 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"posts_id" integer
   );
   
+  CREATE TABLE IF NOT EXISTS "posts_blocks_post_content_block" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"content" jsonb,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE IF NOT EXISTS "posts_blocks_post_group_block_post_links" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"post_link_post_id" integer,
+  	"post_link_content" jsonb
+  );
+  
+  CREATE TABLE IF NOT EXISTS "posts_blocks_post_group_block" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"list_type" "enum_posts_blocks_post_group_block_list_type" DEFAULT 'numbered',
+  	"use_separator" boolean DEFAULT false,
+  	"block_name" varchar
+  );
+  
   CREATE TABLE IF NOT EXISTS "posts_tags" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -308,9 +337,9 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"title" varchar,
   	"image_id" integer,
-  	"content" jsonb,
   	"summary" jsonb,
   	"venue_id" integer,
+  	"hero_image_id" integer,
   	"hero_title" varchar,
   	"hero_subtitle" varchar,
   	"meta_title" varchar,
@@ -330,9 +359,38 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
   	"programmes_id" integer,
-  	"posts_id" integer,
   	"categories_id" integer,
   	"users_id" integer
+  );
+  
+  CREATE TABLE IF NOT EXISTS "_posts_v_blocks_post_content_block" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"content" jsonb,
+  	"_uuid" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE IF NOT EXISTS "_posts_v_blocks_post_group_block_post_links" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"post_link_post_id" integer,
+  	"post_link_content" jsonb,
+  	"_uuid" varchar
+  );
+  
+  CREATE TABLE IF NOT EXISTS "_posts_v_blocks_post_group_block" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"list_type" "enum__posts_v_blocks_post_group_block_list_type" DEFAULT 'numbered',
+  	"use_separator" boolean DEFAULT false,
+  	"_uuid" varchar,
+  	"block_name" varchar
   );
   
   CREATE TABLE IF NOT EXISTS "_posts_v_version_tags" (
@@ -356,9 +414,9 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" integer,
   	"version_title" varchar,
   	"version_image_id" integer,
-  	"version_content" jsonb,
   	"version_summary" jsonb,
   	"version_venue_id" integer,
+  	"version_hero_image_id" integer,
   	"version_hero_title" varchar,
   	"version_hero_subtitle" varchar,
   	"version_meta_title" varchar,
@@ -382,7 +440,6 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
   	"programmes_id" integer,
-  	"posts_id" integer,
   	"categories_id" integer,
   	"users_id" integer
   );
@@ -391,6 +448,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"alt" varchar,
   	"caption" jsonb,
+  	"prefix" varchar DEFAULT 'media',
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"url" varchar,
@@ -1035,6 +1093,30 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
+   ALTER TABLE "posts_blocks_post_content_block" ADD CONSTRAINT "posts_blocks_post_content_block_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "posts_blocks_post_group_block_post_links" ADD CONSTRAINT "posts_blocks_post_group_block_post_links_post_link_post_id_posts_id_fk" FOREIGN KEY ("post_link_post_id") REFERENCES "public"."posts"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "posts_blocks_post_group_block_post_links" ADD CONSTRAINT "posts_blocks_post_group_block_post_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."posts_blocks_post_group_block"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "posts_blocks_post_group_block" ADD CONSTRAINT "posts_blocks_post_group_block_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
    ALTER TABLE "posts_tags" ADD CONSTRAINT "posts_tags_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -1059,6 +1141,12 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
+   ALTER TABLE "posts" ADD CONSTRAINT "posts_hero_image_id_media_id_fk" FOREIGN KEY ("hero_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
    ALTER TABLE "posts" ADD CONSTRAINT "posts_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -1077,12 +1165,6 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
-   ALTER TABLE "posts_rels" ADD CONSTRAINT "posts_rels_posts_fk" FOREIGN KEY ("posts_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
-  EXCEPTION
-   WHEN duplicate_object THEN null;
-  END $$;
-  
-  DO $$ BEGIN
    ALTER TABLE "posts_rels" ADD CONSTRAINT "posts_rels_categories_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -1090,6 +1172,30 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   
   DO $$ BEGIN
    ALTER TABLE "posts_rels" ADD CONSTRAINT "posts_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "_posts_v_blocks_post_content_block" ADD CONSTRAINT "_posts_v_blocks_post_content_block_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_posts_v"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "_posts_v_blocks_post_group_block_post_links" ADD CONSTRAINT "_posts_v_blocks_post_group_block_post_links_post_link_post_id_posts_id_fk" FOREIGN KEY ("post_link_post_id") REFERENCES "public"."posts"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "_posts_v_blocks_post_group_block_post_links" ADD CONSTRAINT "_posts_v_blocks_post_group_block_post_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_posts_v_blocks_post_group_block"("id") ON DELETE cascade ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
+   ALTER TABLE "_posts_v_blocks_post_group_block" ADD CONSTRAINT "_posts_v_blocks_post_group_block_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_posts_v"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -1125,6 +1231,12 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
+   ALTER TABLE "_posts_v" ADD CONSTRAINT "_posts_v_version_hero_image_id_media_id_fk" FOREIGN KEY ("version_hero_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  EXCEPTION
+   WHEN duplicate_object THEN null;
+  END $$;
+  
+  DO $$ BEGIN
    ALTER TABLE "_posts_v" ADD CONSTRAINT "_posts_v_version_meta_image_id_media_id_fk" FOREIGN KEY ("version_meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -1138,12 +1250,6 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   
   DO $$ BEGIN
    ALTER TABLE "_posts_v_rels" ADD CONSTRAINT "_posts_v_rels_programmes_fk" FOREIGN KEY ("programmes_id") REFERENCES "public"."programmes"("id") ON DELETE cascade ON UPDATE no action;
-  EXCEPTION
-   WHEN duplicate_object THEN null;
-  END $$;
-  
-  DO $$ BEGIN
-   ALTER TABLE "_posts_v_rels" ADD CONSTRAINT "_posts_v_rels_posts_fk" FOREIGN KEY ("posts_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -1547,12 +1653,22 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "_pages_v_rels_pages_id_idx" ON "_pages_v_rels" USING btree ("pages_id");
   CREATE INDEX IF NOT EXISTS "_pages_v_rels_categories_id_idx" ON "_pages_v_rels" USING btree ("categories_id");
   CREATE INDEX IF NOT EXISTS "_pages_v_rels_posts_id_idx" ON "_pages_v_rels" USING btree ("posts_id");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_content_block_order_idx" ON "posts_blocks_post_content_block" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_content_block_parent_id_idx" ON "posts_blocks_post_content_block" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_content_block_path_idx" ON "posts_blocks_post_content_block" USING btree ("_path");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_post_links_order_idx" ON "posts_blocks_post_group_block_post_links" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_post_links_parent_id_idx" ON "posts_blocks_post_group_block_post_links" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_post_links_post_link_post_link_post_idx" ON "posts_blocks_post_group_block_post_links" USING btree ("post_link_post_id");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_order_idx" ON "posts_blocks_post_group_block" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_parent_id_idx" ON "posts_blocks_post_group_block" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "posts_blocks_post_group_block_path_idx" ON "posts_blocks_post_group_block" USING btree ("_path");
   CREATE INDEX IF NOT EXISTS "posts_tags_order_idx" ON "posts_tags" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "posts_tags_parent_id_idx" ON "posts_tags" USING btree ("_parent_id");
   CREATE INDEX IF NOT EXISTS "posts_populated_authors_order_idx" ON "posts_populated_authors" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "posts_populated_authors_parent_id_idx" ON "posts_populated_authors" USING btree ("_parent_id");
   CREATE INDEX IF NOT EXISTS "posts_image_idx" ON "posts" USING btree ("image_id");
   CREATE INDEX IF NOT EXISTS "posts_venue_idx" ON "posts" USING btree ("venue_id");
+  CREATE INDEX IF NOT EXISTS "posts_hero_image_idx" ON "posts" USING btree ("hero_image_id");
   CREATE INDEX IF NOT EXISTS "posts_meta_meta_image_idx" ON "posts" USING btree ("meta_image_id");
   CREATE INDEX IF NOT EXISTS "posts_slug_idx" ON "posts" USING btree ("slug");
   CREATE INDEX IF NOT EXISTS "posts_updated_at_idx" ON "posts" USING btree ("updated_at");
@@ -1562,9 +1678,17 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "posts_rels_parent_idx" ON "posts_rels" USING btree ("parent_id");
   CREATE INDEX IF NOT EXISTS "posts_rels_path_idx" ON "posts_rels" USING btree ("path");
   CREATE INDEX IF NOT EXISTS "posts_rels_programmes_id_idx" ON "posts_rels" USING btree ("programmes_id");
-  CREATE INDEX IF NOT EXISTS "posts_rels_posts_id_idx" ON "posts_rels" USING btree ("posts_id");
   CREATE INDEX IF NOT EXISTS "posts_rels_categories_id_idx" ON "posts_rels" USING btree ("categories_id");
   CREATE INDEX IF NOT EXISTS "posts_rels_users_id_idx" ON "posts_rels" USING btree ("users_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_content_block_order_idx" ON "_posts_v_blocks_post_content_block" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_content_block_parent_id_idx" ON "_posts_v_blocks_post_content_block" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_content_block_path_idx" ON "_posts_v_blocks_post_content_block" USING btree ("_path");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_post_links_order_idx" ON "_posts_v_blocks_post_group_block_post_links" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_post_links_parent_id_idx" ON "_posts_v_blocks_post_group_block_post_links" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_post_links_post_link_post_link_post_idx" ON "_posts_v_blocks_post_group_block_post_links" USING btree ("post_link_post_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_order_idx" ON "_posts_v_blocks_post_group_block" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_parent_id_idx" ON "_posts_v_blocks_post_group_block" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_blocks_post_group_block_path_idx" ON "_posts_v_blocks_post_group_block" USING btree ("_path");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_tags_order_idx" ON "_posts_v_version_tags" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_tags_parent_id_idx" ON "_posts_v_version_tags" USING btree ("_parent_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_populated_authors_order_idx" ON "_posts_v_version_populated_authors" USING btree ("_order");
@@ -1572,6 +1696,7 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "_posts_v_parent_idx" ON "_posts_v" USING btree ("parent_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_version_image_idx" ON "_posts_v" USING btree ("version_image_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_version_venue_idx" ON "_posts_v" USING btree ("version_venue_id");
+  CREATE INDEX IF NOT EXISTS "_posts_v_version_version_hero_image_idx" ON "_posts_v" USING btree ("version_hero_image_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_meta_version_meta_image_idx" ON "_posts_v" USING btree ("version_meta_image_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_version_slug_idx" ON "_posts_v" USING btree ("version_slug");
   CREATE INDEX IF NOT EXISTS "_posts_v_version_version_updated_at_idx" ON "_posts_v" USING btree ("version_updated_at");
@@ -1585,7 +1710,6 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "_posts_v_rels_parent_idx" ON "_posts_v_rels" USING btree ("parent_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_rels_path_idx" ON "_posts_v_rels" USING btree ("path");
   CREATE INDEX IF NOT EXISTS "_posts_v_rels_programmes_id_idx" ON "_posts_v_rels" USING btree ("programmes_id");
-  CREATE INDEX IF NOT EXISTS "_posts_v_rels_posts_id_idx" ON "_posts_v_rels" USING btree ("posts_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_rels_categories_id_idx" ON "_posts_v_rels" USING btree ("categories_id");
   CREATE INDEX IF NOT EXISTS "_posts_v_rels_users_id_idx" ON "_posts_v_rels" USING btree ("users_id");
   CREATE INDEX IF NOT EXISTS "media_updated_at_idx" ON "media" USING btree ("updated_at");
@@ -1745,10 +1869,16 @@ export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
   DROP TABLE "_pages_v_blocks_carousel" CASCADE;
   DROP TABLE "_pages_v" CASCADE;
   DROP TABLE "_pages_v_rels" CASCADE;
+  DROP TABLE "posts_blocks_post_content_block" CASCADE;
+  DROP TABLE "posts_blocks_post_group_block_post_links" CASCADE;
+  DROP TABLE "posts_blocks_post_group_block" CASCADE;
   DROP TABLE "posts_tags" CASCADE;
   DROP TABLE "posts_populated_authors" CASCADE;
   DROP TABLE "posts" CASCADE;
   DROP TABLE "posts_rels" CASCADE;
+  DROP TABLE "_posts_v_blocks_post_content_block" CASCADE;
+  DROP TABLE "_posts_v_blocks_post_group_block_post_links" CASCADE;
+  DROP TABLE "_posts_v_blocks_post_group_block" CASCADE;
   DROP TABLE "_posts_v_version_tags" CASCADE;
   DROP TABLE "_posts_v_version_populated_authors" CASCADE;
   DROP TABLE "_posts_v" CASCADE;
@@ -1815,7 +1945,9 @@ export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
   DROP TYPE "public"."enum__pages_v_blocks_archive_populate_by";
   DROP TYPE "public"."enum__pages_v_blocks_archive_relation_to";
   DROP TYPE "public"."enum__pages_v_version_status";
+  DROP TYPE "public"."enum_posts_blocks_post_group_block_list_type";
   DROP TYPE "public"."enum_posts_status";
+  DROP TYPE "public"."enum__posts_v_blocks_post_group_block_list_type";
   DROP TYPE "public"."enum__posts_v_version_status";
   DROP TYPE "public"."enum_redirects_to_type";
   DROP TYPE "public"."enum_forms_confirmation_type";

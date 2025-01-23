@@ -27,6 +27,7 @@ export const HeroCarouselBlock: React.FC<
       title: true,
       hero_title: true,
       hero_subtitle: true,
+      hero_image: true,
       image: true,
       slug: true,
     },

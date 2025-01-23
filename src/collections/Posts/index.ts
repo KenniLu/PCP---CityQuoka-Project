@@ -1,23 +1,26 @@
 import type { CollectionConfig } from 'payload'
 
 import {
-  BlocksFeature,
+  // BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
-  HorizontalRuleFeature,
+  // HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+// import { Banner } from '../../blocks/Banner/config'
+// import { Code } from '../../blocks/Code/config'
+// import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidatePost } from './hooks/revalidatePost'
-import { InsertPost } from '@/blocks/InsertPost/config'
+// import { InsertPost } from '@/blocks/InsertPost/config'
+
+import { PostGroup } from '@/blocks/PostGroup/config'
+import { PostContent } from '@/blocks/PostContent/config'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -25,6 +28,8 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+// import { PostGroupField } from '@/fields/postGroup'
+
 import { slugField } from '@/fields/slug'
 import { getServerSideURL } from '@/utilities/getURL'
 
@@ -70,31 +75,57 @@ export const Posts: CollectionConfig = {
       relationTo: 'media',
       required: false,
       access: {
-        read: () => true
-      }
+        read: () => true,
+      },
     },
     {
       type: 'tabs',
       tabs: [
         {
           fields: [
+            // {
+            //   name: 'content',
+            //   type: 'richText',
+            //   editor: lexicalEditor({
+            //     features: ({ rootFeatures }) => {
+            //       return [
+            //         ...rootFeatures,
+            //         HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+            //         BlocksFeature({ blocks: [Banner, Code, MediaBlock, InsertPost] }),
+            //         FixedToolbarFeature(),
+            //         InlineToolbarFeature(),
+            //         HorizontalRuleFeature(),
+            //       ]
+            //     },
+            //   }),
+            //   label: false,
+            //   required: true,
+            // },
             {
               name: 'content',
-              type: 'richText',
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, InsertPost] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    HorizontalRuleFeature(),
-                  ]
-                },
-              }),
-              label: false,
-              required: true,
+              type: 'blocks',
+              // fields: [
+              //   {
+              //     name: 'text',
+              //     type: 'richText',
+              //     editor: lexicalEditor({
+              //       features: ({ rootFeatures }) => {
+              //         return [
+              //           ...rootFeatures,
+              //           HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+              //           // BlocksFeature({ blocks: [Banner, Code, MediaBlock, InsertPost] }),
+              //           BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+              //           FixedToolbarFeature(),
+              //           InlineToolbarFeature(),
+              //           HorizontalRuleFeature(),
+              //         ]
+              //       },
+              //     }),
+              //   },
+              //   PostGroupField,
+              // ],
+              // minRows: 1
+              blocks: [PostContent, PostGroup]
             },
             {
               name: 'summary',
@@ -117,29 +148,29 @@ export const Posts: CollectionConfig = {
               type: 'relationship',
               relationTo: 'programmes',
               hasMany: true,
-              required: false
+              required: false,
             },
           ],
           label: 'Content',
         },
         {
           fields: [
-            {
-              name: 'relatedPosts',
-              type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                }
-              },
-              hasMany: true,
-              relationTo: 'posts',
-            },
+            // {
+            //   name: 'relatedPosts',
+            //   type: 'relationship',
+            //   admin: {
+            //     position: 'sidebar',
+            //   },
+            //   filterOptions: ({ id }) => {
+            //     return {
+            //       id: {
+            //         not_in: [id],
+            //       },
+            //     }
+            //   },
+            //   hasMany: true,
+            //   relationTo: 'posts',
+            // },
             {
               name: 'categories',
               type: 'relationship',
@@ -165,33 +196,56 @@ export const Posts: CollectionConfig = {
               type: 'relationship',
               relationTo: 'venues',
               hasMany: false,
-              required: false
+              required: false,
+            },
+            {
+              name: 'hero_image',
+              type: 'upload',
+              relationTo: 'media',
+              access: {
+                read: () => true,
+              },
+              admin: {
+                condition: (_, siblingData) =>
+                  Array.isArray(siblingData?.tags) && 
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
+              },
+              // validate: (value, {data}) => {
+              //   if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
+              //     return ('Hero Image is needed when Post is a hero')
+              //   }
+              //   return true
+              // }
             },
             {
               name: 'hero_title',
               type: 'text',
               admin: {
-                condition: (_, siblingData) => siblingData?.tags?.some((_tag) => _tag['name']==='hero')
+                condition: (_, siblingData) =>
+                  Array.isArray(siblingData?.tags) && 
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
               },
-              validate: (value, {data}) => {
-                if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
-                  return ('Hero Title is needed when Post is a hero')
+              validate: (value, { data }) => {
+                if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
+                  return 'Hero Title is needed when Post is a hero'
                 }
                 return true
-              }
+              },
             },
             {
               name: 'hero_subtitle',
               type: 'text',
               admin: {
-                condition: (_, siblingData) => siblingData?.tags?.some((_tag) => _tag['name']==='hero')
+                condition: (_, siblingData) =>
+                  Array.isArray(siblingData?.tags) && 
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
               },
-              validate: (value, {data}) => {
-                if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
-                  return ('Hero Subtitle is needed when Post is a hero')
+              validate: (value, { data }) => {
+                if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
+                  return 'Hero Subtitle is needed when Post is a hero'
                 }
                 return true
-              }
+              },
             },
           ],
           label: 'Meta',
