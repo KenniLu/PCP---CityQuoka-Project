@@ -17,6 +17,7 @@ frontend:
         - echo "_AWS_SECRET_ACCESS_KEY=$_AWS_SECRET_ACCESS_KEY" >> .env
         - echo "PROD_S3_BUCKET=$PROD_S3_BUCKET" >> .env
         - echo "NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL" >> .env
+        - echo "GOOGLE_PLACES_API_KEY=$GOOGLE_PLACES_API_KEY" >> .env
         - NEXT_TELEMETRY_DISABLED=1 pnpm run payload migrate && pnpm run build
         - cp -r certs .next/
   artifacts:
