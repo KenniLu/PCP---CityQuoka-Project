@@ -546,14 +546,14 @@ export interface Venue {
   id: number;
   name: string;
   image?: (number | null) | Media;
-  address_line_1?: string | null;
-  address_line_2?: string | null;
+  address?: string | null;
   city?: string | null;
   state_province?: string | null;
   country?: string | null;
   postal_code?: string | null;
   latitude?: string | null;
   longitude?: string | null;
+  googlePlaceId?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -1297,14 +1297,14 @@ export interface ProgrammesSelect<T extends boolean = true> {
 export interface VenuesSelect<T extends boolean = true> {
   name?: T;
   image?: T;
-  address_line_1?: T;
-  address_line_2?: T;
+  address?: T;
   city?: T;
   state_province?: T;
   country?: T;
   postal_code?: T;
   latitude?: T;
   longitude?: T;
+  googlePlaceId?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;

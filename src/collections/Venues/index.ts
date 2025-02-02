@@ -5,6 +5,9 @@ export const Venues: CollectionConfig = {
   slug: 'venues',
   admin: {
     useAsTitle: 'name',
+    components: {
+      afterList: ['@/app/(admin)/venues/google-venue-search'],
+    }
   },
   access: {
     create: () => true,
@@ -23,12 +26,7 @@ export const Venues: CollectionConfig = {
       required: false
     },
     {
-      name: 'address_line_1',
-      type: 'text',
-      required: false,
-    },
-    {
-      name: 'address_line_2',
+      name: 'address',
       type: 'text',
       required: false,
     },
@@ -62,8 +60,13 @@ export const Venues: CollectionConfig = {
       name: 'longitude',
       type: 'text',
       required: false,
-
     },
-    ...slugField()
+    {
+      name: 'googlePlaceId',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    ...slugField('slug')
   ]
 }

@@ -38,6 +38,7 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - '3000:3000'
+      # - '9229:9229' # Uncomment for Debugging
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
@@ -47,7 +48,7 @@ services:
     env_file:
       - .env
     user: node # This should match your host user ID
-    command: sh -c "pnpm install && pnpm dev"
+    command: sh -c "pnpm install && pnpm dev"  # Use "pnpm dev:debug" instead of "pnpm dev" for Debugging,
 
 volumes:
   data:

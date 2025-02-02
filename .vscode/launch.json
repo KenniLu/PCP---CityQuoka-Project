@@ -9,6 +9,17 @@
       "name": "Debug Website",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "name": "Next.js Docker",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/home/node/app/",
+      "sourceMaps": true,
+      "autoAttachChildProcesses": false
     }
   ]
 }
