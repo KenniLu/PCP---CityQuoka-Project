@@ -46,11 +46,11 @@ export const PostHero: React.FC<{
   return (
     <div className="flex flex-col items-center gap-4 pt-8">
       <div className="container">
-        <ResponsiveImage
+        {image && <ResponsiveImage
           media={image as MediaType}
           alt={post.title!}
           sizes="(max-width: 685px) 100vw, 685px"
-        />
+        />}
         <hr className="mt-3 mb-3"/>
         <div className="text-black text-[25px] font-author font-bold leading-[33.25px] tracking-[-1.05px] uppercase pb-4 flex justify-between items-center w-full">
           <div className="flex-1">{post.title}</div>
