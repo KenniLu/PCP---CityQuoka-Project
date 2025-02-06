@@ -12,8 +12,11 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
-import PageClient from './page.client'
+// import PageClient from './page.client'
 import { isRichTextEmpty } from '@/utilities/isRichTextEmpty'
+import CategoriesBar from '@/components/CategoriesBar'
+import PostGroupBlock from '@/components/PostGroupBlock'
+import { RecommendedSideBar } from '@/components/RecommendedSideBar'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -22,6 +25,10 @@ export async function generateStaticParams() {
     draft: false,
     limit: 1000,
     overrideAccess: false,
+    pagination: false,
+    select: {
+      slug: true,
+    },
   })
 
   const params = posts.docs.map(({ slug }) => {
@@ -47,13 +54,13 @@ export default async function Post({ params: paramsPromise }: Args) {
   const getListStyle = (listType: string) => {
     switch (listType) {
       case 'bulleted':
-        return { listStyle: 'disc inside' };
+        return { listStyle: 'disc inside' }
       case 'numbered':
-        return { listStyle: 'decimal inside' };
+        return { listStyle: 'decimal inside' }
       default:
-        return { listStyle: 'none' };
+        return { listStyle: 'none' }
     }
-  };
+  }
 
   const formatListPostTitle = (title: string, listType: string, index: number) => {
     switch (listType) {
@@ -67,72 +74,86 @@ export default async function Post({ params: paramsPromise }: Args) {
   }
 
   const postLinkSummary = (linkSummary, postSummary) => {
-    if(isRichTextEmpty(linkSummary)){
-      if(isRichTextEmpty(postSummary)){
+    if (isRichTextEmpty(linkSummary)) {
+      if (isRichTextEmpty(postSummary)) {
         return null
-      }else{
-        return(<RichText
-          className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
-          content={postSummary}
-          enableGutter={false}
-        />)
+      } else {
+        return (
+          <RichText
+            className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
+            content={postSummary}
+            enableGutter={false}
+          />
+        )
       }
-    }else{
-      return(<RichText
-        className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
-        content={linkSummary}
-        enableGutter={false}
-      />)
+    } else {
+      return (
+        <RichText
+          className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
+          content={linkSummary}
+          enableGutter={false}
+        />
+      )
     }
   }
 
   return (
-    <article>
-      <PageClient />
-      {/* {JSON.stringify(post)} */}
-      {/* Allows redirects for valid pages too */}
+    <article className="w-full">
       <PayloadRedirects disableNotFound url={url} />
+      <div className="flex flex-col w-full px-8 sm:px-0">
+        <CategoriesBar />
+        {/* <PostHero post={post} /> */}
+        <div className="w-full relative pb-10">
+          <div className="w-full flex justify-center max-sm:hidden"></div>
 
-      <PostHero post={post} />
+          {/* My changes start */}
+          <div className="flex flex-col md:flex-row w-full gap-4">
+            {/* My changes end */}
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container lg:mx-0 lg:grid lg:grid-cols-[1fr_48rem_1fr] grid-rows-[1fr]">
-          {
-            post.content?.map((content, i) => {
-              if(content.blockType === 'PostContentBlock'){
-                return(<RichText
-                  key={`content_tab_${i}`}
-                  className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
-                  content={content.content}
-                  enableGutter={false}
-                />)
-              }else if(content.blockType === 'PostGroupBlock'){
-                const {listType, useSeparator} = content
-                return(<div key={`content_x_${i}`}>
-                  {(content.postLinks||[]).map((postLink, i)=>{
-                      const isLastItem = i === (content.postLinks || []).length - 1
-                      const {post, content: linkSummary} = postLink.postLink
-                      const { title, summary: postSummary} = post as Post
-                          return(<div key={`postLink${i}`}>
-                          <div>{formatListPostTitle(title, listType!, i+1)}</div>
-                          <div>
-                            {postLinkSummary(linkSummary, postSummary)}
-                          </div>
-                          {useSeparator && !isLastItem && <hr />}
-                          {!useSeparator && !isLastItem && <div className="h-4" />}
-                        </div>)
+            {/* <div className="max-w-[1120px] mx-auto px-4 max-sm:px-2"> */}
+            <div className="w-full sm:max-w-[960px] mx-auto sm:min-w-0 p-4">
+              {/* <article className="w-full max-w-[960px] max-md:w-full">
+                <div className="w-full max-w-[960px] max-md:w-full"> */}
+              <article className="w-full max-w-[960px]">
+              <div className="w-full max-w-[960px]">
+                  {/* <ArticleHeader />*/}
+                  <PostHero post={post} />
+                </div>
+                <div className="font-author text-2xl leading-[135%] tracking-[-0.9px] text-black text-justify mt-8 max-w-[960px] max-sm:max-w-[330px]">
+                  {post.content?.map((content, i) => {
+                    if (content.blockType === 'PostContentBlock') {
+                      return (
+                        <RichText
+                          key={`content_tab_${i}`}
+                          className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
+                          content={content.content}
+                          enableGutter={false}
+                        />
+                      )
+                    } else if (content.blockType === 'PostGroupBlock') {
+                      return <PostGroupBlock content={content} key={`content_x_${i}`} />
+                    }
                   })}
-                </div>)
-              }
-            })
-          }
+                </div>
+              </article>
+            </div>
+
+            {/* My changes start */}
+            {/* My changes end */}
+
+            {/* <aside className="absolute top-[180px] right-0 max-lg:relative max-lg:mt-8"> */}
+            <aside className="top-0 right-0 w-full md:w-[320px] shrink-0 p-4">
+              {/* <ArticleSidebar /> */}
+              <RecommendedSideBar />
+            </aside>
+
+            {/* My changes start */}
+          </div>
+          {/* My changes end */}
+
+          <div className="h-[30px]"></div>
+          <div className="w-full h-[4px] bg-[#EFEFEF] max-w-[300px] mx-auto sm:max-w-[300px]"></div>
         </div>
-        {/* {post.relatedPosts && post.relatedPosts.length > 0 && (
-          <RelatedPosts
-            className="mt-12"
-            docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-          />
-        )} */}
       </div>
     </article>
   )

@@ -1,12 +1,17 @@
 import React from 'react'
+import Image from 'next/image'
 
 export const Logo = () => {
   return (
     /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="City Quokka Logo"
-      className="max-w-[9.375rem] invert dark:invert-0 w-full"
-      src="/logo.svg"
-    />
+    <div className="flex justify-center w-full py-6 sm:py-8">
+      <Image
+        className="object-contain self-center max-w-full aspect-[3.37]"
+        src="/logo.svg"
+        alt="CityQuokka"
+        width={300}
+        height={0}
+      />
+    </div>
   )
 }

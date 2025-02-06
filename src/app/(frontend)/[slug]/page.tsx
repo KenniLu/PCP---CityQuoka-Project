@@ -64,18 +64,20 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <article>
-      <PageClient />
-      {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
+    <div className="flex flex-col w-full px-8">
+      <article>
+        <PageClient />
+        {/* Allows redirects for valid pages too */}
+        <PayloadRedirects disableNotFound url={url} />
 
-      <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
-      {slug === 'home' && <>
-        <WhoAreWe/>
-        <SignUpOrLogIn/>
-      </>}
-    </article>
+        <RenderHero {...hero} />
+        <RenderBlocks blocks={layout} />
+        {slug === 'home' && <>
+          <WhoAreWe/>
+          <SignUpOrLogIn/>
+        </>}
+      </article>
+    </div>
   )
 }
 

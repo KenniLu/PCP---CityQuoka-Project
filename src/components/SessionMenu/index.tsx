@@ -2,12 +2,9 @@
 
 import { useAuth } from '@/providers/AuthProvider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { signOut } from "next-auth/react"
+import { signOut } from 'next-auth/react'
 
-import {
-  Settings,
-  LogOut
-} from 'lucide-react'
+import { Settings, LogOut } from 'lucide-react'
 
 import {
   DropdownMenu,
@@ -73,8 +70,19 @@ export const SessionMenu: React.FC = ({}) => {
       </div>
     )
   } else {
-    return(<div className="flex gap-2.5 self-end text-lg tracking-tight leading-snug max-md:mr-0.5 cursor-pointer">
-      Login
-    </div>)
+    return (
+      <div className="flex justify-between items-center text-lg tracking-tight leading-snug text-black font-medium">
+        <div className="flex justify-end w-full">
+          <button
+            // onClick={() => navigate("/signup")}
+            className="hover:text-[#7642C8] transition-colors font-inter"
+          >
+            SignUp / LogIn
+          </button>
+        </div>
+        <button className="w-10 h-10 rounded-full bg-zinc-300 ml-4"></button>{' '}
+        {/* Icon to the right */}
+      </div>
+    )
   }
 }
