@@ -71,10 +71,11 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           <div className="w-full h-[4px] bg-[#EFEFEF] max-w-[300px] mx-auto sm:max-w-[300px]"></div>
         </>
       )}
-      <div className="mt-12 max-w-full w-full px-4 sm:px-6 lg:px-12">
-        <div className="flex gap-5 flex-col xl:flex-row">
+      {/* <div className="mt-12 max-w-full w-full px-4 sm:px-6 lg:px-12"> */}
+      <div className="mt-2 xl:mt-4 max-w-full w-full">
+        <div className="flex gap-5 flex-col-reverse xl:flex-row">
           <div className="flex flex-col w-full xl:w-6/12">
-            <div className="flex flex-col grow font-[281] mt-10 font-author">
+            <div className="flex flex-col grow font-[281] mt-2 xl:mt-10 font-author">
               <div className="text-2xl tracking-tighter leading-8 text-black">
                 {formatListPostTitle(listType, index)}
                 <span className="font-[494] inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1">
@@ -96,7 +97,7 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           </div>
           <div className="flex flex-col mt-5 lg:mt-0 lg:ml-5 w-full xl:w-6/12">
             <div className="flex flex-col self-stretch w-full leading-none text-black font-[281] items-end">
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end mb-1 mr-auto xl:mr-0 xl:mb-2">
                 <SocialActions />
               </div>
               <div className="relative flex flex-col items-start pt-2 pb-72 mt-3 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
