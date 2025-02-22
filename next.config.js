@@ -22,4 +22,6 @@ const nextConfig = {
   redirects,
 }
 
-export default withPayload(nextConfig)
+const standaloneConfig = process.env.NODE_ENV === 'development' ? {} : {output: 'standalone'}
+
+export default withPayload({...nextConfig, ...standaloneConfig})
