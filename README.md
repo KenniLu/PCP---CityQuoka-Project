@@ -291,6 +291,12 @@ pnpm run payload migrate
 
 ``sh
 cd terraform/environments/staging
+
+# If There are lambda changes
+cd header-modifier-lambda
+zip lambda.zip index.js 
+cd ..
+# End lambda changes
 terraform init # Only once
 terraform apply \
   -var-file="terraform.tfvars" \

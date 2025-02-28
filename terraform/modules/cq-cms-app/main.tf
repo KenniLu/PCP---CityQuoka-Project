@@ -740,6 +740,29 @@ resource "aws_cloudfront_distribution" "app" {
     compress               = true
   }
   
+    # Special behavior for Next.js image optimization routes
+  ordered_cache_behavior {
+    path_pattern     = "/_next/image*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "apprunner"
+
+    forwarded_values {
+      query_string = true # Important! The image URL, width, and quality are in query params
+      headers      = ["Origin"] # If you need CORS support
+      cookies {
+        forward = "none" # Image optimization doesn't need cookies
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 604800    # 7 days
+    max_ttl                = 31536000 # 1 year
+    compress               = true
+  }
+
+
   # Cache behavior for images
   ordered_cache_behavior {
     path_pattern     = "/images/*"
