@@ -3,7 +3,8 @@ import type { Post, Media as MediaType } from '@/payload-types'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import ResponsiveImage from '@/components/ResponsiveImage'
+// import ResponsiveImage from '@/components/ResponsiveImage'
+import { Media } from '@/components/Media'
 import { CMSLink } from '@/components/Link'
 
 export const RecommendedSideBar: React.FC = async () => {
@@ -57,12 +58,18 @@ export const RecommendedSideBar: React.FC = async () => {
                     <p className="tracking-tighter text-lg mb-4">{title}</p>
                     <div className="h-[156px] bg-zinc-300 w-full">
                       {image && (
-                        <ResponsiveImage
-                          media={image as MediaType}
-                          alt={title!}
-                          sizes="(max-width: 500px) 100vw, 500px"
-                          // className="object-contain inset-0 w-full h-full"
+                        // <ResponsiveImage
+                        //   media={image as MediaType}
+                        //   alt={title!}
+                        //   sizes="(max-width: 500px) 100vw, 500px"
+                        //   // className="object-contain inset-0 w-full h-full"
+                        //   className="object-cover object-center overflow-hidden w-full h-full"
+                        // />
+                        <Media
+                          // fill
+                          // priority
                           className="object-cover object-center overflow-hidden w-full h-full"
+                          resource={image}
                         />
                       )}
                     </div>

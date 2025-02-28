@@ -3,7 +3,8 @@ import React from 'react'
 import type { Post, Media as MediaType } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { isRichTextEmpty } from '@/utilities/isRichTextEmpty'
-import ResponsiveImage from '@/components/ResponsiveImage'
+// import ResponsiveImage from '@/components/ResponsiveImage'
+import { Media } from '@/components/Media'
 import SocialActions from '@/blocks/PostEntrySocialActions'
 import { CMSLink } from '../Link'
 
@@ -102,11 +103,17 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
               </div>
               <div className="relative flex flex-col items-start pt-2 pb-72 mt-3 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
                 {image && (
-                  <ResponsiveImage
-                    media={image as MediaType}
-                    alt={post.title!}
-                    sizes="(max-width: 685px) 100vw, 685px"
+                  // <ResponsiveImage
+                  //   media={image as MediaType}
+                  //   alt={post.title!}
+                  //   sizes="(max-width: 685px) 100vw, 685px"
+                  //   className="object-cover absolute inset-0 w-full h-full"
+                  // />
+                  <Media
+                    fill
+                    priority
                     className="object-cover absolute inset-0 w-full h-full"
+                    resource={image}
                   />
                 )}
               </div>

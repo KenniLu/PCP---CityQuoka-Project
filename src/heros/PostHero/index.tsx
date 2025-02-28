@@ -4,7 +4,7 @@ import React from 'react'
 // import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
-import ResponsiveImage from '@/components/ResponsiveImage'
+// import ResponsiveImage from '@/components/ResponsiveImage'
 import type { Post, Media as MediaType } from '@/payload-types'
 import { auth } from '@/auth'
 
@@ -64,14 +64,15 @@ export const PostHero: React.FC<{
           className="object-cover absolute inset-0 w-full h-full"
           alt="Article header image"
         /> */}
-        {image && (
+        {/* {image && (
           <ResponsiveImage
             media={image as MediaType}
             alt={post.title!}
             sizes="(max-width: 685px) 100vw, 685px"
             className="object-cover absolute inset-0 w-full h-full"
           />
-        )}
+        )} */}
+        {image && <Media fill priority imgClassName="object-cover absolute inset-0 w-full h-full" resource={image} />}
 
         <div className="relative px-3 py-0.5 inline-block rounded-md bg-zinc-300 text-xl tracking-tight leading-none font-[281] text-neutral-500 mt-4">
           {formatDate(post.publishedAt!)}

@@ -4,6 +4,10 @@ terraform {
       source                = "hashicorp/aws"
       configuration_aliases = [aws.us-east-1]
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.7.0" # Use appropriate version
+    }
   }
 }
 
@@ -452,6 +456,166 @@ resource "aws_s3_bucket_policy" "cloudfront_logs" {
   })
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_policy" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  rule {
+    id     = "delete-after-1-day"
+    status = "Enabled"
+
+    expiration {
+      days = 1
+    }
+  }
+}
+
+# resource "aws_cloudfront_origin_request_policy" "allow_all_origin_request_policy" {
+#   name    = "AllowAllOriginRequestPolicy"
+#   comment = "Policy to forward all headers, cookies and query strings to AppRunner"
+
+#   cookies_config {
+#     cookie_behavior = "all"
+#   }
+
+#   headers_config {
+#     header_behavior = "allViewerAndWhitelistCloudFront"  # Forward all viewer headers
+#     headers {
+#       items = [
+#         "user-agent",
+#         "referer"
+#       ]
+#     }
+#   }
+
+#   query_strings_config {
+#     query_string_behavior = "all"
+#   }
+# }
+
+# Create a custom response headers policy that includes cookies
+resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
+  name    = "${var.app_name}-${var.environment}-CookiesCORSPolicy"
+  comment = "Policy for CORS with cookies passthrough"
+
+  cors_config {
+    access_control_allow_credentials = false
+    access_control_allow_headers {
+      items = ["*"]
+    }
+    access_control_allow_methods {
+      items = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    }
+    access_control_allow_origins {
+      items = ["*"]  # Or specify your domains for better security
+    }
+    origin_override = true
+  }
+
+  # This ensures cookies are passed through
+  security_headers_config {
+    # Optional security headers
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "SAMEORIGIN"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "same-origin"
+      override        = true
+    }
+    xss_protection {
+      mode_block = true
+      protection = true
+      override   = true
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda_edge_role" {
+  # name = "lambda-edge-header-role"
+  name = "${var.app_name}-${var.environment}-lambda-edge-header-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = [
+            "lambda.amazonaws.com",
+            "edgelambda.amazonaws.com"
+          ]
+        }
+      }
+    ]
+  })
+}
+
+# Make sure we have these permissions attached
+resource "aws_iam_role_policy_attachment" "lambda_edge_basic" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_edge_role.name
+}
+
+# Add CloudFront-specific permissions
+resource "aws_iam_role_policy" "lambda_edge_cloudfront" {
+  name = "lambda-edge-cloudfront-policy"
+  role = aws_iam_role.lambda_edge_role.name
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Effect = "Allow",
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+# Lambda@Edge function
+# resource "aws_lambda_function" "header_modifier" {
+#   filename         = "header-modifier-lambda/lambda.zip"  # You'll need to create this
+#   function_name    = "${var.app_name}-${var.environment}-cloudfront-header-modifier"
+#   role            = aws_iam_role.lambda_edge_role.arn
+#   handler         = "index.handler"
+#   runtime         = "nodejs18.x"
+#   memory_size      = 128  # Minimum allocation (already quite low)
+#   timeout          = 5
+#   publish         = true  # Required for Lambda@Edge
+#   provider = aws.us-east-1  # Lambda@Edge must be in us-east-1
+#   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+# }
+
+data "archive_file" "lambda_archive_zip" {
+  type        = "zip"
+  source_file = "header_modifier_lambda/index.js"
+  output_file_mode = "0444"
+  output_path = "header_modifier_lambda.zip"
+}
+
+resource "aws_lambda_function" "header_modifier" {
+  # filename         = "header-modifier-lambda/lambda.zip"  # You'll need to create this
+  filename = data.archive_file.lambda_archive_zip.output_path
+  function_name    = "${var.app_name}-${var.environment}-cloudfront-header-modifier"
+  role            = aws_iam_role.lambda_edge_role.arn
+  handler         = "index.handler"
+  runtime         = "nodejs18.x"
+  memory_size      = 128  # Minimum allocation (already quite low)
+  timeout          = 5
+  publish         = true  # Required for Lambda@Edge
+  provider = aws.us-east-1  # Lambda@Edge must be in us-east-1
+  source_code_hash = data.archive_file.lambda_archive_zip.output_base64sha256
+}
+
 resource "aws_cloudfront_distribution" "app" {
   enabled             = true
   is_ipv6_enabled    = true
@@ -470,35 +634,138 @@ resource "aws_cloudfront_distribution" "app" {
     }
   }
 
-  default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = "apprunner"
-    viewer_protocol_policy = "redirect-to-https"
+  # Disable caching for admin paths.
+  # ordered_cache_behavior {
+  #   path_pattern           = "/admin/*"
+  #   allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+  #   cached_methods         = ["GET", "HEAD", "OPTIONS"]
+  #   target_origin_id       = "apprunner"
+  #   viewer_protocol_policy = "redirect-to-https"
+
+  #   lambda_function_association {
+  #     event_type   = "origin-request"
+  #     lambda_arn   = aws_lambda_function.header_modifier.qualified_arn
+  #     include_body = false
+  #   }
+
+  #   # Also add for viewer-request if needed
+  #   # lambda_function_association {
+  #   #   event_type   = "viewer-request"
+  #   #   lambda_arn   = aws_lambda_function.header_modifier.qualified_arn
+  #   #   include_body = false
+  #   # }
+
+  #   # Use CachingDisabled policy for admin routes
+  #   cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"  # Managed-CachingDisabled
+
+  #   # Use AllViewer policy to forward all headers, cookies, and query strings
+  #   origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"  # Managed-AllViewer
+  #   # origin_request_policy_id = aws_cloudfront_origin_request_policy.allow_all_origin_request_policy.id
+
+  #   # Use Managed-CORS-With-Preflight Response Policy
+  #   # response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"  # Managed-CORS-With-Preflight
+  #   # response_headers_policy_id = aws_cloudfront_response_headers_policy.cookies_cors_policy.id
+
+  #   # response_headers_policy_id =  aws_cloudfront_origin_request_policy.allow_all_origin_request_policy.id
+  # }
+
+  # default_cache_behavior {
+  #   allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+  #   cached_methods         = ["GET", "HEAD", "OPTIONS"]
+  #   target_origin_id       = "apprunner"
+  #   viewer_protocol_policy = "redirect-to-https"
     
-    # Managed-UserAgentRefererHeaders
-    origin_request_policy_id = "acba4595-bd28-49b8-b9fe-13317c0390fa"
+  #   # Managed-UserAgentRefererHeaders
+  #   origin_request_policy_id = "acba4595-bd28-49b8-b9fe-13317c0390fa"
 
-    # Managed-CachingOptimized
-    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    # forwarded_values {
-    #   query_string = true
-    #   headers      = ["*"]
-    #   cookies {
-    #     forward = "all"
-    #   }
-    # }
+  #   # Managed-CachingOptimized
+  #   cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+  #   # forwarded_values {
+  #   #   query_string = true
+  #   #   headers      = ["*"]
+  #   #   cookies {
+  #   #     forward = "all"
+  #   #   }
+  #   # }
 
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
+  #   min_ttl     = 0
+  #   default_ttl = 3600
+  #   max_ttl     = 86400
+  # }
+
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id       = "apprunner"
+    
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"  # Forward all cookies to origin
+      }
+      headers = ["*"]
+    }
+
+    lambda_function_association {
+      event_type   = "origin-request"
+      lambda_arn   = aws_lambda_function.header_modifier.qualified_arn
+      include_body = false
+    }
+    
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0  # Don't cache by default
+    max_ttl                = 0
   }
 
-  custom_error_response {
-    error_code = 404
-    response_code = 200
-    response_page_path = "/"
+  # Specific cache behavior for static assets
+  ordered_cache_behavior {
+    path_pattern     = "/static/*"  # Cache static assets
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "apprunner"
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"  # Don't forward cookies for static assets
+      }
+    }
+    
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 86400  # 24 hours
+    max_ttl                = 31536000  # 1 year
+    compress               = true
   }
+  
+  # Cache behavior for images
+  ordered_cache_behavior {
+    path_pattern     = "/images/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "apprunner"
+    
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+    
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+  }
+
+  # custom_error_response {
+  #   error_code = 404
+  #   response_code = 200
+  #   response_page_path = "/"
+  # }
 
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate.cert.arn
@@ -512,14 +779,36 @@ resource "aws_cloudfront_distribution" "app" {
     }
   }
 
-  logging_config {
-    include_cookies = false
-    bucket          = "${aws_s3_bucket.cloudfront_logs.bucket}.s3.amazonaws.com"
-    prefix          = "cloudfront/"
-  }
+  # logging_config {
+  #   include_cookies = false
+  #   bucket          = "${aws_s3_bucket.cloudfront_logs.bucket}.s3.amazonaws.com"
+  #   prefix          = "cloudfront/"
+  # }
 
   tags = {
     Environment = var.environment
     ManagedBy   = "terraform"
   }
+}
+
+
+# Add permission for CloudFront to invoke Lambda
+resource "aws_lambda_permission" "allow_cloudfront" {
+  statement_id  = "AllowCloudFrontToInvokeLambda"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.header_modifier.function_name
+  principal     = "edgelambda.amazonaws.com"
+  source_arn    = aws_cloudfront_distribution.app.arn
+  
+  provider = aws.us-east-1  # Must match the Lambda region
+}
+
+# Additionally, allow lambda.amazonaws.com to invoke
+resource "aws_lambda_permission" "allow_lambda" {
+  statement_id  = "AllowLambdaToInvokeLambda"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.header_modifier.function_name
+  principal     = "lambda.amazonaws.com"
+  
+  provider = aws.us-east-1
 }
