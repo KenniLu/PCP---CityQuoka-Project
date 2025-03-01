@@ -44,7 +44,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
     // </header>
     // <header>
 
-    <div className="flex flex-col w-full bg-white pb-4 pt-6 mb-4">
+    <div className="flex flex-col w-full bg-white pt-6 mb-4">
       <div className="flex flex-col self-center w-full max-w-[390px] md:max-w-[1122px] bg-white px-4 sm:px-0">
         <SessionMenu />
         <Logo />

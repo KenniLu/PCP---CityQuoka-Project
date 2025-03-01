@@ -109,7 +109,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'mediaBlock':
               return (
                 <MediaBlock
-                  className="col-start-1 col-span-3"
+                  className="col-start-1 col-span-3 mb-[.55em]"
                   imgClassName="m-0"
                   key={index}
                   {...block}
@@ -121,18 +121,18 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'banner':
               return <BannerBlock className="col-start-2 mb-4" key={index} {...block} />
             case 'code':
-              return <CodeBlock className="col-start-2" key={index} {...block} />
+              return <CodeBlock className="col-start-2 mb-[.55em]" key={index} {...block} />
             default:
               return null
           }
         } else {
           switch (node.type) {
             case 'linebreak': {
-              return <br className="col-start-2" key={index} />
+              return <br className="col-start-2 mb-[.55em]" key={index} />
             }
             case 'paragraph': {
               return (
-                <p className="col-start-2" key={index}>
+                <p className="col-start-2 mb-[.55em]" key={index}>
                   {serializedChildren}
                 </p>
               )
@@ -140,15 +140,25 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'heading': {
               const Tag = node?.tag
               return (
-                <Tag className="col-start-2" key={index}>
+                <Tag className="col-start-2 mb-[.55em]" key={index}>
                   {serializedChildren}
                 </Tag>
               )
             }
             case 'list': {
               const Tag = node?.tag
+              let listClassName = ''
+
+              if (node?.listType === 'bullet') {
+                listClassName += 'pl-[1em] list-disc'
+              } else if (node?.listType === 'number') {
+                listClassName += 'pl-[1em] list-decimal'
+              } else if (node?.listType === 'check') {
+                listClassName += 'list-none'
+              }
+
               return (
-                <Tag className="list col-start-2" key={index}>
+                <Tag className={`list ${listClassName} col-start-2 mb-[.55em]`} key={index}>
                   {serializedChildren}
                 </Tag>
               )
@@ -158,19 +168,25 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                 return (
                   <li
                     aria-checked={node.checked ? 'true' : 'false'}
-                    className={` ${node.checked ? '' : ''}`}
+                    className={`mb-[.55em] ${node.checked ? '' : ''}`}
                     key={index}
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                     role="checkbox"
                     tabIndex={-1}
                     value={node?.value}
                   >
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      defaultChecked={node?.checked}
+                      disabled={true}
+                    />
                     {serializedChildren}
                   </li>
                 )
               } else {
                 return (
-                  <li key={index} value={node?.value}>
+                  <li key={index} value={node?.value} className="mb-[.55em]">
                     {serializedChildren}
                   </li>
                 )
@@ -178,7 +194,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'quote': {
               return (
-                <blockquote className="col-start-2" key={index}>
+                <blockquote className="col-start-2 mb-[.55em]" key={index}>
                   {serializedChildren}
                 </blockquote>
               )

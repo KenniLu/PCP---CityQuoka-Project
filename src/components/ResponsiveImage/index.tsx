@@ -50,7 +50,7 @@ async function ResponsiveImage({
     <img
       src={defaultImage.url}
       srcSet={srcset}
-      // sizes={sizes}
+      sizes={sizes}
       alt={alt}
       className={cn(
         'w-full h-auto object-cover',

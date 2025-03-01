@@ -120,7 +120,7 @@ export default async function Post({ params: paramsPromise }: Args) {
                   <PostHero post={post} />
                 </div>
                 {/* <div className="font-author text-2xl leading-[135%] tracking-[-0.9px] text-black text-justify mt-8 max-w-[960px] max-sm:max-w-[330px]"> */}
-                <div className="font-author text-2xl leading-[135%] tracking-[-0.9px] text-black text-justify mt-8 max-w-[960px]">
+                <div className="text-xl leading-[135%] text-justify mt-8 max-w-[960px]">
                   {post.content?.map((content, i) => {
                     if (content.blockType === 'PostContentBlock') {
                       return (

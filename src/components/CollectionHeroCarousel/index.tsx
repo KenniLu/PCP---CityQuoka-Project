@@ -57,12 +57,12 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                     >
                       <div className="flex flex-col items-center justify-between w-full h-full p-2">
                         {/* <div className="text-black text-[25px] font-author font-bold leading-[24px] tracking-[-0.75px] uppercase pb-2 flex flex-col items-center justify-center w-full text-center max-md:text-left"> */}
-                        <div className="text-black text-[25px] font-author leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left items-center justify-center w-full text-center">
+                        <div className="text-black text-[25px] leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left items-center justify-center w-full text-center">
                           {/* Added max-md:text-left */}
                           <div className="md:pt-40 font-bold uppercase">{hero_title}</div>
                           {hero_subtitle && hero_subtitle.length > 0 && (
                             // <div className="text-black text-[25px] font-author leading-[33.25px] tracking-[-1.05px] pb-4 flex justify-between items-center w-full text-center max-md:text-left">
-                            <div className="text-black font-author pt-2">
+                            <div className="text-black pt-2">
                               {/* <div className="sm:pt-40">{hero_subtitle}</div> */}
                               {hero_subtitle}
                             </div>
