@@ -10,15 +10,12 @@ const nextConfig = {
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)
-
-        const remotePattern = {
+        return {
           hostname: url.hostname,
           protocol: url.protocol.replace(':', ''),
           pathname: '/api/media/**',
           search: '',
         }
-        console.log(`REGISTERERING REMOTE PATTERN : ${JSON.stringify(remotePattern)}`)
-        return remotePattern
       }),
     ],
   },

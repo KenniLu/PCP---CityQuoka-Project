@@ -9,7 +9,7 @@ export const Logo = () => {
       <Link href="/">
         <Image
           className="object-contain self-center max-w-full aspect-[3.37]"
-          src="/logo.svg"
+          src="/icons/logo.svg"
           alt="CityQuokka"
           width={300}
           height={0}
