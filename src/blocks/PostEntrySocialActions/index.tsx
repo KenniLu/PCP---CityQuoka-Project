@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function SocialActions() {
   return (
-    <div className="flex gap-3 items-start self-start mt-1.5 text-sm font-[494]">
+    <div className="flex gap-3 items-start self-start mt-1.5 text-sm">
       <button className="flex gap-1 self-stretch items-center hover:opacity-80" disabled>
         <span>Like Article</span>
         <Image

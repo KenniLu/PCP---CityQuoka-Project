@@ -24,14 +24,14 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
       case 'bulleted':
         // return `• ${title}`
         return (
-          <span className="text-2xl text-[#B8B8B8] font-inter font-[494] leading-[128%] tracking-[-1.5px] text-justify capitalize">
+          <span className="text-2xl text-[#B8B8B8] leading-[128%] tracking-[-1.5px] text-justify capitalize">
             .&nbsp;{' '}
           </span>
         )
       case 'numbered':
         // return `${index}. ${title}`
         return (
-          <span className="text-2xl text-[#B8B8B8] font-inter font-[494] leading-[128%] tracking-[-1.5px] text-justify capitalize">
+          <span className="text-2xl text-[#B8B8B8] leading-[128%] tracking-[-1.5px] text-justify capitalize">
             {index}.&nbsp;{' '}
           </span>
         )
@@ -76,14 +76,14 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
       <div className="mt-2 xl:mt-4 max-w-full w-full">
         <div className="flex gap-5 flex-col-reverse xl:flex-row">
           <div className="flex flex-col w-full xl:w-6/12">
-            <div className="flex flex-col grow font-[281] mt-2 xl:mt-10 font-author">
-              <div className="text-2xl tracking-tighter leading-8 text-black">
+            <div className="flex flex-col grow mt-2 xl:mt-10">
+              <div className="tracking-tighter leading-8 text-black">
                 {formatListPostTitle(listType, index)}
-                <span className="font-[494] inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1">
+                <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1">
                   {title}
                 </span>
                 <br />
-                {postLinkSummary(linkSummary, postSummary)}
+                <div className="mt-2">{postLinkSummary(linkSummary, postSummary)}</div>
               </div>
               <div className="mt-8">
                 <CMSLink
@@ -97,7 +97,7 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
             </div>
           </div>
           <div className="flex flex-col mt-5 lg:mt-0 lg:ml-5 w-full xl:w-6/12">
-            <div className="flex flex-col self-stretch w-full leading-none text-black font-[281] items-end">
+            <div className="flex flex-col self-stretch w-full leading-none text-black items-end">
               <div className="flex justify-end mb-1 mr-auto xl:mr-0 xl:mb-2">
                 <SocialActions />
               </div>
