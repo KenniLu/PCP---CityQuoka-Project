@@ -1,5 +1,8 @@
+import tailwindcssAnimate from 'tailwindcss-animate'
+import typography from '@tailwindcss/typography'
+
 /** @type {import('tailwindcss').Config} */
-export default {
+const config = {
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -7,7 +10,7 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [
     'lg:col-span-4',
@@ -22,6 +25,7 @@ export default {
     'bg-success/30',
     'border-warning',
     'bg-warning/30',
+    {pattern: /bg-quokka-(yellow|purple|green)/}
   ],
   theme: {
     container: {
@@ -125,3 +129,5 @@ export default {
     },
   },
 }
+
+export default config

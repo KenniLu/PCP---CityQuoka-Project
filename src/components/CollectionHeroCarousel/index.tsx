@@ -22,15 +22,11 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
   const colour_lookups = ['quokka-green', 'quokka-yellow', 'quokka-purple']
 
   const heroImage = (image: MediaType, imageAlt: string) => (
-    <div className="flex-1 justify-center w-full max-md:w-full max-md:mb-0 flex-grow h-[516px]">
-      {/* <ResponsiveImage
-        media={image as MediaType}
-        alt={imageAlt}
-        sizes="(max-width: 685px) 100vw, 685px"
-        className="object-cover object-center overflow-hidden rounded-md w-full h-full max-md:w-full max-md:h-full"
-      /> */}
+    <div className="w-3/5 md:w-3/5 max-md:w-full flex flex-col h-64 sm:h-64 md:h-96 lg:h-128">
+    {/* // <div className="w-3/5 max-md:w-full flex flex-col h-64 sm:h-64 md:h-96 lg:h-128"> */}
       <Media
-        fill
+        // fill
+        className={'relative flex w-full aspect-video justify-center h-full'}
         priority
         imgClassName="object-cover object-center overflow-hidden rounded-md w-full h-full max-md:w-full max-md:h-full"
         resource={image}
@@ -39,7 +35,8 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
   )
 
   return (
-    <div className="flex self-center w-full max-w-[1122px] bg-white pt-16 p-4 mx-auto">
+    // <div className="flex self-center w-full max-w-[1122px] bg-white pt-16 p-4 mx-auto">
+    <div className="flex self-center w-full max-w-[1122px] bg-white mx-auto">
       <Carousel className="w-full max-w-[1122px] mx-auto">
         <CarouselContent>
           {posts.map((post, indx) => {
@@ -50,19 +47,24 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                 <div className="flex flex-row max-md:flex-col">
                   {(image || hero_image) &&
                     heroImage((image || hero_image) as MediaType, post.title!)}
-                  <div className="flex-1 flex-col ml-auto max-md:w-full flex-grow">
+                  {/* <div className="flex-1 flex-col ml-auto max-md:w-full flex-grow"> */}
+                  <div className="w-2/5 md:w-2/5 max-md:w-full flex-col">
                     <div
-                      className="flex flex-col relative pt-6 pr-6 pb-6 pl-6 text-black bg-green-500 rounded-md max-md:py-0 max-md:pl-0 max-md:pr-0 w-full h-full"
-                      style={{ maxHeight: '516px' }}
+                      // className="flex flex-col relative pt-6 pr-6 pb-6 pl-6 text-black bg-red-500 rounded-md max-md:py-0 max-md:pl-0 max-md:pr-0 w-full h-full"
+                      className={`flex flex-col relative pt-6 pr-6 pb-6 pl-6 text-black bg-${colour_lookups[indx % 3]} rounded-md max-md:py-0 max-md:pl-0 max-md:pr-0 w-full h-full`}
+                      style={{ maxHeight: '420px' }}
                     >
-                      <div className="flex flex-col items-center justify-between w-full h-full p-2">
+                      <div className="flex flex-col justify-between w-full h-full p-2">
                         {/* <div className="text-black text-[25px] font-author font-bold leading-[24px] tracking-[-0.75px] uppercase pb-2 flex flex-col items-center justify-center w-full text-center max-md:text-left"> */}
-                        <div className="text-black text-[25px] leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left items-center justify-center w-full text-center">
+                        {/* <div className="text-black text-[25px] leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left items-center justify-center w-full text-center"> */}
+                        <div
+                          className={`text-black text-[25px] leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left justify-center w-full bg-${colour_lookups[indx % 3]} `}
+                        >
                           {/* Added max-md:text-left */}
-                          <div className="md:pt-40 font-bold uppercase">{hero_title}</div>
+                          <div className="pt-2 md:pt-8 font-bold">{hero_title}</div>
                           {hero_subtitle && hero_subtitle.length > 0 && (
                             // <div className="text-black text-[25px] font-author leading-[33.25px] tracking-[-1.05px] pb-4 flex justify-between items-center w-full text-center max-md:text-left">
-                            <div className="text-black pt-2">
+                            <div className="text-black pt-2 text-lg">
                               {/* <div className="sm:pt-40">{hero_subtitle}</div> */}
                               {hero_subtitle}
                             </div>

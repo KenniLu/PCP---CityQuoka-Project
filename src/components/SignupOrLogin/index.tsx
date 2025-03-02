@@ -5,7 +5,7 @@ import { signIn } from '@/auth'
 const SignUpOrLogIn = () => {
   return (
     <div className="px-4">
-      <div className="relative bg-[#B388FF] w-full max-w-[1122px] mx-auto rounded-3xl px-4 pt-16 pb-16 text-center font-author">
+      <div className="relative bg-quokka-purple w-full max-w-[1122px] mx-auto rounded-3xl px-4 pt-16 pb-16 text-center font-author">
         {/* Top floating button */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <button className="w-[235px] h-[48px] flex-shrink-0 rounded-lg border-4 border-black bg-white text-black font-bold text-2xl">
