@@ -67,6 +67,54 @@ export const Venues: CollectionConfig = {
       required: false,
       unique: true
     },
+    {
+      name: 'phone',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'website',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'instagramHandle',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'tiktokHandle',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'xHandle',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'facebookUrl',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'linktreeUrl',
+      type: 'text',
+      required: false,
+      unique: true
+    },
+    {
+      name: 'linkedInUrl',
+      type: 'text',
+      required: false,
+      unique: true
+    },
     ...slugField('slug')
   ]
 }
