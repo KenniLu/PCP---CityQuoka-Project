@@ -70,6 +70,11 @@ export const Posts: CollectionConfig = {
       required: true,
     },
     {
+      name: 'subTitle',
+      type: 'text',
+      required: false,
+    },
+    {
       name: 'image',
       type: 'upload',
       relationTo: 'media',

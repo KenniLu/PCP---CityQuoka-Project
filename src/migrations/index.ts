@@ -2,6 +2,7 @@ import * as migration_20250116_052204_initial from './20250116_052204_initial';
 import * as migration_20250202_044829_addGoogleFieldsToVenues from './20250202_044829_addGoogleFieldsToVenues';
 import * as migration_20250202_141414_fixVenueAddressFields from './20250202_141414_fixVenueAddressFields';
 import * as migration_20250306_020744_addFieldsToVenues from './20250306_020744_addFieldsToVenues';
+import * as migration_20250306_024920_addSubtitleToPost from './20250306_024920_addSubtitleToPost';
 
 export const migrations = [
   {
@@ -22,6 +23,11 @@ export const migrations = [
   {
     up: migration_20250306_020744_addFieldsToVenues.up,
     down: migration_20250306_020744_addFieldsToVenues.down,
-    name: '20250306_020744_addFieldsToVenues'
+    name: '20250306_020744_addFieldsToVenues',
+  },
+  {
+    up: migration_20250306_024920_addSubtitleToPost.up,
+    down: migration_20250306_024920_addSubtitleToPost.down,
+    name: '20250306_024920_addSubtitleToPost'
   },
 ];

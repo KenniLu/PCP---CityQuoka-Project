@@ -48,12 +48,13 @@ export const PostHero: React.FC<{
       <div className="self-start mt-0 text-[40px] font-extrabold tracking-wider leading-[63px] max-md:max-w-full max-md:text-4xl max-md:leading-10">
         {title}
       </div>
-
-      <div className="mt-4 text-[30px] tracking-tight leading-10 font-[596] text-neutral-500 w-[740px] max-lg:w-full">
-        See out spring with a host of community festivals, gigs and long-awaited art exhibitions
+      {post.subTitle && post.subTitle.length > 0 && 
+      <div className="mt-4 text-[30px] tracking-tight leading-10 text-neutral-500 w-[740px] max-lg:w-full">
+        {post.subTitle}
       </div>
+      }
       <div className="flex flex-wrap gap-5 justify-between mt-4 w-full leading-none max-md:max-w-full">
-        <div className="text-base tracking-tight font-[375]">Written by {joinWithAnd(authors)}</div>
+        <div className="text-base tracking-tight">Written by {joinWithAnd(authors)}</div>
         {/* <SocialActions /> */}
       </div>
       {/* <div className="relative w-[956.701px] h-[444.354px] mt-4 max-lg:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
@@ -74,7 +75,7 @@ export const PostHero: React.FC<{
         )} */}
         {image && <Media fill priority imgClassName="object-cover absolute inset-0 w-full h-full" resource={image} />}
 
-        <div className="relative px-3 py-0.5 inline-block rounded-md bg-zinc-300 text-xl tracking-tight leading-none font-[281] text-neutral-500 mt-4">
+        <div className="relative px-3 py-0.5 inline-block rounded-md bg-zinc-300 text-xl tracking-tight leading-none text-neutral-500 mt-4">
           {formatDate(post.publishedAt!)}
         </div>
       </div>
