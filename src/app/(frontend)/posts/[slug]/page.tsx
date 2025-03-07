@@ -100,7 +100,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   return (
     <article className="w-full">
       <PayloadRedirects disableNotFound url={url} />
-      <div className="flex flex-col w-full px-8 sm:px-0">
+      <div className="flex flex-col w-full px-6 sm:px-2">
         <CategoriesBar />
         {/* <PostHero post={post} /> */}
         <div className="w-full relative pb-10">
@@ -111,11 +111,11 @@ export default async function Post({ params: paramsPromise }: Args) {
             {/* My changes end */}
 
             {/* <div className="max-w-[1120px] mx-auto px-4 max-sm:px-2"> */}
-            <div className="w-full sm:max-w-[960px] mx-auto sm:min-w-0 p-4">
+            <div className="w-full sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-3">
               {/* <article className="w-full max-w-[960px] max-md:w-full">
                 <div className="w-full max-w-[960px] max-md:w-full"> */}
-              <article className="w-full max-w-[960px]">
-              <div className="w-full max-w-[960px]">
+              <article className="w-full max-w-5xl">
+                <div className="w-full max-w-5xl">
                   {/* <ArticleHeader />*/}
                   <PostHero post={post} />
                 </div>
@@ -137,16 +137,16 @@ export default async function Post({ params: paramsPromise }: Args) {
                   })}
                 </div>
               </article>
+              <RecommendedSideBar />
             </div>
 
             {/* My changes start */}
             {/* My changes end */}
 
             {/* <aside className="absolute top-[180px] right-0 max-lg:relative max-lg:mt-8"> */}
-            <aside className="top-0 right-0 w-full md:w-[320px] shrink-0 p-4">
-              {/* <ArticleSidebar /> */}
+            {/* <aside className="top-0 right-0 w-full md:w-[320px] shrink-0 p-4">
               <RecommendedSideBar />
-            </aside>
+            </aside> */}
 
             {/* My changes start */}
           </div>

@@ -15,7 +15,7 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   // const router = useRouter()
   const pathname = usePathname()
   return (
-    <div className="flex justify-center items-center gap-2 sm:gap-9 mt-5 text-lg sm:text-xl leading-snug text-black font-normal sm:font-medium flex-wrap sm:flex-nowrap">
+    <div className="flex justify-center items-center gap-2 sm:gap-9 mt-2 text-lg sm:text-xl leading-snug text-black font-normal sm:font-medium flex-wrap sm:flex-nowrap">
       {navItems.map(({ link }, i) => {
         return (
           <Fragment key={`headerNav${i}`}>

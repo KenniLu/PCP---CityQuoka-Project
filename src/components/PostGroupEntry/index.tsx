@@ -24,14 +24,14 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
       case 'bulleted':
         // return `• ${title}`
         return (
-          <span className="text-2xl text-[#B8B8B8] leading-[128%] tracking-[-1.5px] text-justify capitalize">
-            .&nbsp;{' '}
+          <span className="text-2xl text-[#585858] leading-[128%] tracking-[-1.5px] text-justify capitalize">
+            &bull;&nbsp;{' '}
           </span>
         )
       case 'numbered':
         // return `${index}. ${title}`
         return (
-          <span className="text-2xl text-[#B8B8B8] leading-[128%] tracking-[-1.5px] text-justify capitalize">
+          <span className="text-[#585858] leading-[128%] tracking-[-1.5px] text-justify capitalize">
             {index}.&nbsp;{' '}
           </span>
         )
@@ -78,8 +78,9 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           <div className="flex flex-col w-full xl:w-6/12">
             <div className="flex flex-col grow mt-2 xl:mt-10">
               <div className="tracking-tighter leading-8 text-black">
-                {formatListPostTitle(listType, index)}
+                {/* {formatListPostTitle(listType, index)} */}
                 <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1">
+                  {formatListPostTitle(listType, index)}
                   {title}
                 </span>
                 <br />

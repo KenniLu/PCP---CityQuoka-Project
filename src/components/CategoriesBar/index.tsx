@@ -10,6 +10,7 @@ const CategoriesBar = () => {
 
   const getFontWeight = (buttonName) => {
     // return selectedButton === buttonName || currentPath === buttonName ? "font-bold" : "font-normal";
+    // return 'font-bold underline'
     return 'font-normal'
   }
 
@@ -19,7 +20,7 @@ const CategoriesBar = () => {
 
   return (
     <div className="max-w-[1120px] mx-auto w-full">
-      <div className="flex justify-center w-full bg-zinc-100 mb-4">
+      <div className="flex justify-center w-full mb-4">
         <div className="max-w-[1120px] h-[40px] flex items-center justify-center w-full">
           <div className="flex flex-nowrap gap-9 items-center">
             <p className="text-xl text-white hidden sm:block">|</p>
@@ -27,7 +28,7 @@ const CategoriesBar = () => {
             {/* Nightlife Button */}
             <Link href="/cityguide/nightlife">
               <button
-                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('nightlife')}`}
+                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('nightlife')} text-xl`}
                 // style={{ fontFamily: 'Inter', fontSize: '18px' }}
                 onClick={() => handleButtonClick('nightlife')}
               >
@@ -40,8 +41,8 @@ const CategoriesBar = () => {
             {/* Sport Button */}
             <Link href="/cityguide/sport">
               <button
-                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('sport')}`}
-                style={{ fontFamily: 'Inter', fontSize: '18px' }}
+                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('sport')}  text-xl`}
+                // style={{ fontFamily: 'Inter', fontSize: '18px' }}
                 onClick={() => handleButtonClick('sport')}
               >
                 {/* <img src={sport} alt="sport icon" className="w-5 h-5" /> */}
@@ -53,8 +54,8 @@ const CategoriesBar = () => {
             {/* Markets Button */}
             <Link href="/cityguide/markets">
               <button
-                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('markets')}`}
-                style={{ fontFamily: 'Inter', fontSize: '18px' }}
+                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('markets')}  text-xl`}
+                // style={{ fontFamily: 'Inter', fontSize: '18px' }}
                 onClick={() => handleButtonClick('markets')}
               >
                 {/* <img src={markets} alt="markets icon" className="w-5 h-5" /> */}
@@ -66,8 +67,8 @@ const CategoriesBar = () => {
             {/* Entertainment Button */}
             <Link href="/cityguide/entertainment">
               <button
-                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('entertainment')}`}
-                style={{ fontFamily: 'Inter', fontSize: '18px' }}
+                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('entertainment')} text-xl`}
+                // style={{ fontFamily: 'Inter', fontSize: '18px' }}
                 onClick={() => handleButtonClick('entertainment')}
               >
                 {/* <img src={entertainment} alt="entertainment icon" className="w-5 h-5" /> */}
@@ -79,8 +80,8 @@ const CategoriesBar = () => {
             {/* Article Button */}
             <Link href="/cityguide/article">
               <button
-                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('article')}`}
-                style={{ fontFamily: 'Inter', fontSize: '18px' }}
+                className={`my-auto whitespace-nowrap flex items-center gap-2 ${getFontWeight('article')}  text-xl`}
+                // style={{ fontFamily: 'Inter', fontSize: '18px' }}
                 onClick={() => handleButtonClick('article')}
               >
                 {/* <img src={art} alt="art icon" className="w-5 h-5" /> */}
