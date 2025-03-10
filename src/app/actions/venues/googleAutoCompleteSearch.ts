@@ -67,8 +67,6 @@ export async function googleAutoCompleteSearch(
     }
 
     const data = await response.json()
-
-    // console.log(`FETCHED DATA IS ${JSON.stringify(data)}`)
     // Transform the response to match our component's expected format
     return {
       predictions: data.suggestions.map(({ placePrediction: prediction }: any) => {

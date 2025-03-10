@@ -1,67 +1,110 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { signIn } from '@/auth'
+import LoginForm from '../LoginForm'
+import RegisterForm from '../RegisterForm'
+import { useSession } from 'next-auth/react'
+import { Mail } from 'lucide-react';
+
 
 const SignUpOrLogIn = () => {
+  const { data: session } = useSession()
+  const [currentForm, setCurrentForm] = useState('login')
+  if (session?.user) {
+    return null
+  }
   return (
-    <div className="px-4">
-      <div className="relative bg-quokka-purple w-full max-w-[1122px] mx-auto rounded-3xl px-4 pt-16 pb-16 text-center font-author">
+    <div className="px-4" id="signup-or-login">
+      <div className="relative bg-quokka-yellow w-full max-w-[1122px] mx-auto rounded-3xl px-4 pt-10 pb-10 text-center">
         {/* Top floating button */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-          <button className="w-[235px] h-[48px] flex-shrink-0 rounded-lg border-4 border-black bg-white text-black font-bold text-2xl">
+          <button className="w-[235px] h-[48px] flex-shrink-0 rounded-lg border-4 border-white border-solid bg-black text-quokka-yellow font-bold text-base">
             SIGN UP / LOG-IN
           </button>
         </div>
 
         {/* Main content */}
-        <h2 className="text-black text-2xl leading-snug py-4 px-4 sm:px-[90px] font-medium">
-          Unlock Your Sydney: Get personalised recommendations, save your favourites, and be the
-          first to know about upcoming events, special offers, and more.
+        <h2 className="text-black text-2xl leading-snug px-4 sm:px-[90px] font-medium mb-2">
+          Unlock Your Sydney!
         </h2>
 
-        <h3 className="text-black text-2xl font-semibold mt-4 sm:text-3xl">
-          Sign up now for your tailored guide to new experiences
+        <h3 className="text-black">
+          Log in to get personalised recommendations, save your favourites,
+        </h3>
+        <h3 className="text-black">
+          and be the first to know about upcoming events, special offers, and more..
         </h3>
 
-        {/* Bottom floating buttons */}
-        <div className="absolute bottom-0 left-0 transform translate-y-1/2 w-full flex justify-around px-4 sm:px-8">
-          <button className="flex w-[251px] sm:w-[351px] px-8 py-3 justify-center items-center gap-2 bg-black border-2 border-white rounded-full font-bold font-inter">
-            Sign Up
-          </button>
-          <button className="flex w-[252px] sm:w-[352px] px-8 py-3 justify-center items-center gap-2 bg-white border-2 border-black rounded-full text-black font-bold font-inter">
-            Log In
-          </button>
-        </div>
-      </div>
-      <div className="mt-8 pt-8">
-        <div className="relative font-inter">
+        {currentForm === 'login' && (
+          <>
+            <LoginForm />
+            <h3 className="text-black">
+              Don&#39;t have an account?
+              <a
+                href="#"
+                className="text-blue-500 hover:underline mx-1"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentForm('register')
+                }}
+              >
+                Sign up now
+              </a>
+              for your tailored guide to new experiences
+            </h3>
+          </>
+        )}
+        {currentForm === 'register' && (
+          <>
+            <RegisterForm setLoginView={() => setCurrentForm('login')} />
+            <h3 className="text-black">
+              Already have an account?
+              <a
+                href="#"
+                className="text-blue-500 hover:underline mx-1"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentForm('login')
+                }}
+              >
+                Login
+              </a>
+              for your tailored guide to new experiences
+            </h3>
+          </>
+        )}
+        <div className="relative my-2">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-300"></span>
           </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-600">Or Sign Up with</span>
+          <div className="relative flex justify-center">
+            <span className="px-2 bg-quokka-yellow text-gray-600 my-1">OR</span>
           </div>
         </div>
+        <div className="flex flex-col w-full max-w-md space-y-2 p-2 mx-auto">
+          {/* <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+            <Mail size={20} className="flex-shrink-0" />
+            <span>Login with Email</span>
+          </button> */}
 
-        <div className="mt-6 flex justify-center gap-6">
-          {/* Social Icons */}
-          <form
-            action={async () => {
-              'use server'
-              await signIn('google')
-            }}
-          >
-            <button className="bg-white p-2 rounded-full ">
-              <Image src="/icons/gmail.svg" alt="Google" width={32} height={32} />
-            </button>
-          </form>
-          <button className="bg-white p-2 rounded-full ">
-            <Image src="/icons/facebook.svg" alt="Facebook" width={32} height={32} />
+          <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+            <Image src="/icons/google.svg" alt="Google" width={20} height={20} />
+            <span>Login with Google</span>
           </button>
-          <button className="bg-white p-2 rounded-full ">
-            <Image src="/icons/apple.svg" alt="Apple" width={32} height={32} />
-          </button>
+
+          {/* <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+            <Image src="/icons/facebook.svg" alt="Facebook" width={20} height={20} />
+            <span>Login with Facebook</span>
+          </button> */}
+
+          {/* <button className="flex items-center pl-4 gap-4 w-full bg-black hover:bg-gray-900 text-white py-2 px-4 rounded-md transition-colors">
+            <Apple size={20} />
+            <span>Login with Apple</span>
+          </button> */}
         </div>
+
       </div>
     </div>
   )

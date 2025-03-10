@@ -2,7 +2,7 @@ import React from 'react'
 
 import { HeaderThemeProvider } from './HeaderTheme'
 import { ThemeProvider } from './Theme'
-import { AuthProvider } from './AuthProvider'
+import { SessionProvider } from "next-auth/react"
 import { auth } from '@/auth'
 
 export const Providers: React.FC<{
@@ -11,9 +11,11 @@ export const Providers: React.FC<{
   const session = await auth()
   return (
     <ThemeProvider>
-      <AuthProvider initialUser={session?.user}>
+      {/* <AuthProvider initialUser={session?.user}> */}
+      <SessionProvider>
         <HeaderThemeProvider>{children}</HeaderThemeProvider>
-      </AuthProvider>
+      {/* </AuthProvider> */}
+      </SessionProvider>
     </ThemeProvider>
   )
 }

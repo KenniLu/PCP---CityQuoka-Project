@@ -107,7 +107,6 @@ const GoogleVenueSearch: React.FC<GoogleVenueSearchProps> = (props) => {
 
         if (data.predictions) {
           setShowSuggestions(true)
-          console.log(`SUGGESTIONS ARE : ${JSON.stringify(data.predictions)}`)
           setSuggestions(data.predictions)
         }
       } catch (error) {

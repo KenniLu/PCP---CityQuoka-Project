@@ -302,3 +302,8 @@ terraform apply \
   -var-file="terraform.tfvars" \
   -var-file="secrets.tfvars"
 ``
+
+# Export Docker Ports
+``sh
+docker-compose run --service-ports app sh
+``

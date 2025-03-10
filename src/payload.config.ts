@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { cmsUsers } from './db/schema'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -23,7 +24,7 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { getS3StorageConfig } from './config/s3Config'
 import { Logo } from '@/components/Logo/Logo'
 
-import fs from 'node:fs'
+import fs from 'fs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -117,6 +118,17 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
       ...getPostgresSslConfig(),
     },
+    beforeSchemaInit: [
+      ({ schema }) => {
+        return {
+          ...schema,
+          tables: {
+            ...schema.tables,
+            cmsUsers
+          },
+        }
+      },
+    ],
   }),
   collections: [Pages, Posts, Media, Categories, Users, Events, Programmes, Venues],
   cors: [getServerSideURL()].filter(Boolean),
