@@ -1,14 +1,29 @@
 import NextAuth from 'next-auth'
-import Google from 'next-auth/providers/google'
+import Google, { GoogleProfile } from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
 import { loginUser } from './app/actions/auth'
+import { AuthAdapter } from './auth/adapter'
 
 import { LoginFormValues, loginSchema } from './validationSchemas/loginSchema'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // adapter: DrizzleAdapter(),
   trustHost: true,
+  adapter: AuthAdapter(),
   providers: [
-    Google,
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      profile: (_profile: GoogleProfile) => {
+        return {
+          id: _profile.sub,
+          firstName: _profile.given_name,
+          lastName: _profile.family_name,
+          email: _profile.email,
+          image: _profile.picture
+        };
+      }
+    }),
     Credentials({
       id: 'credentials',
       name: 'Credentials',
@@ -43,4 +58,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
   },
+  pages: {
+    error: "/error",
+    signIn: "/error"
+  }
 })

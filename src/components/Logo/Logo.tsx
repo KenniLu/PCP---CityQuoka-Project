@@ -5,7 +5,7 @@ import Link from 'next/link'
 export const Logo = () => {
   return (
     /* eslint-disable @next/next/no-img-element */
-    <div className="flex justify-center w-full py-2">
+    <div className="flex justify-center w-full sm:-mt-8">
       <Link href="/">
         <Image
           className="object-contain self-center max-w-full aspect-[3.37]"

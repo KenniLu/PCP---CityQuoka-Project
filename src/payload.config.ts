@@ -1,6 +1,6 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { cmsUsers } from './db/schema'
+import { cmsUsers, accounts, authenticators, sessions, verificationTokens } from './db/schema'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -22,9 +22,8 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { getS3StorageConfig } from './config/s3Config'
-import { Logo } from '@/components/Logo/Logo'
 
-import fs from 'fs'
+import fs from 'node:fs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -124,7 +123,11 @@ export default buildConfig({
           ...schema,
           tables: {
             ...schema.tables,
-            cmsUsers
+            cmsUsers,
+            accounts,
+            authenticators,
+            sessions,
+            verificationTokens
           },
         }
       },

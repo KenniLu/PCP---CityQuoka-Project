@@ -36,7 +36,7 @@ export const SessionMenu: React.FC = ({}) => {
               </Avatar>
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent align='end'>
             <DropdownMenuLabel className="text-base">
               <div>Hi {user.firstName}!</div>
               <div className="text-base font-normal">{user.email}</div>

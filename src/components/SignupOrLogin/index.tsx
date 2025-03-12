@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { signIn } from '@/auth'
 import LoginForm from '../LoginForm'
 import RegisterForm from '../RegisterForm'
 import { useSession } from 'next-auth/react'
 import { Mail } from 'lucide-react';
-
+import { signIn } from 'next-auth/react'
 
 const SignUpOrLogIn = () => {
   const { data: session } = useSession()
@@ -84,20 +83,20 @@ const SignUpOrLogIn = () => {
           </div>
         </div>
         <div className="flex flex-col w-full max-w-md space-y-2 p-2 mx-auto">
-          {/* <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+          <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
             <Mail size={20} className="flex-shrink-0" />
             <span>Login with Email</span>
-          </button> */}
+          </button>
 
-          <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+          <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors" onClick={()=>signIn('google')}>
             <Image src="/icons/google.svg" alt="Google" width={20} height={20} />
             <span>Login with Google</span>
           </button>
 
-          {/* <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
+          <button className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors">
             <Image src="/icons/facebook.svg" alt="Facebook" width={20} height={20} />
             <span>Login with Facebook</span>
-          </button> */}
+          </button>
 
           {/* <button className="flex items-center pl-4 gap-4 w-full bg-black hover:bg-gray-900 text-white py-2 px-4 rounded-md transition-colors">
             <Apple size={20} />
