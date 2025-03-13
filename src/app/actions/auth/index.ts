@@ -1,19 +1,12 @@
 'use server'
 import { z } from "zod";
 import { registerSchema, RegisterFormValues } from '@/validationSchemas/registerSchema'
-// import { Prisma, PrismaClient } from '@prisma/client';
-// import { db } from "@/db";
-// import { users } from "@/db/schema";
 import bcrypt from 'bcryptjs'
-import { eq, sql, and } from '@payloadcms/db-postgres/drizzle'
+import { eq } from '@payloadcms/db-postgres/drizzle'
 import { cmsUsers } from "@/db/schema";
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { LoginFormValues, loginSchema } from "@/validationSchemas/loginSchema";
-
-// import { setFlashMessage } from '@/utilities/flash-message'
-
-// const prisma = new PrismaClient()
 
 async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, (await bcrypt.genSalt(10)))
@@ -32,11 +25,15 @@ export async function registerUser(formData: RegisterFormValues) {
     const { email, firstName, lastName, password } = registerSchema.parse(formData)
     const hashedPassword = await hashPassword(password as string)
     const payload = await getPayload({ config: configPromise })
-    // await db.insert(users).values({email, firstName, lastName, password: hashedPassword, status: 'ACTIVE' })
-    // await payload.db.drizzle.insert(cmsUsers).values({email, password: hashPassword, firstName, lastName})
-    const user = await payload.db.drizzle.query.cmsUsers.findFirst({
-      where: eq(cmsUsers.email, email)
-    });
+
+    const user = await payload.db.drizzle
+        .select()
+        .from(cmsUsers)
+        .where(eq(cmsUsers.email, email))
+        .then((res) =>
+          res.length > 0 ? res[0] : null
+        )
+    
     if(user){
       return {
         error: 'Account already exists for this email.',
@@ -63,9 +60,14 @@ export async function loginUser(formData: LoginFormValues) {
     const { email, password } = loginSchema.parse(formData)
     if (!email || !password) return null
     const payload = await getPayload({ config: configPromise })
-    const user = await payload.db.drizzle.query.cmsUsers.findFirst({
-      where: eq(cmsUsers.email, email)
-    });
+
+    const user = await payload.db.drizzle
+        .select()
+        .from(cmsUsers)
+        .where(eq(cmsUsers.email, email))
+        .then((res) =>
+          res.length > 0 ? res[0] : null
+        )
     if (!user || !user.password) return null
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
