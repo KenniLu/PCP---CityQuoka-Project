@@ -15,39 +15,45 @@ const WhoAreWe = () => {
         {/* First Section */}
         <div className="flex flex-col w-full md:w-1/3">
           {/* <div className="h-64 flex flex-col grow justify-center items-center px-2 md:px-4 py-3 md:py-8 w-full bg-quokka-green rounded-lg border-black border-solid border-[2px] md:border-[3px]"> */}
-          <div className="h-64 flex flex-col grow justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-green rounded-lg border-black border-solid border-[2px] md:border-[3px]">
+          <div className="h-64 flex flex-col justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-green rounded-lg border-black border-solid border-[2px] md:border-[3px]">
             <Image src="/icons/item1-1.svg" alt="Quokka Map" width={138} height={128} />
           </div>
-          <div className="h-24 md:h-56 grow mt-2 px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px]">
-            <p className="py-4 md:py-6 my-2">
-              A smart guide to your city that personalises to your interests
-            </p>
+          <div className="flex-grow flex items-stretch mt-2 mb-auto">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px]">
+              <p className="py-4 md:py-6 my-2">
+                A smart guide to your city that personalises to your interests
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Second Section */}
         <div className="flex flex-col w-full md:w-1/3">
-          <div className="h-64 flex flex-col grow justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-yellow rounded-lg border-black border-solid border-[2px] md:border-[3px]">
+          <div className="h-64 flex flex-col justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-yellow rounded-lg border-black border-solid border-[2px] md:border-[3px]">
             <Image src="/icons/item1-2.svg" alt="Quokka Save" width={138} height={128} />
           </div>
           {/* </div> */}
-          <div className="h-24 md:h-56 grow mt-2 px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-yellow border-solid border-[2px] md:border-[3px]">
-            <p className="py-4 md:py-6 my-2">
-              We find and recommend the best experiences and negotiate special deals for our users.
-            </p>
+          <div className="flex-grow flex items-stretch mt-2 mb-auto">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-yellow border-solid border-[2px] md:border-[3px]">
+              <p className="py-4 md:py-6 my-2">
+                We find and recommend the best experiences and negotiate special deals for our users.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Third Section */}
         <div className="flex flex-col w-full md:w-1/3">
-          <div className="h-64 flex flex-col grow justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-purple rounded-lg border-black border-solid border-[2px] md:border-[3px]">
+          <div className="h-64 flex flex-col justify-center items-center px-2 md:px-4 py-3 w-full bg-quokka-purple rounded-lg border-black border-solid border-[2px] md:border-[3px]">
             <Image src="/icons/item1-3.svg" alt="Quokka Party" width={138} height={128} />
           </div>
-          <div className="h-24 md:h-56 grow mt-2 px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-purple border-solid border-[2px] md:border-[3px]">
-            <p className="py-4 md:py-6 my-2">
-              No endless lists or overwhelming choices, just hand-picked options that you&#39;ll
-              love.
-            </p>
+          <div className="flex-grow flex items-stretch mt-2 mb-auto">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-purple border-solid border-[2px] md:border-[3px]">
+              <p className="py-4 md:py-6 my-2">
+                No endless lists or overwhelming choices, just hand-picked options that you&#39;ll
+                love.
+              </p>
+            </div>
           </div>
         </div>
 
