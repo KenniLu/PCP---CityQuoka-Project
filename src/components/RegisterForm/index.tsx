@@ -235,7 +235,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({setLoginView}) => {
     </form>
   )
 
-  return <div className="flex flex-col max-w-md mx-auto p-6 bg-white rounded-xl my-4">
+  return <div className="flex flex-col max-w-md mx-auto p-2 bg-white rounded-xl">
     {showSuccessMessage ? successMessage() : registerForm()}
   </div>
 }

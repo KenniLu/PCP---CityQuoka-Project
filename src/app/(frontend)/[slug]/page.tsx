@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import WhoAreWe from '@/components/WhoAreWe'
-import SignUpOrLogIn from '@/components/SignupOrLogin'
+import HomeAuthSection from '@/components/HomeAuthSection'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -75,7 +75,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         <RenderBlocks blocks={layout} />
         {slug === 'home' && <>
           <WhoAreWe/>
-          <SignUpOrLogIn/>
+          <HomeAuthSection/>
         </>}
       </article>
     </div>
