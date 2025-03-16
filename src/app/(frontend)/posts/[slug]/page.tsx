@@ -100,7 +100,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   return (
     <article className="w-full">
       <PayloadRedirects disableNotFound url={url} />
-      <div className="flex flex-col w-full px-6 sm:px-2">
+      <div className="flex flex-col w-full px-2">
         <CategoriesBar />
         {/* <PostHero post={post} /> */}
         <div className="w-full relative pb-10">
