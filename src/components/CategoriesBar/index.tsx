@@ -20,7 +20,7 @@ const CategoriesBar = () => {
 
   return (
     <div className="max-w-[1120px] mx-auto w-full">
-      <div className="flex justify-center w-full mb-4">
+      <div className="flex justify-center w-full">
         <div className="max-w-[1120px] h-[40px] flex items-center justify-center w-full">
           <div className="flex flex-nowrap gap-9 items-center">
             <p className="text-xl text-white hidden sm:block">|</p>

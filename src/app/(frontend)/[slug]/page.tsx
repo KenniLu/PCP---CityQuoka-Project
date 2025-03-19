@@ -2,12 +2,13 @@ import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import WhoAreWe from '@/components/WhoAreWe'
-import SignUpOrLogIn from '@/components/SignupOrLogin'
 import Footer from '@/components/Footer'
+import HomeAuthSection from '@/components/HomeAuthSection'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
+import HomeNavBar from '@/components/HomeNavBar'
 
 import type { Page as PageType } from '@/payload-types'
 
@@ -64,7 +65,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <div className="flex flex-col w-full px-8">
+    <div className="flex flex-col w-full px-3 sm:px-8">
+      <HomeNavBar/>
       <article>
         <PageClient />
         {/* Allows redirects for valid pages too */}
@@ -74,7 +76,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         <RenderBlocks blocks={layout} />
         {slug === 'home' && <>
           <WhoAreWe/>
-          <SignUpOrLogIn/>
+          <HomeAuthSection/>
           <Footer/>
         </>}
       </article>

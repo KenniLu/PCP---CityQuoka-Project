@@ -1,6 +1,6 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { cmsUsers, accounts, authenticators, sessions, verificationTokens } from './db/schema'
+import { cmsUsers, accounts, authenticators, sessions, verificationTokens, reactions, reactionTypesEnum } from './db/schema'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -121,14 +121,19 @@ export default buildConfig({
       ({ schema }) => {
         return {
           ...schema,
+          enums: {
+            ...schema.enums,
+            reactionTypesEnum
+          },
           tables: {
             ...schema.tables,
             cmsUsers,
             accounts,
             authenticators,
             sessions,
-            verificationTokens
-          },
+            verificationTokens,
+            reactions
+          }
         }
       },
     ],

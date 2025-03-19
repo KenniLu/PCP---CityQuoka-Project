@@ -307,3 +307,8 @@ terraform apply \
 ``sh
 docker-compose run --service-ports app sh
 ``
+
+# Email Templating
+``sh
+docker-compose run --service-ports app pnpm run email
+``

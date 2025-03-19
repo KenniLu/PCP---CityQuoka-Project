@@ -80,7 +80,8 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
               {/* <div className="tracking-tighter leading-8 text-black"> */}
               <div className="leading-8 text-black">
                 {/* {formatListPostTitle(listType, index)} */}
-                <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1">
+                {/* <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1"> */}
+                <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 py-1 text-2xl font-bold">
                   {formatListPostTitle(listType, index)}
                   {title}
                 </span>
@@ -89,7 +90,7 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
               </div>
               <div className="mt-8">
                 <CMSLink
-                  className="px-6 py-2 bg-[#C1C1C1C7] text-black rounded-lg hover:opacity-90 text-lg"
+                  className="px-6 py-2 bg-quokka-yellow text-black rounded-lg hover:bg-[#E69D00] text-lg"
                   type={'reference'}
                   reference={{ relationTo: 'posts', value: post as Post }}
                   label={'Read More'}
@@ -100,10 +101,10 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           </div>
           <div className="flex flex-col mt-5 lg:mt-0 lg:ml-5 w-full xl:w-6/12">
             <div className="flex flex-col self-stretch w-full leading-none text-black items-end">
-              <div className="flex justify-end mb-1 mr-auto xl:mr-0 xl:mb-2">
-                <SocialActions />
+              <div className="flex justify-end mb-1 mr-auto xl:mr-0">
+                <SocialActions postId={post.id}/>
               </div>
-              <div className="relative flex flex-col items-start pt-2 pb-72 mt-3 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
+              <div className="relative flex flex-col items-start pt-2 pb-72 mt-1 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
                 {image && (
                   // <ResponsiveImage
                   //   media={image as MediaType}

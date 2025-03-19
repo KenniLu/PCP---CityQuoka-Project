@@ -12,7 +12,7 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
-// import PageClient from './page.client'
+import PageClient from './page.client'
 import { isRichTextEmpty } from '@/utilities/isRichTextEmpty'
 import CategoriesBar from '@/components/CategoriesBar'
 import PostGroupBlock from '@/components/PostGroupBlock'
@@ -97,10 +97,21 @@ export default async function Post({ params: paramsPromise }: Args) {
     }
   }
 
+  const postIds = [post.id];
+
+  (post.content || []).forEach((content) => {
+    if (content.blockType === 'PostGroupBlock') {
+      (content.postLinks || []).forEach((postLink) => {
+        const _post = postLink.postLink.post as Post
+        postIds.push(_post.id)
+      })
+    }
+  })
+
   return (
     <article className="w-full">
       <PayloadRedirects disableNotFound url={url} />
-      <div className="flex flex-col w-full px-6 sm:px-2">
+      <div className="flex flex-col w-full px-2">
         <CategoriesBar />
         {/* <PostHero post={post} /> */}
         <div className="w-full relative pb-10">
@@ -114,29 +125,31 @@ export default async function Post({ params: paramsPromise }: Args) {
             <div className="w-full sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-3">
               {/* <article className="w-full max-w-[960px] max-md:w-full">
                 <div className="w-full max-w-[960px] max-md:w-full"> */}
-              <article className="w-full max-w-5xl">
-                <div className="w-full max-w-5xl">
-                  {/* <ArticleHeader />*/}
-                  <PostHero post={post} />
-                </div>
-                {/* <div className="font-author text-2xl leading-[135%] tracking-[-0.9px] text-black text-justify mt-8 max-w-[960px] max-sm:max-w-[330px]"> */}
-                <div className="text-xl leading-[135%] text-justify mt-8 max-w-[960px]">
-                  {post.content?.map((content, i) => {
-                    if (content.blockType === 'PostContentBlock') {
-                      return (
-                        <RichText
-                          key={`content_tab_${i}`}
-                          className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
-                          content={content.content}
-                          enableGutter={false}
-                        />
-                      )
-                    } else if (content.blockType === 'PostGroupBlock') {
-                      return <PostGroupBlock content={content} key={`content_x_${i}`} />
-                    }
-                  })}
-                </div>
-              </article>
+              <PageClient postIds={postIds}>
+                <article className="w-full max-w-5xl">
+                  <div className="w-full max-w-5xl">
+                    {/* <ArticleHeader />*/}
+                    <PostHero post={post} />
+                  </div>
+                  {/* <div className="font-author text-2xl leading-[135%] tracking-[-0.9px] text-black text-justify mt-8 max-w-[960px] max-sm:max-w-[330px]"> */}
+                  <div className="text-xl leading-[135%] text-justify mt-8 max-w-[960px]">
+                    {post.content?.map((content, i) => {
+                      if (content.blockType === 'PostContentBlock') {
+                        return (
+                          <RichText
+                            key={`content_tab_${i}`}
+                            className="lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[1fr]"
+                            content={content.content}
+                            enableGutter={false}
+                          />
+                        )
+                      } else if (content.blockType === 'PostGroupBlock') {
+                        return <PostGroupBlock content={content} key={`content_x_${i}`} />
+                      }
+                    })}
+                  </div>
+                </article>
+              </PageClient>
               <RecommendedSideBar />
             </div>
 

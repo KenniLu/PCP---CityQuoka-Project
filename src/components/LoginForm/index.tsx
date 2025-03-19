@@ -10,12 +10,16 @@ import { signIn } from 'next-auth/react'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-export default function LoginForm() {
+interface LoginFormProps {
+  onSuccessfulLogin?: () => void;
+}
+
+export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch
+    watch,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     mode: 'onChange',
@@ -24,12 +28,12 @@ export default function LoginForm() {
 
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
-  const emailChanged = watch('email');
-  const passwordChanged = watch('password');
+  const emailChanged = watch('email')
+  const passwordChanged = watch('password')
 
   useEffect(() => {
     setErrorMessage('')
-  },[emailChanged, passwordChanged])
+  }, [emailChanged, passwordChanged])
 
   const onSubmit = async (data: LoginFormValues) => {
     const { email, password } = data
@@ -37,12 +41,12 @@ export default function LoginForm() {
       const response = await signIn('credentials', {
         email,
         password,
-        redirect: false
+        redirect: false,
       })
       if (response?.error) {
         setErrorMessage('Invalid email or password. Please try again.')
       }else{
-        router.push("/")
+        onSuccessfulLogin ? onSuccessfulLogin() : null
       }
     } catch (error) {
       setErrorMessage('Invalid email or password. Please try again.')
@@ -50,7 +54,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col max-w-md mx-auto p-6 bg-white rounded-xl my-4">
+    <div className="flex flex-col w-full max-w-md mx-auto p-2 bg-white rounded-xl">
       <form>
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"> */}
         <div>

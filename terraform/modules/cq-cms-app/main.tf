@@ -215,7 +215,7 @@ resource "aws_codebuild_project" "app" {
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
+    compute_type                = "BUILD_GENERAL1_MEDIUM"
     image                      = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
     type                       = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
@@ -252,6 +252,8 @@ resource "aws_codebuild_project" "app" {
               %{for key, value in local.merged_environment_variables}
               echo "${key}=${value}" >> .env
               %{endfor}
+            # Add Docker build arg for memory allocation
+            - echo "NEXT_TELEMETRY_DISABLED=1" >> .env
         build:
           commands:
             - DOCKER_BUILDKIT=1 docker build --secret id=env,src=.env -t $ECR_REPOSITORY_URI:$COMMIT_HASH .
