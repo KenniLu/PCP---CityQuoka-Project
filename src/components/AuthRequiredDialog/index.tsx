@@ -24,7 +24,7 @@ export const AuthRequiredDialog: React.FC<AuthRequiredDialogProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-quokka-yellow">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

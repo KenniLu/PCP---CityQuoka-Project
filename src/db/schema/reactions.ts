@@ -4,7 +4,8 @@ import {
   uuid,
   uniqueIndex,
   pgEnum,
-  index
+  index,
+  integer
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 
 export const reactionTypesEnum = pgEnum('reaction_types', ['save','like']);
@@ -14,8 +15,8 @@ export const reactions = pgTable(
   {
     id: uuid('id').defaultRandom().primaryKey(),
     userId: uuid('cms_user_id').notNull(),
-    postId: uuid('post_id').notNull(),
-    reactionType: reactionTypesEnum().notNull(),
+    postId: integer('post_id').notNull(),
+    reaction: reactionTypesEnum('reaction').notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
   },
@@ -23,7 +24,7 @@ export const reactions = pgTable(
     uniqueIndex('reactions_user_article_index').on(
       reactions.userId,
       reactions.postId,
-      reactions.reactionType
+      reactions.reaction
     ),
     index('reactions_user_idx').on(reactions.userId),
     index('reactions_post_idx').on(reactions.postId)

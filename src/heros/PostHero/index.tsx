@@ -6,7 +6,7 @@ import React from 'react'
 import { Media } from '@/components/Media'
 // import ResponsiveImage from '@/components/ResponsiveImage'
 import type { Post, Media as MediaType } from '@/payload-types'
-import { auth } from '@/auth'
+import SocialActions from '@/blocks/PostEntrySocialActions'
 
 export const PostHero: React.FC<{
   post: Post
@@ -56,6 +56,7 @@ export const PostHero: React.FC<{
       <div className="flex flex-wrap gap-5 justify-between mt-4 w-full leading-none max-md:max-w-full">
         <div className="text-base tracking-tight">Written by {joinWithAnd(authors)}</div>
         {/* <SocialActions /> */}
+        <SocialActions postId={post.id}/>
       </div>
       {/* <div className="relative w-[956.701px] h-[444.354px] mt-4 max-lg:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
       <div className="relative h-[444.354px] mt-4 max-sm:w-full max-lg:h-auto max-lg:aspect-[2.15]">

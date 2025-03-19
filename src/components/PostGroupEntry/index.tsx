@@ -101,10 +101,10 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           </div>
           <div className="flex flex-col mt-5 lg:mt-0 lg:ml-5 w-full xl:w-6/12">
             <div className="flex flex-col self-stretch w-full leading-none text-black items-end">
-              <div className="flex justify-end mb-1 mr-auto xl:mr-0 xl:mb-2">
-                <SocialActions />
+              <div className="flex justify-end mb-1 mr-auto xl:mr-0">
+                <SocialActions postId={post.id}/>
               </div>
-              <div className="relative flex flex-col items-start pt-2 pb-72 mt-3 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
+              <div className="relative flex flex-col items-start pt-2 pb-72 mt-1 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
                 {image && (
                   // <ResponsiveImage
                   //   media={image as MediaType}
