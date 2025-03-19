@@ -117,6 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* <InitTheme /> */}
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <script src="https://kit.fontawesome.com/f364c6fe1e.js" crossorigin="anonymous"></script>
       </head>
       {/* <body className="font-author"> */}
       <body>

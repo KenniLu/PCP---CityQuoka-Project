@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import WhoAreWe from '@/components/WhoAreWe'
 import SignUpOrLogIn from '@/components/SignupOrLogin'
+import Footer from '@/components/Footer'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -74,6 +75,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         {slug === 'home' && <>
           <WhoAreWe/>
           <SignUpOrLogIn/>
+          <Footer/>
         </>}
       </article>
     </div>
