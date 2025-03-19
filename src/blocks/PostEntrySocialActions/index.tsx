@@ -2,17 +2,26 @@
 
 import React, { useState } from 'react'
 // import Image from 'next/image'
-// import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { AuthRequiredDialog } from '@/components/AuthRequiredDialog'
 import { useReactions } from '@/providers/ReactionsProvider'
 import { Heart, Bookmark, Upload } from 'lucide-react';
 
 export default function SocialActions({ postId }: { postId: number }) {
-  // const { data: session } = useSession()
+  const { data: session } = useSession()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const { isLoading, toggleReaction, isReacted } = useReactions()
   const isLiked = isReacted(postId, 'like')
   const isSaved = isReacted(postId, 'save')
+
+  const updateReaction = ( reaction: 'like'|'save'|'share') => {
+    if(session?.user){
+      if ( reaction === 'like' || reaction === 'save')
+      toggleReaction(postId, reaction)
+    }else{
+      setShowAuthDialog(true)
+    }
+  }
 
   if (isLoading) {
     return null
@@ -79,7 +88,7 @@ export default function SocialActions({ postId }: { postId: number }) {
     <div className="flex items-center justify-center rounded-lg">
       {/* Like section */}
       <button 
-        onClick={() => toggleReaction(postId, 'like')}
+        onClick={() => updateReaction('like')}
         className="flex items-center group px-4"
       >
         <Heart 
@@ -96,7 +105,7 @@ export default function SocialActions({ postId }: { postId: number }) {
       
       {/* Save section */}
       <button 
-        onClick={() => toggleReaction(postId, 'save')}
+        onClick={() => updateReaction('save')}
         className="flex items-center group px-4"
       >
         <Bookmark 
@@ -113,7 +122,7 @@ export default function SocialActions({ postId }: { postId: number }) {
       
       {/* Share section */}
       <button 
-        // onClick={handleShare}
+        onClick={() => updateReaction('share')}
         className="flex items-center group px-4"
       >
         <Upload 

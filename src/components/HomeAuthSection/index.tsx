@@ -18,18 +18,22 @@ const HomeAuthSection = () => {
             SIGN UP / LOG-IN
           </button>
         </div>
-        <SignUpOrLogIn>
-          <h2 className="text-black text-2xl leading-snug px-4 sm:px-[90px] font-medium mb-2">
-            Unlock Your Sydney!
-          </h2>
+        <div className="grid gap-4">
+          <SignUpOrLogIn>
+            <h2 className="text-black text-2xl leading-snug px-4 sm:px-[90px] font-medium">
+              Unlock Your Sydney!
+            </h2>
 
-          <h3 className="text-black">
-            Log in to get personalised recommendations, save your favourites,
-          </h3>
-          <h3 className="text-black mb-3">
-            and be the first to know about upcoming events, special offers, and more..
-          </h3>
-        </SignUpOrLogIn>
+            <p>
+              <h3 className="text-black">
+                Log in to get personalised recommendations, save your favourites,
+              </h3>
+              <h3 className="text-black">
+                and be the first to know about upcoming events, special offers, and more..
+              </h3>
+            </p>
+          </SignUpOrLogIn>
+        </div>
       </div>
     </div>
   )

@@ -58,15 +58,15 @@ const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLog
           </h3>
         </>
       )}
-      <div className="relative my-2">
+      <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-gray-300"></span>
         </div>
         <div className="relative flex justify-center">
-          <span className="px-2 bg-quokka-yellow text-gray-600 my-1">OR</span>
+          <span className="px-2 bg-quokka-yellow text-gray-600">OR</span>
         </div>
       </div>
-      <div className="flex flex-col w-full max-w-md space-y-2 p-2 mx-auto">
+      <div className="flex flex-col w-full max-w-md space-y-2 mx-auto">
         {!showEmailInput ? (
           <button
             className="flex items-center pl-4 gap-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 px-4 rounded-[4px] transition-colors"

@@ -54,7 +54,7 @@ export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
   }
 
   return (
-    <div className="flex flex-col max-w-md mx-auto p-2 bg-white rounded-xl">
+    <div className="flex flex-col w-full max-w-md mx-auto p-2 bg-white rounded-xl">
       <form>
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"> */}
         <div>
