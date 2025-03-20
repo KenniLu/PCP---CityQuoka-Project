@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import WhoAreWe from '@/components/WhoAreWe'
+import Footer from '@/components/Footer'
 import HomeAuthSection from '@/components/HomeAuthSection'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -76,6 +77,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         {slug === 'home' && <>
           <WhoAreWe/>
           <HomeAuthSection/>
+          <Footer/>
         </>}
       </article>
     </div>
