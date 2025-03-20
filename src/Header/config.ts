@@ -16,6 +16,11 @@ export const Header: GlobalConfig = {
         link({
           appearances: false,
         }),
+        {
+          name: 'icon',
+          type: 'text',
+          required: false,
+        }
       ],
       maxRows: 6,
     },

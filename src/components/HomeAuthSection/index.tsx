@@ -24,14 +24,14 @@ const HomeAuthSection = () => {
               Unlock Your Sydney!
             </h2>
 
-            <p>
+            <div>
               <h3 className="text-black">
                 Log in to get personalised recommendations, save your favourites,
               </h3>
               <h3 className="text-black">
                 and be the first to know about upcoming events, special offers, and more..
               </h3>
-            </p>
+            </div>
           </SignUpOrLogIn>
         </div>
       </div>

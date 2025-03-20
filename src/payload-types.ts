@@ -1670,6 +1670,7 @@ export interface Header {
           url?: string | null;
           label: string;
         };
+        icon?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1717,6 +1718,7 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        icon?: T;
         id?: T;
       };
   updatedAt?: T;
