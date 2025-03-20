@@ -11,7 +11,7 @@ const HomeAuthSection = () => {
   }
   return (
     <div className="px-1" id="signup-or-login">
-      <div className="relative bg-quokka-yellow w-full max-w-[1122px] mx-auto rounded-3xl px-2 sm:px-4 pt-10 pb-10 text-center">
+      <div className="relative bg-quokka-yellow w-full max-w-[1122px] mx-auto px-2 sm:px-4 pt-10 pb-10 text-center">
         {/* Top floating button */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <button className="w-[235px] h-[48px] flex-shrink-0 rounded-lg border-4 border-white border-solid bg-black text-quokka-yellow font-bold text-base">

@@ -1,13 +1,14 @@
 const SideBar = () => {
     return (
         <>
-        <div className="fixed left-32 h-screen p-6 flex flex-col bg-quokka-green text-white shadow-lg">
-            <i>About us</i>
-            <i>Contact us</i>
-            <i>Term of use</i>
-            <i>Cookies</i>
-            <i>Privacy Policy</i>
-            <i>Acknowledgement of the Country</i>
+        <div className="text-left w-64 h-screen p-6 flex flex-col bg-quokka-yellow text-black shadow-lg">
+            <ul>    
+                <li><a href="#" className="text-xl hover:text-orange-100 duration-500 py-4">About us</a></li>
+                <li><a href="#" className="text-xl hover:text-orange-100 duration-500">Contact us</a></li>
+                <li><a href="#" className="text-xl hover:text-orange-100 duration-500">Term of use</a></li>
+                <li><a href="#" className="text-xl hover:text-orange-100 duration-500">Private Policy</a></li>
+                <li><a href="#" className="text-xl hover:text-orange-100 duration-500">Cookies</a></li>
+            </ul>
         </div>
         </>
     );
