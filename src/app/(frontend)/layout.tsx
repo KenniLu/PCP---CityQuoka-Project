@@ -7,7 +7,7 @@ import localFont from 'next/font/local'
 import React from 'react'
 
 // import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
+// import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
@@ -117,7 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* <InitTheme /> */}
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-        <script src="https://kit.fontawesome.com/f364c6fe1e.js" crossorigin="anonymous"></script>
+        {/* <script src="https://kit.fontawesome.com/f364c6fe1e.js" crossorigin="anonymous"></script> */}
       </head>
       {/* <body className="font-author"> */}
       <body>

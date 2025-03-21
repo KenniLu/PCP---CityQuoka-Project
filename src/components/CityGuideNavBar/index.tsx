@@ -1,5 +1,5 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import React from 'react'
+import React, {Fragment} from 'react'
 import { PathActivatedLink } from '@/components/PathActivatedLink'
 import Link from 'next/link'
 
@@ -9,12 +9,12 @@ export async function CityGuideNavBar() {
   const header: Header = await getCachedGlobal('header', 1)()
 
   return (
-    <div className="max-w-[1120px] mx-auto w-full bg-[#EFEFEF]">
+    <div className="max-w-[1120px] mx-auto w-full">
       <div className="flex justify-center w-full">
         <div className="max-w-[1120px] h-[40px] flex items-center justify-center w-full">
           <div className="flex flex-nowrap gap-9 items-center">
             {(header?.navItems || []).map((navItem, indx) => (
-              <>
+              <Fragment key={`cgNavItem${indx}`}>
               { indx === 0 ? null : <p className="text-lg text-[#FFFFFF] hidden sm:block">|</p>}
                 <PathActivatedLink pathMatch={navItem.link.url!} exactMatch={false}>
                   <Link href={navItem.link.url!}>
@@ -28,7 +28,7 @@ export async function CityGuideNavBar() {
                     </button>
                   </Link>
                 </PathActivatedLink>
-              </>
+              </Fragment>
             ))}
           </div>
         </div>

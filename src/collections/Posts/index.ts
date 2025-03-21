@@ -1,23 +1,18 @@
 import type { CollectionConfig } from 'payload'
 
 import {
-  // BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
-  // HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-// import { Banner } from '../../blocks/Banner/config'
-// import { Code } from '../../blocks/Code/config'
-// import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidatePost } from './hooks/revalidatePost'
-// import { InsertPost } from '@/blocks/InsertPost/config'
+import { format } from '@/hooks/formatSlug'
 
 import { PostGroup } from '@/blocks/PostGroup/config'
 import { PostContent } from '@/blocks/PostContent/config'
@@ -28,10 +23,11 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-// import { PostGroupField } from '@/fields/postGroup'
 
 import { slugField } from '@/fields/slug'
 import { getServerSideURL } from '@/utilities/getURL'
+import { categoriesPosts } from '@/db/schema'
+import { eq } from '@payloadcms/db-postgres/drizzle'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -84,53 +80,31 @@ export const Posts: CollectionConfig = {
       },
     },
     {
+      name: 'standalone',
+      type: 'checkbox',
+      label: 'is Standalone Post',
+      defaultValue: false,
+      hooks: {
+        afterChange: [
+          async ({ value, req, originalDoc }) => {
+            const postId = originalDoc?.id
+            await req.payload.db.drizzle
+              .update(categoriesPosts)
+              .set({ standalone: value })
+              .where(eq(categoriesPosts.postId, postId))
+          },
+        ],
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
           fields: [
-            // {
-            //   name: 'content',
-            //   type: 'richText',
-            //   editor: lexicalEditor({
-            //     features: ({ rootFeatures }) => {
-            //       return [
-            //         ...rootFeatures,
-            //         HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            //         BlocksFeature({ blocks: [Banner, Code, MediaBlock, InsertPost] }),
-            //         FixedToolbarFeature(),
-            //         InlineToolbarFeature(),
-            //         HorizontalRuleFeature(),
-            //       ]
-            //     },
-            //   }),
-            //   label: false,
-            //   required: true,
-            // },
             {
               name: 'content',
               type: 'blocks',
-              // fields: [
-              //   {
-              //     name: 'text',
-              //     type: 'richText',
-              //     editor: lexicalEditor({
-              //       features: ({ rootFeatures }) => {
-              //         return [
-              //           ...rootFeatures,
-              //           HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-              //           // BlocksFeature({ blocks: [Banner, Code, MediaBlock, InsertPost] }),
-              //           BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
-              //           FixedToolbarFeature(),
-              //           InlineToolbarFeature(),
-              //           HorizontalRuleFeature(),
-              //         ]
-              //       },
-              //     }),
-              //   },
-              //   PostGroupField,
-              // ],
-              // minRows: 1
-              blocks: [PostContent, PostGroup]
+              blocks: [PostContent, PostGroup],
             },
             {
               name: 'summary',
@@ -160,22 +134,6 @@ export const Posts: CollectionConfig = {
         },
         {
           fields: [
-            // {
-            //   name: 'relatedPosts',
-            //   type: 'relationship',
-            //   admin: {
-            //     position: 'sidebar',
-            //   },
-            //   filterOptions: ({ id }) => {
-            //     return {
-            //       id: {
-            //         not_in: [id],
-            //       },
-            //     }
-            //   },
-            //   hasMany: true,
-            //   relationTo: 'posts',
-            // },
             {
               name: 'categories',
               type: 'relationship',
@@ -184,6 +142,55 @@ export const Posts: CollectionConfig = {
               },
               hasMany: true,
               relationTo: 'categories',
+              hooks: {
+                afterChange: [
+                  async ({ value, previousValue, originalDoc, req }) => {
+                    const currval = value.map((v) => v?.id || v)
+                    const prevval = previousValue
+
+                    if (JSON.stringify(currval) !== JSON.stringify(prevval)) {
+                      const currentCategories = (originalDoc?.categories || []).reduce(
+                        (a: string[], category) => {
+                          let path = ''
+                          ;(category?.breadcrumbs || []).forEach((crumb) => {
+                            path = `${path}/${format(crumb.label)}`
+                            a.push(JSON.stringify([crumb.doc, path]))
+                          })
+                          return a
+                        },
+                        [],
+                      )
+
+                      const postId = originalDoc?.id
+                      if (postId) {
+                        const tags = (originalDoc?.tags || []).reduce((h, tag) => {
+                          h[tag?.name] = true
+                          return h
+                        }, {})
+                        const featured = !!tags['featured']
+                        const recommended = !!tags['recommended']
+                        const standalone = originalDoc?.standalone
+                        await req.payload.db.drizzle
+                          .delete(categoriesPosts)
+                          .where(eq(categoriesPosts.postId, postId))
+                        currentCategories.forEach(async (category: string) => {
+                          const [categoryId, categoryPath] = JSON.parse(category)
+                          await req.payload.db.drizzle
+                            .insert(categoriesPosts)
+                            .values({
+                              categoryId,
+                              postId,
+                              categoryPath,
+                              featured,
+                              recommended,
+                              standalone,
+                            })
+                        })
+                      }
+                    }
+                  },
+                ],
+              },
             },
             {
               name: 'tags',
@@ -195,6 +202,25 @@ export const Posts: CollectionConfig = {
                 },
               ],
               required: false,
+              hooks: {
+                afterChange: [
+                  async ({ value, req, originalDoc }) => {
+                    const postId = originalDoc?.id
+                    if (postId && value) {
+                      const tags = value.reduce((h, tag) => {
+                        h[tag?.name] = true
+                        return h
+                      }, {})
+                      const recommended = !!tags['recommended']
+                      const featured = !!tags['featured']
+                      await req.payload.db.drizzle
+                        .update(categoriesPosts)
+                        .set({ featured, recommended })
+                        .where(eq(categoriesPosts.postId, postId))
+                    }
+                  },
+                ],
+              },
             },
             {
               name: 'venue',
@@ -212,23 +238,17 @@ export const Posts: CollectionConfig = {
               },
               admin: {
                 condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) && 
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
+                  Array.isArray(siblingData?.tags) &&
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
               },
-              // validate: (value, {data}) => {
-              //   if( !value && data?.tags?.some((_tag) => _tag['name']==='hero')){
-              //     return ('Hero Image is needed when Post is a hero')
-              //   }
-              //   return true
-              // }
             },
             {
               name: 'hero_title',
               type: 'text',
               admin: {
                 condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) && 
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
+                  Array.isArray(siblingData?.tags) &&
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
               },
               validate: (value, { data }) => {
                 if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
@@ -242,8 +262,8 @@ export const Posts: CollectionConfig = {
               type: 'text',
               admin: {
                 condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) && 
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero')
+                  Array.isArray(siblingData?.tags) &&
+                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
               },
               validate: (value, { data }) => {
                 if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
@@ -313,9 +333,6 @@ export const Posts: CollectionConfig = {
       hasMany: true,
       relationTo: 'users',
     },
-    // This field is only used to populate the user data via the `populateAuthors` hook
-    // This is because the `user` collection has access control locked to protect user privacy
-    // GraphQL will also not return mutated user data that differs from the underlying schema
     {
       name: 'populatedAuthors',
       type: 'array',
@@ -346,7 +363,7 @@ export const Posts: CollectionConfig = {
   versions: {
     drafts: {
       autosave: {
-        interval: 100, // We set this interval for optimal live preview
+        interval: 800,
       },
     },
     maxPerDoc: 50,

@@ -1,12 +1,9 @@
-import type { Post, Media as MediaType } from '@/payload-types'
+import type { Post } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-// import ResponsiveImage from '@/components/ResponsiveImage'
-import { Media } from '@/components/Media'
-import { CMSLink } from '@/components/Link'
-import { Fragment } from 'react'
+import PostTile from '@/components/PostTile'
 
 export const RecommendedSideBar: React.FC = async () => {
   let posts: Partial<Post>[] = []
@@ -48,40 +45,8 @@ export const RecommendedSideBar: React.FC = async () => {
         {/* <div className="flex flex-row md:flex-col w-full gap-4"> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 place-items-center">
           {posts.map((post, index) => {
-            const { title, image } = post
             return (
-              // <div key={index}>
-              <div key={index} className="p-2 bg-gray-100 w-[200px]">
-                <CMSLink
-                  type={'reference'}
-                  reference={{ relationTo: 'posts', value: post as Post }}
-                  appearance={'inline'}
-                >
-                  <div className="hover:cursor-pointer max-md:w-[180px]">
-                    <div className="h-[156px] bg-zinc-300 w-full">
-                      {image && (
-                        // <ResponsiveImage
-                        //   media={image as MediaType}
-                        //   alt={title!}
-                        //   sizes="(max-width: 500px) 100vw, 500px"
-                        //   // className="object-contain inset-0 w-full h-full"
-                        //   className="object-cover object-center overflow-hidden w-full h-full"
-                        // />
-                        <Media
-                          // fill
-                          // priority
-                          className="object-cover object-center overflow-hidden w-full h-full"
-                          resource={image}
-                        />
-                      )}
-                    </div>
-                    <p className="tracking-tighter text-lg">{title}</p>
-                  </div>
-                </CMSLink>
-                {/* <hr className="mt-4 max-md:hidden" /> */}
-                <div className="border-l-2 border-[#EFEFEF] md:border-l-0 md:border-t-2 h-auto md:h-0 md:w-full"></div>
-              {/* </div> */}
-              </div>
+              <PostTile post={post} key={`postTile${index}`}/>
             )
           })}
         </div>

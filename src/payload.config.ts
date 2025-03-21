@@ -1,6 +1,15 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { cmsUsers, accounts, authenticators, sessions, verificationTokens, reactions, reactionTypesEnum } from './db/schema'
+import {
+  cmsUsers,
+  accounts,
+  authenticators,
+  sessions,
+  verificationTokens,
+  reactions,
+  reactionTypesEnum,
+  categoriesPosts,
+} from './db/schema'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -113,6 +122,7 @@ export default buildConfig({
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: postgresAdapter({
+    logger: process.env.NODE_ENV === 'development',
     pool: {
       connectionString: process.env.DATABASE_URI || '',
       ...getPostgresSslConfig(),
@@ -123,7 +133,7 @@ export default buildConfig({
           ...schema,
           enums: {
             ...schema.enums,
-            reactionTypesEnum
+            reactionTypesEnum,
           },
           tables: {
             ...schema.tables,
@@ -132,8 +142,9 @@ export default buildConfig({
             authenticators,
             sessions,
             verificationTokens,
-            reactions
-          }
+            reactions,
+            categoriesPosts,
+          },
         }
       },
     ],

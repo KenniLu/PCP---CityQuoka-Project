@@ -1,6 +1,9 @@
 import type { FieldHook } from 'payload'
 
 export const updateChildren: FieldHook = ({ req: { payload }, originalDoc, data }) => {
+  if (!(originalDoc?.id || data?.id)){
+    return []
+  }
   return payload
     .find({
       collection: 'categories',

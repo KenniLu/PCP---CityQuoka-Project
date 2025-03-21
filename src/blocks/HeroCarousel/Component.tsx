@@ -30,8 +30,9 @@ export const HeroCarouselBlock: React.FC<
       hero_image: true,
       image: true,
       slug: true,
+      categories: true
     },
-    depth: 3,
+    depth: 1,
     limit,
     where: {
       'tags.name': {

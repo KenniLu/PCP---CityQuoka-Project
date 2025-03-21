@@ -1,42 +1,146 @@
-import { Metadata } from 'next';
+import React, { cache } from 'react'
+import { Metadata } from 'next'
+import { fetchPostBySlug } from '../../posts/[slug]/page'
+import { generateMeta } from '@/utilities/generateMeta'
+import Post from '@/components/Post'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
+import { categoriesPosts } from '@/db/schema'
+import { desc, eq, and, inArray } from '@payloadcms/db-postgres/drizzle'
+import { CollectionHeroCarousel } from '@/components/CollectionHeroCarousel'
+import { getCachedGlobal } from '@/utilities/getGlobals'
+import type { Header } from '@/payload-types'
+import PostTile from '@/components/PostTile'
 
-export async function generateMetadata({params}: {params:{path?: string[]}}): Promise<Metadata> {
-  const { path }  = await params
-  const paths = (path || ['city-guide']).map(str => str
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
+  const payload = await getPayload({ config: configPromise })
+  const productIds = await payload.db.drizzle
+    .select({
+      postId: categoriesPosts.postId,
+    })
+    .from(categoriesPosts)
+    .where(
+      and(
+        inArray(categoriesPosts.categoryPath, paths),
+        eq(categoriesPosts.featured, true),
+        eq(categoriesPosts.standalone, true),
+      ),
+    )
+    .orderBy(desc(categoriesPosts.postId))
+    .limit(10)
+
+  const result = await payload.find({
+    collection: 'posts',
+    limit: 10,
+    select: {
+      id: true,
+      title: true,
+      image: true,
+      slug: true,
+      categories: true,
+    },
+    where: {
+      id: {
+        in: [...new Set(productIds.map((id) => id['postId']))],
+      },
+    },
+  })
+  return result.docs || []
+})
+
+export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset = 0) => {
+  const payload = await getPayload({ config: configPromise })
+  const productIds = await payload.db.drizzle
+    .select({
+      postId: categoriesPosts.postId,
+    })
+    .from(categoriesPosts)
+    .where(and(inArray(categoriesPosts.categoryPath, paths), eq(categoriesPosts.standalone, true)))
+    .orderBy(desc(categoriesPosts.postId))
+    .limit(limit)
+    .offset(offset)
+
+  const result = await payload.find({
+    collection: 'posts',
+    limit: limit,
+    select: {
+      id: true,
+      title: true,
+      image: true,
+      slug: true,
+      categories: true,
+    },
+    where: {
+      id: {
+        in: [...new Set(productIds.map((id) => id['postId']))],
+      },
+    },
+  })
+  return result.docs || []
+})
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { path?: string[] }
+}): Promise<Metadata> {
+  const { path } = await params
+  const paths = path || ['city-guide']
+  const formattedPaths = paths.map((str) =>
+    str
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' '),
   )
-  return {
-    title: `City Quokka | ${paths.join(' | ')}`,
-    description: `City Quokka - Explore more about ${paths.join(', ')}`
+  if (paths.at(-2) === 'posts' && !!paths.at(-1)) {
+    const post = await fetchPostBySlug(paths.at(-1))
+    return generateMeta({ doc: post })
+  } else {
+    return {
+      title: `City Quokka | ${paths.join(' | ')}`,
+      description: `City Quokka - Explore more about ${paths.join(', ')}`,
+    }
   }
 }
 
 export default async function CityGuidePage({ params }: { params: { path?: string[] } }) {
+  const { path } = await params
+  if (path && path.at(-2) === 'posts' && !!path.at(-1)) {
+    const post = await fetchPostBySlug(path.at(-1))
+    return <Post post={post} />
+  }
+  if (path && path.at(-1) === 'posts') {
+    path.pop()
+  }
+  const header: Header = await getCachedGlobal('header', 1)()
+  let categoryPaths: string[] = []
+  if (!path || path?.length == 0) {
+    categoryPaths = (header?.navItems || []).map((navItem) =>
+      navItem.link.url?.replace(/\/cityguide/, ''),
+    ) as string[]
+  } else {
+    categoryPaths = [`/${path?.join('/')}`]
+  }
 
-  const { path }  = await params
+  const categoryFeaturedPosts = await fetchFeaturedPostsByCategoryPaths(categoryPaths)
+  const categoryPosts = await fetchPostsByCategoryPaths(categoryPaths)
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">City Guide Explorer</h1>
-      
-      <div className="bg-gray-100 p-4 rounded-lg">
-        <h2 className="text-lg font-semibold mb-2">Current Path:</h2>
-        <pre className="bg-white p-3 rounded border overflow-x-auto">
-          {JSON.stringify(path, null, 2)}
-        </pre>
+    <div className="self-center w-full max-w-[1122px] bg-white mx-auto flex flex-col gap-4 my-4">
+      <CollectionHeroCarousel posts={categoryFeaturedPosts} />
+      <div className="flex items-center w-full my-4">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="flex-shrink mx-4 px-4 py-1 font-medium bg-quokka-yellow rounded">
+          More Posts in City Quokka
+        </span>
+        <div className="flex-grow border-t border-gray-300"></div>
       </div>
-      
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-2">Path Segments:</h3>
-        <ul className="list-disc pl-5">
-          {(path||['Root']).map((segment, index) => (
-            <li key={index} className="mb-1">
-              {segment}
-            </li>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {categoryPosts.map((post, index) => (
+            <PostTile post={post} key={`postTile${index}`} />
           ))}
-        </ul>
+        </div>
       </div>
     </div>
-  );
+  )
 }

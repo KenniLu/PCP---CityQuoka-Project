@@ -3,6 +3,7 @@ import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { checkChildren } from './hooks/checkChildren'
 import { updateChildren } from './hooks/updateChildren'
+import { slugField } from '@/fields/slug'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -34,7 +35,7 @@ export const Categories: CollectionConfig = {
       filterOptions: ({ id }) => {
         return {
           id: {
-            not_equals: id,
+            not_equals: (id||0),
           },
         }
       },
@@ -52,6 +53,7 @@ export const Categories: CollectionConfig = {
         beforeChange: [updateChildren],
       },
     },
+    ...slugField()
   ],
   hooks: {
     // Optional: Prevent deletion if category has children

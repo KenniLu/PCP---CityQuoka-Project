@@ -5,6 +5,7 @@ import * as migration_20250306_020744_addFieldsToVenues from './20250306_020744_
 import * as migration_20250306_024920_addSubtitleToPost from './20250306_024920_addSubtitleToPost';
 import * as migration_20250312_233909_addAuthTables from './20250312_233909_addAuthTables';
 import * as migration_20250319_074319_addReactions from './20250319_074319_addReactions';
+import * as migration_20250321_114359_addCategoriesPosts from './20250321_114359_addCategoriesPosts';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20250319_074319_addReactions.up,
     down: migration_20250319_074319_addReactions.down,
-    name: '20250319_074319_addReactions'
+    name: '20250319_074319_addReactions',
+  },
+  {
+    up: migration_20250321_114359_addCategoriesPosts.up,
+    down: migration_20250321_114359_addCategoriesPosts.down,
+    name: '20250321_114359_addCategoriesPosts'
   },
 ];

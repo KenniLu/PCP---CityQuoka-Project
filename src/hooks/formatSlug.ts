@@ -1,6 +1,6 @@
 import type { FieldHook } from 'payload'
 
-const format = (val: string): string =>
+export const format = (val: string): string =>
   val
     .replace(/ /g, '-')
     .replace(/[^\w-]+/g, '')

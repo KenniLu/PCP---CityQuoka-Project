@@ -425,6 +425,9 @@ export interface Category {
   id: number;
   title: string;
   parent?: (number | null) | Category;
+  children?: (number | Category)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
   breadcrumbs?:
     | {
         doc?: (number | null) | Category;
@@ -445,6 +448,7 @@ export interface Post {
   title: string;
   subTitle?: string | null;
   image?: (number | null) | Media;
+  standalone?: boolean | null;
   content?:
     | (
         | {
@@ -1189,6 +1193,7 @@ export interface PostsSelect<T extends boolean = true> {
   title?: T;
   subTitle?: T;
   image?: T;
+  standalone?: T;
   content?:
     | T
     | {
@@ -1344,6 +1349,9 @@ export interface MediaSelect<T extends boolean = true> {
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
   parent?: T;
+  children?: T;
+  slug?: T;
+  slugLock?: T;
   breadcrumbs?:
     | T
     | {
