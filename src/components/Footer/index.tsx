@@ -2,7 +2,7 @@
 const Footer = () => {
     return (
         <footer>
-        <div class="container mx-auto px-10 text-white relative w-full max-w-[1122px] pt-10 bg-black py-12">
+        <div className="container mx-auto px-10 text-white relative w-full max-w-[1122px] pt-10 bg-black py-12">
             <div className="flex justify-between flex-col md:flex-row gap-4 w-full">
                 <div className="flex flex-col w-full md:w-1/2">
                     {/* <h2 className="text-2xl font-bold mb-4">Logo</h2> */}
@@ -22,7 +22,7 @@ const Footer = () => {
                         </li> 
                         <li>
                             <a href="#"> 
-                                <i class="fa-brands fa-tiktok"></i>
+                                <i className="fa-brands fa-tiktok"></i>
                             </a>
                         </li> 
                     </ul>
@@ -46,7 +46,7 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-            <p className="text-zinc-50 mt-10">@ Copy Right 2025 by City Quokka</p>
+            <p className="text-zinc-50 mt-10">@ Copyright 2025 by City Quokka</p>
 
         </div>
         </footer>
