@@ -52,7 +52,7 @@ export const LoginEmail = ({ url }: LoginEmailProps) => {
   //   timeZone: 'Australia/Sydney'
   // }).format(emailDate);
   const { host, origin } = new URL(url)
-  const labelUrl = new URL('/city-quokka-email-label.png', origin)
+  const labelUrl = new URL('/city-quokka-label.png', origin)
   // const escapedHost = host.replace(/\./g, "&#8203;.")
 
   return (

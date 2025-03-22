@@ -5,7 +5,7 @@ const AboutUs = () => {
        <h1>About us</h1>
        <p>City Quokka is an independent, deal-driven city guide. We curate the best of Sydney with unbiased recommendations and editorial - we do not take payment for any of our reviews, nor do we publish branded content or advertising. We say what we believe and we believe what we say.
 
-Our mission is to help young Sydneysiders to feel more connected through amazing out-of-home experiences, and support the city's best experience providers to create thriving places and communities. 
+Our mission is to help young Sydneysiders to feel more connected through amazing out-of-home experiences, and support the city&#39;s best experience providers to create thriving places and communities. 
 
 The City Quokka team works to inspire our users and equip them with the information they need to discover and enjoy more of the amazing events, activities and destinations that make Sydney so special, while also saving money.
 

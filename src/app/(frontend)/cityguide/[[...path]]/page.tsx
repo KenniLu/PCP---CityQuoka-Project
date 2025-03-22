@@ -1,109 +1,18 @@
-import React, { cache } from 'react'
+import React from 'react'
 import { Metadata } from 'next'
 import { fetchPostBySlug } from '../../posts/[slug]/page'
 import { generateMeta } from '@/utilities/generateMeta'
 import Post from '@/components/Post'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import { categoriesPosts } from '@/db/schema'
-import { desc, eq, and, inArray } from '@payloadcms/db-postgres/drizzle'
 import { CollectionHeroCarousel } from '@/components/CollectionHeroCarousel'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import type { Header } from '@/payload-types'
 import PostTile from '@/components/PostTile'
+import {
+  fetchFeaturedPostsByCategoryPaths,
+  fetchPostsByCategoryPaths,
+} from '@/utilities/fetchPosts'
 
-export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
-  const payload = await getPayload({ config: configPromise })
-  const productIds = await payload.db.drizzle
-    .select({
-      postId: categoriesPosts.postId,
-    })
-    .from(categoriesPosts)
-    .where(
-      and(
-        inArray(categoriesPosts.categoryPath, paths),
-        eq(categoriesPosts.featured, true),
-        eq(categoriesPosts.standalone, true),
-      ),
-    )
-    .orderBy(desc(categoriesPosts.postId))
-    .limit(10)
-
-  const result = await payload.find({
-    collection: 'posts',
-    limit: 10,
-    select: {
-      id: true,
-      title: true,
-      image: true,
-      slug: true,
-      categories: true,
-    },
-    where: {
-      id: {
-        in: [...new Set(productIds.map((id) => id['postId']))],
-      },
-    },
-  })
-  return result.docs || []
-})
-
-export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset = 0) => {
-  const payload = await getPayload({ config: configPromise })
-  const productIds = await payload.db.drizzle
-    .select({
-      postId: categoriesPosts.postId,
-    })
-    .from(categoriesPosts)
-    .where(and(inArray(categoriesPosts.categoryPath, paths), eq(categoriesPosts.standalone, true)))
-    .orderBy(desc(categoriesPosts.postId))
-    .limit(limit)
-    .offset(offset)
-
-  const result = await payload.find({
-    collection: 'posts',
-    limit: limit,
-    select: {
-      id: true,
-      title: true,
-      image: true,
-      slug: true,
-      categories: true,
-    },
-    where: {
-      id: {
-        in: [...new Set(productIds.map((id) => id['postId']))],
-      },
-    },
-  })
-  return result.docs || []
-})
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { path?: string[] }
-}): Promise<Metadata> {
-  const { path } = await params
-  const paths = path || ['city-guide']
-  const formattedPaths = paths.map((str) =>
-    str
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' '),
-  )
-  if (paths.at(-2) === 'posts' && !!paths.at(-1)) {
-    const post = await fetchPostBySlug(paths.at(-1))
-    return generateMeta({ doc: post })
-  } else {
-    return {
-      title: `City Quokka | ${paths.join(' | ')}`,
-      description: `City Quokka - Explore more about ${paths.join(', ')}`,
-    }
-  }
-}
-
-export default async function CityGuidePage({ params }: { params: { path?: string[] } }) {
+export default async function CityGuidePage({ params }) {
   const { path } = await params
   if (path && path.at(-2) === 'posts' && !!path.at(-1)) {
     const post = await fetchPostBySlug(path.at(-1))
@@ -143,4 +52,26 @@ export default async function CityGuidePage({ params }: { params: { path?: strin
       </div>
     </div>
   )
+}
+
+export async function generateMetadata({
+  params
+}): Promise<Metadata> {
+  const { path } = await params
+  const paths = path || ['city-guide']
+  const formattedPaths = paths.map((str) =>
+    str
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' '),
+  )
+  if (paths.at(-2) === 'posts' && !!paths.at(-1)) {
+    const post = await fetchPostBySlug(paths.at(-1))
+    return generateMeta({ doc: post })
+  } else {
+    return {
+      title: `City Quokka | ${paths.join(' | ')}`,
+      description: `City Quokka - Explore more about ${paths.join(', ')}`,
+    }
+  }
 }

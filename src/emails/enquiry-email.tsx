@@ -120,7 +120,7 @@ export const EnquiryEmail = ({ reasonForContact,  otherReason, businessName, typ
   //   timeZone: 'Australia/Sydney'
   // }).format(emailDate);
   const { host, origin } = new URL(url)
-  const labelUrl = new URL('/city-quokka-email-label.png', origin)
+  const labelUrl = new URL('/city-quokka-label.png', origin)
   // const escapedHost = host.replace(/\./g, "&#8203;.")
 
   const getReasonLabel = (value: string) => {
