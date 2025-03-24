@@ -20,7 +20,9 @@ export default async function Post({ post }: Args) {
     if (content.blockType === 'PostGroupBlock') {
       ;(content.postLinks || []).forEach((postLink) => {
         const _post = postLink.postLink.post as Post
-        postIds.push(_post.id)
+        if(_post?.id){
+          postIds.push(_post.id)
+        }        
       })
     }
   })
