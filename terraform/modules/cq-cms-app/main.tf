@@ -424,7 +424,7 @@ resource "aws_acm_certificate" "cert" {
 }
 
 resource "aws_s3_bucket" "cloudfront_logs" {
-  bucket = "staging-cdn-logging-bucket"
+  bucket = "${var.environment}-cdn-logging-bucket"
 }
 
 resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
