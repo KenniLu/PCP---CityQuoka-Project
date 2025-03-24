@@ -35,7 +35,7 @@ export default async function CityGuidePage({ params }) {
   const categoryPosts = await fetchPostsByCategoryPaths(categoryPaths)
   return (
     <div className="self-center w-full max-w-[1122px] bg-white mx-auto flex flex-col gap-4 my-4">
-      <CollectionHeroCarousel posts={categoryFeaturedPosts} />
+      <CollectionHeroCarousel useNonHero={true} posts={categoryFeaturedPosts} />
       <div className="flex items-center w-full my-4">
         <div className="flex-grow border-t border-gray-300"></div>
         <span className="flex-shrink mx-4 px-4 py-1 font-medium bg-quokka-yellow rounded">

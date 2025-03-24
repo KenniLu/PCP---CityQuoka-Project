@@ -108,15 +108,17 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
               return <CallToActionBlock key={index} {...block} />
             case 'mediaBlock':
               return (
+                // <div className="relative min-h-[35vh] md:min-h-[60vh] select-none">
                 <MediaBlock
                   className="col-start-1 col-span-3 mb-[.55em]"
-                  imgClassName="m-0"
+                  imgClassName="object-cover m-0 h-[35vh] md:h-[50vh] select-none"
                   key={index}
                   {...block}
                   captionClassName="mx-auto max-w-[48rem]"
                   enableGutter={false}
                   disableInnerContainer={true}
                 />
+                // </div>
               )
             case 'banner':
               return <BannerBlock className="col-start-2 mb-4" key={index} {...block} />

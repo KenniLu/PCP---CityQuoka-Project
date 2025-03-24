@@ -59,7 +59,9 @@ export const PostHero: React.FC<{
         <SocialActions postId={post.id}/>
       </div>
       {/* <div className="relative w-[956.701px] h-[444.354px] mt-4 max-lg:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
-      <div className="relative h-[444.354px] mt-4 max-sm:w-full max-lg:h-auto max-lg:aspect-[2.15]">
+      {/* <div className="relative h-[444.354px] mt-4 max-sm:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
+      {/* <div className="relative min-h-[35vh] md:min-h-[60vh] select-none"> */}
+      <div className="relative min-h-[35vh] md:min-h-[60vh] select-none">
         {/* <img
           loading="lazy"
           src={exhibit}
@@ -74,7 +76,8 @@ export const PostHero: React.FC<{
             className="object-cover absolute inset-0 w-full h-full"
           />
         )} */}
-        {image && <Media fill priority imgClassName="object-cover absolute inset-0 w-full h-full" resource={image} />}
+        {/* {image && <Media fill priority imgClassName="object-cover absolute inset-0 w-full h-full" resource={image} />} */}
+        {image && <Media fill priority imgClassName="object-cover" resource={image} />}
 
         <div className="relative px-3 py-0.5 inline-block rounded-md bg-zinc-300 text-xl tracking-tight leading-none text-neutral-500 mt-4">
           {formatDate(post.publishedAt!)}

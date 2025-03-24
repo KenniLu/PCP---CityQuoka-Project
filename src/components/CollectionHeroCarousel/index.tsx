@@ -13,11 +13,12 @@ import type { Post, Media as MediaType } from '@/payload-types'
 import { CMSLink } from '../Link'
 
 export type Props = {
+  useNonHero?: boolean
   posts: Partial<Post>[]
 }
 
 export const CollectionHeroCarousel: React.FC<Props> = (props) => {
-  const { posts } = props
+  const { posts, useNonHero } = props
 
   const colour_lookups = ['quokka-green', 'quokka-yellow', 'quokka-purple']
 
@@ -40,7 +41,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
       <Carousel className="w-full max-w-[1122px] mx-auto">
         <CarouselContent>
           {posts.map((post, indx) => {
-            const { image, hero_title, hero_subtitle, slug, hero_image } = post
+            const { image, hero_title, hero_subtitle, slug, hero_image, title, subTitle } = post
 
             return (
               <CarouselItem key={post.id}>
@@ -61,12 +62,21 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                           className={`text-black text-[25px] leading-[24px] tracking-[-0.75px] pb-2 flex flex-col max-md:text-left justify-center w-full bg-${colour_lookups[indx % 3]} `}
                         >
                           {/* Added max-md:text-left */}
-                          <div className="pt-2 md:pt-8 font-bold">{hero_title}</div>
+                          { hero_title && <div className="pt-2 md:pt-8 font-bold">{hero_title}</div>}
+                          { !hero_title && useNonHero && title && <div className="pt-2 md:pt-8 font-bold">{title}</div>}
+                          
                           {hero_subtitle && hero_subtitle.length > 0 && (
                             // <div className="text-black text-[25px] font-author leading-[33.25px] tracking-[-1.05px] pb-4 flex justify-between items-center w-full text-center max-md:text-left">
                             <div className="text-black pt-2 text-lg">
                               {/* <div className="sm:pt-40">{hero_subtitle}</div> */}
                               {hero_subtitle}
+                            </div>
+                          )}
+                          {!hero_subtitle && useNonHero && subTitle && subTitle.length > 0 && (
+                            // <div className="text-black text-[25px] font-author leading-[33.25px] tracking-[-1.05px] pb-4 flex justify-between items-center w-full text-center max-md:text-left">
+                            <div className="text-black pt-2 text-lg">
+                              {/* <div className="sm:pt-40">{hero_subtitle}</div> */}
+                              {subTitle}
                             </div>
                           )}
                         </div>
