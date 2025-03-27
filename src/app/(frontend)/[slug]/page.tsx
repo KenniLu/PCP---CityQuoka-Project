@@ -8,7 +8,8 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
-import HomeNavBar from '@/components/HomeNavBar'
+// import HomeNavBar from '@/components/HomeNavBar'
+import { CityGuideNavBar } from '@/components/CityGuideNavBar'
 
 import type { Page as PageType } from '@/payload-types'
 
@@ -66,7 +67,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   return (
     <div className="flex flex-col w-full px-3 sm:px-8">
-      <HomeNavBar/>
+      {/* <HomeNavBar/> */}
+      <CityGuideNavBar />
       <article>
         <PageClient />
         {/* Allows redirects for valid pages too */}
@@ -74,11 +76,13 @@ export default async function Page({ params: paramsPromise }: Args) {
 
         <RenderHero {...hero} />
         <RenderBlocks blocks={layout} />
-        {slug === 'home' && <>
-          <WhoAreWe/>
-          <HomeAuthSection/>
-          <Footer/>
-        </>}
+        {slug === 'home' && (
+          <>
+            <WhoAreWe />
+            <HomeAuthSection />
+            <Footer />
+          </>
+        )}
       </article>
     </div>
   )

@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const WhoAreWe = () => {
   return (
@@ -19,7 +20,7 @@ const WhoAreWe = () => {
             <Image src="/icons/item1-1.svg" alt="Quokka Map" width={138} height={128} />
           </div>
           <div className="flex-grow flex items-stretch mt-2 mb-auto">
-            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px]">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px]">
               <p className="py-4 md:py-6 my-2">
                 A smart guide to your city that personalises to your interests
               </p>
@@ -34,9 +35,10 @@ const WhoAreWe = () => {
           </div>
           {/* </div> */}
           <div className="flex-grow flex items-stretch mt-2 mb-auto">
-            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-yellow border-solid border-[2px] md:border-[3px]">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-yellow border-solid border-[2px] md:border-[3px]">
               <p className="py-4 md:py-6 my-2">
-                We find and recommend the best experiences and negotiate special deals for our users.
+                We find and recommend the best experiences and negotiate special deals for our
+                users.
               </p>
             </div>
           </div>
@@ -48,7 +50,7 @@ const WhoAreWe = () => {
             <Image src="/icons/item1-3.svg" alt="Quokka Party" width={138} height={128} />
           </div>
           <div className="flex-grow flex items-stretch mt-2 mb-auto">
-            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl md:text-2xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-purple border-solid border-[2px] md:border-[3px]">
+            <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-purple border-solid border-[2px] md:border-[3px]">
               <p className="py-4 md:py-6 my-2">
                 No endless lists or overwhelming choices, just hand-picked options that you&#39;ll
                 love.
@@ -77,6 +79,16 @@ const WhoAreWe = () => {
             No endless lists or overwhelming choices, just hand-picked options that you&#39;ll love.
           </div>
         </div> */}
+      </div>
+      <div className="flex-grow flex items-stretch mt-2 mb-auto">
+        <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px] flex-col py-4 gap-4">
+          <p>
+            Are you a business owner interested in featuring your business in City Quokka?
+          </p>
+          <Link href="/business" className="text-base p-3 bg-quokka-yellow rounded-xl">
+            <p>Get in Touch with Us</p>
+          </Link>
+        </div>
       </div>
     </div>
   )
