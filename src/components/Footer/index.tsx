@@ -66,12 +66,12 @@ const Footer = () => {
             <ul>
               <li>
                 <Link href="/about-us" className="hover:underline duration-500">
-                  About us
+                  About Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline duration-500">
-                  Contact us
+                <Link href="/contact-us" className="hover:underline duration-500">
+                  Contact Us
                 </Link>
               </li>
             </ul>
@@ -79,18 +79,18 @@ const Footer = () => {
           <div className="flex flex-col w-full md:w-1/4">
             <h2 className="text-2xl font-bold mb-4">Learn More</h2>
             <ul>
-              <li>
-                <Link href="#" className="hover:underline duration-500">
-                  Term of use
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:underline duration-500">
+            <li>
+                <Link href="/cookies" className="hover:underline duration-500">
                   Cookies
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline duration-500">
+                <Link href="/term-of-use" className="hover:underline duration-500">
+                  Term of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/private-policy" className="hover:underline duration-500">
                   Private Policy
                 </Link>
               </li>
