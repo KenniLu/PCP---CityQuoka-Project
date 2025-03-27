@@ -2,12 +2,14 @@ import Link from 'next/link'
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
-import HomeNavBar from '@/components/HomeNavBar'
+// import HomeNavBar from '@/components/HomeNavBar'
+import { CityGuideNavBar } from '@/components/CityGuideNavBar'
 
 export default function NotFound() {
   return (
     <div>
-      <HomeNavBar />
+      {/* <HomeNavBar /> */}
+      <CityGuideNavBar />
 
       <div className="container py-28">
         <div className="prose max-w-none">

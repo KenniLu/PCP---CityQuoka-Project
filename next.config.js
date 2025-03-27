@@ -8,7 +8,7 @@ const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://loc
 const nextConfig = {
   images: {
     remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
+      ...[NEXT_PUBLIC_SERVER_URL].map((item) => {
         const url = new URL(item)
         return {
           hostname: url.hostname,
@@ -17,12 +17,24 @@ const nextConfig = {
           search: '',
         }
       }),
+      ...(process.env.NODE_ENV === 'production'
+        ? [NEXT_PUBLIC_SERVER_URL].map((item) => {
+            const url = new URL(item)
+            // Create the www version by modifying the hostname
+            return {
+              hostname: `www.${url.hostname}`,
+              protocol: url.protocol.replace(':', ''),
+              pathname: '/api/media/**',
+              search: '',
+            }
+          })
+        : []),
     ],
   },
   reactStrictMode: true,
   redirects,
 }
 
-const standaloneConfig = process.env.NODE_ENV === 'development' ? {} : {output: 'standalone'}
+const standaloneConfig = process.env.NODE_ENV === 'development' ? {} : { output: 'standalone' }
 
-export default withPayload({...nextConfig, ...standaloneConfig})
+export default withPayload({ ...nextConfig, ...standaloneConfig })

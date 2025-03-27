@@ -420,7 +420,11 @@ resource "aws_codepipeline" "app" {
 resource "aws_acm_certificate" "cert" {
   provider          = aws.us-east-1  # CloudFront requires certificates in us-east-1
   domain_name       = var.domain_name
+  subject_alternative_names = var.environment == "production" ? ["www.${var.domain_name}"] : []
   validation_method = "DNS"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_s3_bucket" "cloudfront_logs" {
@@ -622,7 +626,7 @@ resource "aws_cloudfront_distribution" "app" {
   enabled             = true
   is_ipv6_enabled    = true
   default_root_object = ""
-  aliases            = [var.domain_name]
+  aliases            = var.environment == "production" ? [var.domain_name, "www.${var.domain_name}"] : [var.domain_name]
 
   origin {
     domain_name = aws_apprunner_service.cq_cms_app.service_url
