@@ -82,10 +82,11 @@ const WhoAreWe = () => {
       </div>
       <div className="flex-grow flex items-stretch mt-2 mb-auto">
         <div className="flex flex-grow items-center px-2 md:px-4 w-full text-xl tracking-tighter leading-8 text-center text-black bg-white rounded-lg border-quokka-green border-solid border-[2px] md:border-[3px] flex-col py-4 gap-4">
-          <p>
-            Are you a business owner interested in featuring your business in City Quokka?
-          </p>
-          <Link href="/business" className="text-base p-3 bg-quokka-yellow rounded-xl">
+          <p>Would you like City Quokka to feature your business?</p>
+          <Link
+            href="/business"
+            className="flex w-[200px] h-[35px] p-[10px_16px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[6px] bg-quokka-yellow text-black font-semibold whitespace-nowrap text-base"
+          >
             <p>Get in Touch with Us</p>
           </Link>
         </div>

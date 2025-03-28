@@ -52,20 +52,20 @@ const FixedMenu = ({ onClick }) => (
       </li>
 
       <li>
-        <Link href="/term-of-use" onClick={onClick}>
+        <Link href="/terms-of-use" onClick={onClick}>
           <button className={`text-xl hover:text-orange-100 duration-500`}>
-            <PathActivatedLink pathMatch="/term-of-use" exactMatch={false}>
-              Term of Use
+            <PathActivatedLink pathMatch="/terms-of-use" exactMatch={false}>
+              Terms of Use
             </PathActivatedLink>
           </button>
         </Link>
       </li>
 
       <li>
-        <Link href="/private-policy" onClick={onClick}>
+        <Link href="/privacy-policy" onClick={onClick}>
           <button className={`text-xl hover:text-orange-100 duration-500`}>
-            <PathActivatedLink pathMatch="/private-policy" exactMatch={false}>
-              Private Policy
+            <PathActivatedLink pathMatch="/privacy-policy" exactMatch={false}>
+              Privacy Policy
             </PathActivatedLink>
           </button>
         </Link>

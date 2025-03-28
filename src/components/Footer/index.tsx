@@ -54,10 +54,10 @@ const Footer = () => {
               </li>
             </ul>
             {/* Acknowledge of the country */}
-            <h2 className="text-1xl font-bold mb-4 pr-5">Acknowledgement of the Country</h2>
+            <h2 className="text-1xl font-bold mb-4 pr-5">Acknowledgement of Country</h2>
             <p className="mb-4 pr-20">
               We acknowledge the traditional custodians of the land on which we live, work and play,
-              and pay respects to the 29 clans of the Eora Nation and all Elders past, present and
+              and pay respects to all elders past, present and
               emerging.
             </p>
           </div>
@@ -85,13 +85,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/term-of-use" className="hover:underline duration-500">
-                  Term of Use
+                <Link href="/terms-of-use" className="hover:underline duration-500">
+                  Terms of Use
                 </Link>
               </li>
               <li>
-                <Link href="/private-policy" className="hover:underline duration-500">
-                  Private Policy
+                <Link href="/privacy-policy" className="hover:underline duration-500">
+                  Privacy Policy
                 </Link>
               </li>
             </ul>

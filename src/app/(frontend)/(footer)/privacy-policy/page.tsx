@@ -1,7 +1,7 @@
 export default function PrivatePolicy() {
   return (
     <>
-      <h1 className="text-3xl font-bold mb-4 pr-5">Private Policy</h1>
+      <h1 className="text-3xl font-bold mb-4 pr-5">Privacy Policy</h1>
       <p className="font-bold">Data Privacy Policy</p>
       <br></br>
       <p>

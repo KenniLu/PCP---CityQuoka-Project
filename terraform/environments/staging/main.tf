@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 module "cq-cms-app" {
-  source = "../../modules/cq-cms-app"
+  source = "../.."
 
   # Provider configurations
   providers = {
