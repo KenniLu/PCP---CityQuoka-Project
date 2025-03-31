@@ -1,3 +1,12 @@
+terraform {
+  backend "s3" {
+    bucket = "cq-cms-staging-terraform-state"
+    key = "terraform/staging/state"
+    region = "ap-southeast-2"
+    use_lockfile = true
+  }
+}
+
 provider "aws" {
   region = "ap-southeast-2"
 }
