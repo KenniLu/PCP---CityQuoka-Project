@@ -27,6 +27,7 @@ export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
     select: {
       id: true,
       title: true,
+      subTitle: true,
       image: true,
       slug: true,
       categories: true,
