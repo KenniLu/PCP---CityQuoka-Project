@@ -16,9 +16,6 @@ export const RecommendedSideBar: React.FC = async () => {
     select: {
       id: true,
       title: true,
-      // hero_title: true,
-      // hero_subtitle: true,
-      // hero_image: true,
       image: true,
       slug: true,
     },
@@ -34,7 +31,6 @@ export const RecommendedSideBar: React.FC = async () => {
   posts = fetchedPosts.docs
 
   return (
-    // <aside className="w-[320px] max-md:w-full hidden lg:block">
     <aside className="w-[320px] max-md:w-full mt-4 md:mt-12">
       <div className="relative bg-[#FFC53D] rounded-md pt-12 px-4 pb-14">
         <div className="absolute left-1/2 -translate-x-1/2 -top-4">
@@ -42,8 +38,7 @@ export const RecommendedSideBar: React.FC = async () => {
             Recommended
           </div>
         </div>
-        {/* <div className="flex flex-row md:flex-col w-full gap-4"> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 justify-items-center place-content-center">
           {posts.map((post, index) => {
             return (
               <PostTile post={post} key={`postTile${index}`}/>

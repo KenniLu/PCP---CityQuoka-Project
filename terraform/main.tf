@@ -49,7 +49,34 @@ module "cdn" {
   environment           = var.environment
   domain_name           = var.domain_name
   app_service_url = module.apprunner.app_service_url
+  cloudfront_origin_shield_region = "ap-southeast-2"
+  image_optimizer_lambda_function_url = module.image-optimization-lambda.image_optimizer_lambda_function_url
+  image_optimizer_lambda_origin_access_control_id = module.image-optimization-lambda.image_optimizer_lambda_origin_access_control_id
+  images_cache_bucket_oai_id_path = module.image-optimization-lambda.images_cache_bucket_oai_id_path
+  image_url_rewrite_lambda_qualified_arn = module.image-url-rewrite-lambda.image_url_rewrite_lambda_qualified_arn
+  images_cache_bucket_regional_domain_name = module.image-optimization-lambda.images_cache_bucket_regional_domain_name
   providers = {
     aws.us-east-1 = aws.us-east-1
   }
+}
+
+module "image-url-rewrite-lambda" {
+  source = "./modules/image-url-rewrite-lambda"
+  app_name = var.app_name
+  environment = var.environment
+  cloudfront_distribution_app_arn = module.cdn.cloudfront_distribution_app_arn
+  aws_iam_lambda_edge_role_arn = module.cdn.aws_iam_lambda_edge_role_arn
+
+  providers = {
+    aws.us-east-1 = aws.us-east-1
+  }
+}
+
+module "image-optimization-lambda" {
+  source = "./modules/image-optimization-lambda"
+  app_name = var.app_name
+  environment = var.environment
+  images_source_bucket_name = var.images_source_bucket_name
+  images_cache_bucket_name = var.images_cache_bucket_name
+  cloudfront_distribution_app_arn = module.cdn.cloudfront_distribution_app_arn
 }

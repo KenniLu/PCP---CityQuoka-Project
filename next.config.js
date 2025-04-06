@@ -7,29 +7,9 @@ const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://loc
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL].map((item) => {
-        const url = new URL(item)
-        return {
-          hostname: url.hostname,
-          protocol: url.protocol.replace(':', ''),
-          pathname: '/api/media/**',
-          search: '',
-        }
-      }),
-      ...(process.env.NODE_ENV === 'production'
-        ? [NEXT_PUBLIC_SERVER_URL].map((item) => {
-            const url = new URL(item)
-            // Create the www version by modifying the hostname
-            return {
-              hostname: `www.${url.hostname}`,
-              protocol: url.protocol.replace(':', ''),
-              pathname: '/api/media/**',
-              search: '',
-            }
-          })
-        : []),
-    ],
+    loaderFile: './cloudfrontLoader.ts',
+    deviceSizes: [300, 600,  900], // Smaller viewport sizes
+    imageSizes: [1400, 1920], // Larger image sizes
   },
   reactStrictMode: true,
   redirects,

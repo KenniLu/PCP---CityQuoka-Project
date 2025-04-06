@@ -1,10 +1,5 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
-
-// import type { Post } from '@/payload-types'
-
 import { Media } from '@/components/Media'
-// import ResponsiveImage from '@/components/ResponsiveImage'
 import type { Post, Media as MediaType } from '@/payload-types'
 import SocialActions from '@/blocks/PostEntrySocialActions'
 
@@ -45,43 +40,33 @@ export const PostHero: React.FC<{
 
   return (
     <div className="flex flex-col py-0.5 mt-4 w-full text-black font-inter max-md:mt-10 max-md:max-w-full">
-      <div className="self-start mt-0 text-[40px] font-extrabold tracking-wider leading-[63px] max-md:max-w-full max-md:text-4xl max-md:leading-10">
+      <div className="text-3xl md:text-4xl font-bold leading-tight md:leading-snug tracking-normal text-gray-900 mb-4">
         {title}
       </div>
-      {post.subTitle && post.subTitle.length > 0 && 
-      <div className="mt-4 text-[30px] tracking-tight leading-10 text-neutral-500 w-[740px] max-lg:w-full">
-        {post.subTitle}
-      </div>
-      }
-      <div className="flex flex-wrap gap-5 justify-between mt-4 w-full leading-none max-md:max-w-full">
-        <div className="text-base tracking-tight">Written by {joinWithAnd(authors)}</div>
-        {/* <SocialActions /> */}
-        <SocialActions postId={post.id}/>
-      </div>
-      {/* <div className="relative w-[956.701px] h-[444.354px] mt-4 max-lg:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
-      {/* <div className="relative h-[444.354px] mt-4 max-sm:w-full max-lg:h-auto max-lg:aspect-[2.15]"> */}
-      {/* <div className="relative min-h-[35vh] md:min-h-[60vh] select-none"> */}
-      <div className="relative min-h-[35vh] md:min-h-[60vh] select-none">
-        {/* <img
-          loading="lazy"
-          src={exhibit}
-          className="object-cover absolute inset-0 w-full h-full"
-          alt="Article header image"
-        /> */}
-        {/* {image && (
-          <ResponsiveImage
-            media={image as MediaType}
-            alt={post.title!}
-            sizes="(max-width: 685px) 100vw, 685px"
-            className="object-cover absolute inset-0 w-full h-full"
-          />
-        )} */}
-        {/* {image && <Media fill priority imgClassName="object-cover absolute inset-0 w-full h-full" resource={image} />} */}
-        {image && <Media fill priority imgClassName="object-cover" resource={image} />}
-
-        <div className="relative px-3 py-0.5 inline-block rounded-md bg-zinc-300 text-xl tracking-tight leading-none text-neutral-500 mt-4">
-          {formatDate(post.publishedAt!)}
+      {post.subTitle && post.subTitle.length > 0 && (
+        <div className="text-2xl md:text-3xl tracking-normal leading-tight md:leading-snug text-neutral-500">
+          {post.subTitle}
         </div>
+      )}
+      <div className="flex flex-wrap gap-5 justify-between mt-4 w-full leading-none max-md:max-w-full">
+        <div className="text-base tracking-tight">
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-bold">Written by {joinWithAnd(authors)}</p>
+            <p className="text-base">{formatDate(post.publishedAt!)}</p>
+          </div>
+        </div>
+        <SocialActions postId={post.id} />
+      </div>
+      <div className="relative w-full aspect-[3/2] select-none md:mt-1">
+        {image && (
+          <Media
+            fill
+            priority
+            imgClassName="object-cover"
+            resource={image}
+            size="(max-width: 767px) 100vw, (max-width: 1020px) 622px, (max-width: 1280px) 741px, 862px"
+          />
+        )}
       </div>
     </div>
   )

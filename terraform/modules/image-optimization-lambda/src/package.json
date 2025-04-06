@@ -1,0 +1,6 @@
+{
+  "name": "image-processor-lambda",
+  "version": "1.0.0",
+  "description": "Image processing Lambda function for ARM64 Lambda",
+  "main": "index.js"
+}
