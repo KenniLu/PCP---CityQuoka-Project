@@ -113,7 +113,8 @@ export const Venues: CollectionConfig = {
       name: 'linkedInUrl',
       type: 'text',
       required: false,
-      unique: true
+      unique: true,
+      label: 'Linkedin URL'
     },
     ...slugField('slug')
   ]
