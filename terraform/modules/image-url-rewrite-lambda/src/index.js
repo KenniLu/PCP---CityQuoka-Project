@@ -34,9 +34,9 @@ exports.handler = async (event) => {
                       if (format === 'auto') {
                           format = 'jpeg';
                           if (request.headers && request.headers['accept']) {
-                              if (request.headers['accept'].value.includes("avif")) {
+                              if (request.headers['accept'].includes("avif")) {
                                   format = 'avif';
-                              } else if (request.headers['accept'].value.includes("webp")) {
+                              } else if (request.headers['accept'].includes("webp")) {
                                   format = 'webp';
                               } 
                           }
