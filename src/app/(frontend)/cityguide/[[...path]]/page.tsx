@@ -1,6 +1,7 @@
 import React from 'react'
 import { Metadata } from 'next'
 import { fetchPostBySlug } from '../../posts/[slug]/page'
+import { fetchCategoryPathsForSlugs } from '@/utilities/fetchCategories'
 import { generateMeta } from '@/utilities/generateMeta'
 import Post from '@/components/Post'
 import { CollectionHeroCarousel } from '@/components/CollectionHeroCarousel'
@@ -11,6 +12,40 @@ import {
   fetchFeaturedPostsByCategoryPaths,
   fetchPostsByCategoryPaths,
 } from '@/utilities/fetchPosts'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { ChevronRight } from 'lucide-react'
+
+const CategoriesBreadCrumb = (
+  paths: {
+    title: string
+    url: string
+  }[],
+) => {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {(paths || []).map((crumb, indx) => (
+          <React.Fragment key={`categoryPath${indx}}`}>
+            {indx !== 0 && (
+              <BreadcrumbSeparator>
+                <ChevronRight />
+              </BreadcrumbSeparator>
+            )}
+            <BreadcrumbItem className="text-base text-blue-600">
+              <BreadcrumbLink href={`/cityguide/${crumb.url}`}>{crumb.title}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </React.Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
 
 export default async function CityGuidePage({ params }) {
   const { path } = await params
@@ -22,6 +57,7 @@ export default async function CityGuidePage({ params }) {
     path.pop()
   }
   const header: Header = await getCachedGlobal('header', 1)()
+  var showBreadCrumbs = false
   let categoryPaths: string[] = []
   if (!path || path?.length == 0) {
     categoryPaths = (header?.navItems || []).map((navItem) =>
@@ -29,12 +65,15 @@ export default async function CityGuidePage({ params }) {
     ) as string[]
   } else {
     categoryPaths = [`/${path?.join('/')}`]
+    showBreadCrumbs = true
   }
+  const paths = await fetchCategoryPathsForSlugs(path)
 
   const categoryFeaturedPosts = await fetchFeaturedPostsByCategoryPaths(categoryPaths)
   const categoryPosts = await fetchPostsByCategoryPaths(categoryPaths)
   return (
-    <div className="self-center w-full max-w-[1122px] bg-white mx-auto flex flex-col gap-4 my-4">
+    <div className="self-center w-full max-w-[1122px] bg-white mx-auto flex flex-col gap-4">
+      {showBreadCrumbs && CategoriesBreadCrumb(paths)}
       <CollectionHeroCarousel useNonHero={true} posts={categoryFeaturedPosts} />
       <div className="flex items-center w-full my-4">
         <div className="flex-grow border-t border-gray-300"></div>
@@ -54,9 +93,7 @@ export default async function CityGuidePage({ params }) {
   )
 }
 
-export async function generateMetadata({
-  params
-}): Promise<Metadata> {
+export async function generateMetadata({ params }): Promise<Metadata> {
   const { path } = await params
   const paths = path || ['city-guide']
   const formattedPaths = paths.map((str) =>
