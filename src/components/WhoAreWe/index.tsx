@@ -85,7 +85,7 @@ const WhoAreWe = () => {
           <p>Would you like City Quokka to feature your business?</p>
           <Link
             href="/business"
-            className="flex w-[200px] h-[35px] p-[10px_16px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[6px] bg-quokka-yellow text-black font-semibold whitespace-nowrap text-base"
+            className="flex w-[200px] h-[35px] p-[10px_16px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[6px] bg-quokka-yellow text-black font-semibold whitespace-nowrap text-base hover:bg-[#E69D00]"
           >
             <p>Get in Touch with Us</p>
           </Link>
