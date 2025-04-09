@@ -35,8 +35,8 @@ export const HeroCarouselBlock: React.FC<
     depth: 1,
     limit,
     where: {
-      'tags.name': {
-        in: ['hero'],
+      hero: {
+        equals: true,
       },
     },
   })

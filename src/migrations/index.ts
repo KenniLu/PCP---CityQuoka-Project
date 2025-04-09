@@ -8,6 +8,7 @@ import * as migration_20250319_074319_addReactions from './20250319_074319_addRe
 import * as migration_20250321_114359_addCategoriesPosts from './20250321_114359_addCategoriesPosts';
 import * as migration_20250406_215037_dropImageSizes from './20250406_215037_dropImageSizes';
 import * as migration_20250409_034153_addPasswordResetToken from './20250409_034153_addPasswordResetToken';
+import * as migration_20250409_051947_addFieldsToReplaceTags from './20250409_051947_addFieldsToReplaceTags';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20250409_034153_addPasswordResetToken.up,
     down: migration_20250409_034153_addPasswordResetToken.down,
-    name: '20250409_034153_addPasswordResetToken'
+    name: '20250409_034153_addPasswordResetToken',
+  },
+  {
+    up: migration_20250409_051947_addFieldsToReplaceTags.up,
+    down: migration_20250409_051947_addFieldsToReplaceTags.down,
+    name: '20250409_051947_addFieldsToReplaceTags'
   },
 ];

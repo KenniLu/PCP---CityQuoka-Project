@@ -398,7 +398,12 @@ export interface Post {
   title: string;
   subTitle?: string | null;
   image?: (number | null) | Media;
+  hero?: boolean | null;
+  hero_image?: (number | null) | Media;
+  hero_title?: string | null;
+  hero_subtitle?: string | null;
   standalone?: boolean | null;
+  featured?: boolean | null;
   content?:
     | (
         | {
@@ -477,9 +482,6 @@ export interface Post {
       }[]
     | null;
   venue?: (number | null) | Venue;
-  hero_image?: (number | null) | Media;
-  hero_title?: string | null;
-  hero_subtitle?: string | null;
   meta?: {
     title?: string | null;
     /**
@@ -1143,7 +1145,12 @@ export interface PostsSelect<T extends boolean = true> {
   title?: T;
   subTitle?: T;
   image?: T;
+  hero?: T;
+  hero_image?: T;
+  hero_title?: T;
+  hero_subtitle?: T;
   standalone?: T;
+  featured?: T;
   content?:
     | T
     | {
@@ -1184,9 +1191,6 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
       };
   venue?: T;
-  hero_image?: T;
-  hero_title?: T;
-  hero_subtitle?: T;
   meta?:
     | T
     | {

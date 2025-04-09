@@ -19,12 +19,12 @@ export const RecommendedSideBar: React.FC = async () => {
       image: true,
       slug: true,
     },
-    depth: limit,
+    depth: 1,
     limit,
     where: {
-      'tags.name': {
-        in: ['hero'],
-      },
+      hero: {
+        equals: true,
+      }
     },
   })
 

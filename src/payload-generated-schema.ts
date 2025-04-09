@@ -908,16 +908,18 @@ export const posts = pgTable(
     image: integer('image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    standalone: boolean('standalone').default(false),
-    summary: jsonb('summary'),
-    venue: integer('venue_id').references(() => venues.id, {
-      onDelete: 'set null',
-    }),
+    hero: boolean('hero').default(false),
     hero_image: integer('hero_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
     hero_title: varchar('hero_title'),
     hero_subtitle: varchar('hero_subtitle'),
+    standalone: boolean('standalone').default(false),
+    featured: boolean('featured').default(false),
+    summary: jsonb('summary'),
+    venue: integer('venue_id').references(() => venues.id, {
+      onDelete: 'set null',
+    }),
     meta_title: varchar('meta_title'),
     meta_image: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
@@ -936,8 +938,8 @@ export const posts = pgTable(
   },
   (columns) => ({
     posts_image_idx: index('posts_image_idx').on(columns.image),
-    posts_venue_idx: index('posts_venue_idx').on(columns.venue),
     posts_hero_image_idx: index('posts_hero_image_idx').on(columns.hero_image),
+    posts_venue_idx: index('posts_venue_idx').on(columns.venue),
     posts_meta_meta_image_idx: index('posts_meta_meta_image_idx').on(columns.meta_image),
     posts_slug_idx: index('posts_slug_idx').on(columns.slug),
     posts_updated_at_idx: index('posts_updated_at_idx').on(columns.updatedAt),
@@ -1114,16 +1116,18 @@ export const _posts_v = pgTable(
     version_image: integer('version_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_standalone: boolean('version_standalone').default(false),
-    version_summary: jsonb('version_summary'),
-    version_venue: integer('version_venue_id').references(() => venues.id, {
-      onDelete: 'set null',
-    }),
+    version_hero: boolean('version_hero').default(false),
     version_hero_image: integer('version_hero_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
     version_hero_title: varchar('version_hero_title'),
     version_hero_subtitle: varchar('version_hero_subtitle'),
+    version_standalone: boolean('version_standalone').default(false),
+    version_featured: boolean('version_featured').default(false),
+    version_summary: jsonb('version_summary'),
+    version_venue: integer('version_venue_id').references(() => venues.id, {
+      onDelete: 'set null',
+    }),
     version_meta_title: varchar('version_meta_title'),
     version_meta_image: integer('version_meta_image_id').references(() => media.id, {
       onDelete: 'set null',
@@ -1161,11 +1165,11 @@ export const _posts_v = pgTable(
     _posts_v_version_version_image_idx: index('_posts_v_version_version_image_idx').on(
       columns.version_image,
     ),
-    _posts_v_version_version_venue_idx: index('_posts_v_version_version_venue_idx').on(
-      columns.version_venue,
-    ),
     _posts_v_version_version_hero_image_idx: index('_posts_v_version_version_hero_image_idx').on(
       columns.version_hero_image,
+    ),
+    _posts_v_version_version_venue_idx: index('_posts_v_version_version_venue_idx').on(
+      columns.version_venue,
     ),
     _posts_v_version_meta_version_meta_image_idx: index(
       '_posts_v_version_meta_version_meta_image_idx',
@@ -2718,6 +2722,11 @@ export const relations_posts = relations(posts, ({ one, many }) => ({
     references: [media.id],
     relationName: 'image',
   }),
+  hero_image: one(media, {
+    fields: [posts.hero_image],
+    references: [media.id],
+    relationName: 'hero_image',
+  }),
   _blocks_PostContentBlock: many(posts_blocks_post_content_block, {
     relationName: '_blocks_PostContentBlock',
   }),
@@ -2731,11 +2740,6 @@ export const relations_posts = relations(posts, ({ one, many }) => ({
     fields: [posts.venue],
     references: [venues.id],
     relationName: 'venue',
-  }),
-  hero_image: one(media, {
-    fields: [posts.hero_image],
-    references: [media.id],
-    relationName: 'hero_image',
   }),
   meta_image: one(media, {
     fields: [posts.meta_image],
@@ -2837,6 +2841,11 @@ export const relations__posts_v = relations(_posts_v, ({ one, many }) => ({
     references: [media.id],
     relationName: 'version_image',
   }),
+  version_hero_image: one(media, {
+    fields: [_posts_v.version_hero_image],
+    references: [media.id],
+    relationName: 'version_hero_image',
+  }),
   _blocks_PostContentBlock: many(_posts_v_blocks_post_content_block, {
     relationName: '_blocks_PostContentBlock',
   }),
@@ -2850,11 +2859,6 @@ export const relations__posts_v = relations(_posts_v, ({ one, many }) => ({
     fields: [_posts_v.version_venue],
     references: [venues.id],
     relationName: 'version_venue',
-  }),
-  version_hero_image: one(media, {
-    fields: [_posts_v.version_hero_image],
-    references: [media.id],
-    relationName: 'version_hero_image',
   }),
   version_meta_image: one(media, {
     fields: [_posts_v.version_meta_image],
