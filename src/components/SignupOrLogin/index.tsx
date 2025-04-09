@@ -4,13 +4,14 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import LoginForm from '../LoginForm'
 import RegisterForm from '../RegisterForm'
+import ForgotPasswordForm from '../ForgotPasswordForm'
 import { Mail } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import EmailForm from '../EmailForm'
 
 type SignUpOrLogInProps = {
-  children: React.ReactNode;
-  onSuccessfulLogin?: () => void;
+  children: React.ReactNode
+  onSuccessfulLogin?: () => void
 }
 
 const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLogin }) => {
@@ -22,7 +23,18 @@ const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLog
       {children}
       {currentForm === 'login' && (
         <>
-          <LoginForm onSuccessfulLogin={onSuccessfulLogin}/>
+          <LoginForm onSuccessfulLogin={onSuccessfulLogin}>
+            <a
+              href="#"
+              className="text-blue-500 hover:underline mx-1 mt-1"
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentForm('forgot')
+              }}
+            >
+              Forgot password?
+            </a>
+          </LoginForm>
           <h3 className="text-black">
             Don&#39;t have an account?
             <a
@@ -30,7 +42,37 @@ const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLog
               className="text-blue-500 hover:underline mx-1"
               onClick={(e) => {
                 e.preventDefault()
-                setCurrentForm('register')
+                setCurrentForm('forgot')
+              }}
+            >
+              Sign up now
+            </a>
+            for your tailored guide to new experiences
+          </h3>
+        </>
+      )}
+      {currentForm === 'forgot' && (
+        <>
+          <ForgotPasswordForm>
+            <a
+              href="#"
+              className="text-blue-500 hover:underline mx-1 mt-1"
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentForm('login')
+              }}
+            >
+              Back to Login
+            </a>
+          </ForgotPasswordForm>
+          <h3 className="text-black">
+            Don&#39;t have an account?
+            <a
+              href="#"
+              className="text-blue-500 hover:underline mx-1"
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentForm('login')
               }}
             >
               Sign up now

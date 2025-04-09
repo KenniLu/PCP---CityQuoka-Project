@@ -31,7 +31,7 @@ const errorMap = {
   ),
 }
 
-export default function VerifyRequestPage() {
+export default function PasswordResetConfirmationPage() {
   const search = useSearchParams()
   const error = search.get('error') as Error
 
@@ -51,13 +51,15 @@ export default function VerifyRequestPage() {
       <Alert variant="default" className="my-2">
         <AlertTitle className="text-xl">Please check your email</AlertTitle>
         <AlertDescription className="text-base">
-          <p>A sign in link has been sent to your email address</p>
+          <p>
+            A password reset link will be sent to your email address if an account exists for the
+            email
+          </p>
+          <p>The link is valid for 1 hour.</p>
         </AlertDescription>
       </Alert>
-      <Link
-        href="/"
-        className={`w-64 p-2 rounded-md bg-quokka-yellow hover:bg-[#E69D00] mx-auto text-center inline-block`}
-      >
+
+      <Link href="/" className={`w-64 p-2 rounded-md bg-quokka-yellow hover:bg-[#E69D00] mx-auto text-center inline-block`}>
         Back to Home
       </Link>
     </div>

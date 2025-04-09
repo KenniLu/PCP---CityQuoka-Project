@@ -5,24 +5,24 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 
-import { loginSchema, LoginFormValues } from '@/validationSchemas/loginSchema'
-import { signIn } from 'next-auth/react'
+import { emailSchema, EmailFormValues } from '@/validationSchemas/emailSchema'
+// import { signIn } from 'next-auth/react'
+import { forgotPassword } from '@/app/actions/auth'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-interface LoginFormProps {
+interface ForgotPasswordFormProps {
   children: React.ReactNode
-  onSuccessfulLogin?: () => void
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) => {
+const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ children }) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<EmailFormValues>({
+    resolver: zodResolver(emailSchema),
     mode: 'onChange',
     defaultValues: {},
   })
@@ -30,32 +30,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) =>
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
   const emailChanged = watch('email')
-  const passwordChanged = watch('password')
-
+  
   useEffect(() => {
     setErrorMessage('')
-  }, [emailChanged, passwordChanged])
+  }, [emailChanged])
 
-  const onSubmit = async (data: LoginFormValues) => {
-    const { email, password } = data
+  const onSubmit = async (data: EmailFormValues) => {
+    const { email } = data
     try {
-      const response = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-      if (response?.error) {
-        setErrorMessage('Invalid email or password. Please try again.')
-      } else {
-        onSuccessfulLogin ? onSuccessfulLogin() : null
-      }
+      const response = await forgotPassword({email})
+      router.push('/password-reset-confirmation');
     } catch (error) {
-      setErrorMessage('Invalid email or password. Please try again.')
+      setErrorMessage('Something went wrong. Please try again')
     }
   }
 
   return (
     <div className="flex flex-col w-full max-w-md mx-auto p-2 bg-white rounded-xl">
+      <a className="my-2">Enter your email below to receive a password reset link</a>
       <form>
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"> */}
         <div>
@@ -83,33 +75,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) =>
               <p className="text-red-500 text-sm text-left mb-1">{errors.email.message}</p>
             )}
           </div>
-
-          <div className="mb-3">
-            <div className="relative">
-              <input
-                {...register('password')}
-                type="password"
-                id="password"
-                placeholder=" "
-                // className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500 peer"
-                className="mt-1 block w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500 focus:ring-blue-500 peer"
-              />
-              <label
-                htmlFor="password"
-                // className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150 peer-focus:text-sm peer-focus:-top-3 peer-focus:left-2 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:left-2`}
-                className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
-                  peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
-                  peer-focus:bg-white peer-focus:px-1
-                  peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
-                  peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
-              >
-                Password
-              </label>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm text-left mb-1">{errors.password.message}</p>
-            )}
-          </div>
         </div>
         {errorMessage !== '' && (
           <Alert variant="destructive" className="my-2">
@@ -122,7 +87,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) =>
             className={`w-64 p-2 rounded-md ${isValid ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             onClick={handleSubmit(onSubmit)}
           >
-            Login
+            Submit
           </button>
         </div>
       </form>
@@ -131,4 +96,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) =>
   )
 }
 
-export default LoginForm;
+export default ForgotPasswordForm;
