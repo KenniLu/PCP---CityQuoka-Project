@@ -1,15 +1,11 @@
-'use client'
-
 import type { StaticImageData } from 'next/image'
 
 import { cn } from 'src/utilities/cn'
 import NextImage from 'next/image'
-import React from 'react'
 
 import type { Props as MediaProps } from '../types'
 
 import cssVariables from '@/cssVariables'
-import { getClientSideURL } from '@/utilities/getURL'
 
 const { breakpoints } = cssVariables
 
@@ -18,15 +14,13 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     alt: altFromProps,
     fill,
     imgClassName,
-    onClick,
-    onLoad: onLoadFromProps,
+    // onClick,
+    // onLoad: onLoadFromProps,
     priority,
     resource,
     size: sizeFromProps,
     src: srcFromProps,
   } = props
-
-  const [isLoading, setIsLoading] = React.useState(true)
 
   let width: number | undefined
   let height: number | undefined
@@ -40,13 +34,14 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
       height: fullHeight,
       url,
       width: fullWidth,
+      focalX,
+      focalY
     } = resource
 
     width = fullWidth!
     height = fullHeight!
     alt = altFromResource || ''
-
-    src = `${getClientSideURL()}${url}`
+    src = ( process.env.NODE_ENV === 'development' ?  `${url}?focus=${focalX}_${focalY}` : `/media/${fullFilename}?focus=${focalX}_${focalY}` )
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -55,20 +50,12 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     : Object.entries(breakpoints)
         .map(([, value]) => `(max-width: ${value}px) ${value}px`)
         .join(', ')
-
   return (
     <NextImage
       alt={alt || ''}
       className={cn(imgClassName)}
       fill={fill}
       height={!fill ? height : undefined}
-      onClick={onClick}
-      onLoad={() => {
-        setIsLoading(false)
-        if (typeof onLoadFromProps === 'function') {
-          onLoadFromProps()
-        }
-      }}
       priority={priority}
       quality={90}
       sizes={sizes}

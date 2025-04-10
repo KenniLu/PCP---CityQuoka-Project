@@ -6,6 +6,9 @@ import * as migration_20250306_024920_addSubtitleToPost from './20250306_024920_
 import * as migration_20250312_233909_addAuthTables from './20250312_233909_addAuthTables';
 import * as migration_20250319_074319_addReactions from './20250319_074319_addReactions';
 import * as migration_20250321_114359_addCategoriesPosts from './20250321_114359_addCategoriesPosts';
+import * as migration_20250406_215037_dropImageSizes from './20250406_215037_dropImageSizes';
+import * as migration_20250409_034153_addPasswordResetToken from './20250409_034153_addPasswordResetToken';
+import * as migration_20250409_051947_addFieldsToReplaceTags from './20250409_051947_addFieldsToReplaceTags';
 
 export const migrations = [
   {
@@ -46,6 +49,21 @@ export const migrations = [
   {
     up: migration_20250321_114359_addCategoriesPosts.up,
     down: migration_20250321_114359_addCategoriesPosts.down,
-    name: '20250321_114359_addCategoriesPosts'
+    name: '20250321_114359_addCategoriesPosts',
+  },
+  {
+    up: migration_20250406_215037_dropImageSizes.up,
+    down: migration_20250406_215037_dropImageSizes.down,
+    name: '20250406_215037_dropImageSizes',
+  },
+  {
+    up: migration_20250409_034153_addPasswordResetToken.up,
+    down: migration_20250409_034153_addPasswordResetToken.down,
+    name: '20250409_034153_addPasswordResetToken',
+  },
+  {
+    up: migration_20250409_051947_addFieldsToReplaceTags.up,
+    down: migration_20250409_051947_addFieldsToReplaceTags.down,
+    name: '20250409_051947_addFieldsToReplaceTags'
   },
 ];

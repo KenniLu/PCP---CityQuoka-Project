@@ -33,9 +33,18 @@ export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
       categories: true,
     },
     where: {
-      id: {
-        in: [...new Set(productIds.map((id) => id['postId']))],
-      },
+      and: [
+        {
+          id: {
+            in: [...new Set(productIds.map((id) => id['postId']))],
+          },
+        },
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+      ],
     },
   })
   return result.docs || []
@@ -64,9 +73,18 @@ export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset 
       categories: true,
     },
     where: {
-      id: {
-        in: [...new Set(productIds.map((id) => id['postId']))],
-      },
+      and: [
+        {
+          id: {
+            in: [...new Set(productIds.map((id) => id['postId']))],
+          },
+        },
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+      ],
     },
   })
   return result.docs || []

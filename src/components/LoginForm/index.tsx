@@ -11,10 +11,11 @@ import { signIn } from 'next-auth/react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface LoginFormProps {
-  onSuccessfulLogin?: () => void;
+  children: React.ReactNode
+  onSuccessfulLogin?: () => void
 }
 
-export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
+const LoginForm: React.FC<LoginFormProps> = ({ children, onSuccessfulLogin }) => {
   const {
     register,
     handleSubmit,
@@ -45,7 +46,7 @@ export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
       })
       if (response?.error) {
         setErrorMessage('Invalid email or password. Please try again.')
-      }else{
+      } else {
         onSuccessfulLogin ? onSuccessfulLogin() : null
       }
     } catch (error) {
@@ -72,7 +73,7 @@ export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
                   peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
                   peer-focus:bg-white peer-focus:px-1
-                  peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+                  peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
                   peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Email
@@ -99,7 +100,7 @@ export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
                   peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
                   peer-focus:bg-white peer-focus:px-1
-                  peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+                  peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
                   peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Password
@@ -125,6 +126,9 @@ export default function LoginForm({onSuccessfulLogin}: LoginFormProps = {}) {
           </button>
         </div>
       </form>
+      {children}
     </div>
   )
 }
+
+export default LoginForm;

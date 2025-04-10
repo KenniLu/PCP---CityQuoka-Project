@@ -49,7 +49,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_policy" {
   rule {
     id     = "delete-after-1-day"
     status = "Enabled"
-
+    filter {}
     expiration {
       days = 1
     }
@@ -149,7 +149,7 @@ data "archive_file" "lambda_archive_zip" {
   type        = "zip"
   source_file = "header_modifier_lambda/index.js"
   output_file_mode = "0444"
-  output_path = "header_modifier_lambda.zip"
+  output_path = "artefacts/header_modifier_lambda.zip"
 }
 
 resource "aws_lambda_function" "header_modifier" {
@@ -181,6 +181,57 @@ resource "aws_cloudfront_distribution" "app" {
       https_port             = 443
       origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  origin {
+    domain_name = var.images_cache_bucket_regional_domain_name
+    origin_id   = "S3ImageBucketOrigin"
+    
+    s3_origin_config {
+      origin_access_identity = var.images_cache_bucket_oai_id_path
+    }
+    
+    origin_shield {
+      enabled              = true
+      origin_shield_region = var.cloudfront_origin_shield_region
+    }
+  }
+  
+  # Fallback origin - Lambda Function URL
+  origin {
+    domain_name = replace(replace(var.image_optimizer_lambda_function_url, "https://", ""), "/","") # Remove https:// and trailing slash.
+    origin_id   = "ImageProcessingLambdaOrigin"
+    origin_access_control_id = var.image_optimizer_lambda_origin_access_control_id
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+    
+    # Origin shield if needed
+    origin_shield {
+      enabled              = true
+      origin_shield_region = var.cloudfront_origin_shield_region
+    }
+  }
+  
+  # Origin group that combines the S3 and Lambda origins
+  origin_group {
+    origin_id = "ImageOriginGroup"
+    
+    failover_criteria {
+      status_codes = [403, 500, 503, 504]
+    }
+    
+    member {
+      origin_id = "S3ImageBucketOrigin"
+    }
+    
+    member {
+      origin_id = "ImageProcessingLambdaOrigin"
     }
   }
 
@@ -292,6 +343,28 @@ resource "aws_cloudfront_distribution" "app" {
     default_ttl            = 86400
     max_ttl                = 31536000
     compress               = true
+  }
+
+  ordered_cache_behavior {
+    path_pattern = "/media/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "ImageOriginGroup"
+    viewer_protocol_policy = "redirect-to-https"
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "none" # Image optimization doesn't need cookies
+      }
+    }
+    min_ttl = 0
+    default_ttl = 86400 # 1 day
+    max_ttl = 31536000 # 1 year
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = var.image_url_rewrite_lambda_qualified_arn
+      include_body = false
+    }
   }
 
   viewer_certificate {

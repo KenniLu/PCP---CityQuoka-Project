@@ -6,3 +6,4 @@ export { verificationTokens } from "./verificationTokens";
 export { reactions } from "./reactions"
 export { reactionTypesEnum } from "./reactions"
 export { categoriesPosts } from "./categoriesPosts"
+export { passwordResetTokens } from "./passwordResetTokens"

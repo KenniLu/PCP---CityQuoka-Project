@@ -35,6 +35,8 @@ module "cq-cms-app" {
   instance_size         = var.instance_size
   github_connection_arn = var.github_connection_arn
   github_repository_id = var.github_repository_id
+  images_source_bucket_name = var.images_source_bucket_name
+  images_cache_bucket_name = var.images_cache_bucket_name
   environment_variables = var.environment_variables
   secret_environment_variables = var.secret_environment_variables
 

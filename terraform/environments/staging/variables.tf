@@ -52,3 +52,13 @@ variable "github_connection_arn" {
   type = string
   description = "GitHub Connection ARN for Apprunner to use to connect to Github"
 }
+
+variable "images_source_bucket_name" {
+  description = "Name of the S3 bucket containing source images"
+  type        = string
+}
+
+variable "images_cache_bucket_name" {
+  description = "Name of the S3 bucket for caching optimized images"
+  type        = string
+}

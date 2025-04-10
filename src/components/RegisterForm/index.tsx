@@ -96,7 +96,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setLoginView }) => {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
               peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
               peer-focus:bg-white peer-focus:px-1
-              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
               peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 First Name
@@ -123,7 +123,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setLoginView }) => {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
               peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
               peer-focus:bg-white peer-focus:px-1
-              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
               peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Last Name
@@ -150,7 +150,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setLoginView }) => {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
               peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
               peer-focus:bg-white peer-focus:px-1
-              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
               peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Email
@@ -177,7 +177,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setLoginView }) => {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
               peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
               peer-focus:bg-white peer-focus:px-1
-              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
               peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Password
@@ -204,7 +204,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setLoginView }) => {
                 className={`absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 duration-150
               peer-focus:text-sm peer-focus:-top-0 peer-focus:left-2 peer-focus:text-blue-500
               peer-focus:bg-white peer-focus:px-1
-              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-2
+              peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:-top-0
               peer-[:not(:placeholder-shown)]:left-2 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1`}
               >
                 Password Confirmation

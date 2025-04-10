@@ -80,6 +80,52 @@ export const Posts: CollectionConfig = {
       },
     },
     {
+      name: 'hero',
+      type: 'checkbox',
+      label: 'is Hero Post',
+      defaultValue: false,
+    },
+    {
+      name: 'hero_image',
+      label: 'Hero Image',
+      type: 'upload',
+      relationTo: 'media',
+      access: {
+        read: () => true,
+      },
+      admin: {
+        condition: (_, siblingData) => siblingData.hero
+      },
+    },
+    {
+      name: 'hero_title',
+      label: 'Hero Title',
+      type: 'text',
+      admin: {
+        condition: (_, siblingData) => siblingData.hero
+      },
+      validate: (value, { data }) => {
+        if (!value && data.hero) {
+          return 'Hero Title is needed when Post is a hero'
+        }
+        return true
+      },
+    },
+    {
+      name: 'hero_subtitle',
+      label: 'Hero Subtitle',
+      type: 'text',
+      admin: {
+        condition: (_, siblingData) => siblingData.hero
+      },
+      validate: (value, { data }) => {
+        if (!value && data.hero) {
+          return 'Hero Subtitle is needed when Post is a hero'
+        }
+        return true
+      },
+    },
+    {
       name: 'standalone',
       type: 'checkbox',
       label: 'is Standalone Post',
@@ -91,6 +137,23 @@ export const Posts: CollectionConfig = {
             await req.payload.db.drizzle
               .update(categoriesPosts)
               .set({ standalone: value })
+              .where(eq(categoriesPosts.postId, postId))
+          },
+        ],
+      },
+    },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      label: 'is Featured Post',
+      defaultValue: false,
+      hooks: {
+        afterChange: [
+          async ({ value, req, originalDoc }) => {
+            const postId = originalDoc?.id
+            await req.payload.db.drizzle
+              .update(categoriesPosts)
+              .set({ featured: value })
               .where(eq(categoriesPosts.postId, postId))
           },
         ],
@@ -175,16 +238,14 @@ export const Posts: CollectionConfig = {
                           .where(eq(categoriesPosts.postId, postId))
                         currentCategories.forEach(async (category: string) => {
                           const [categoryId, categoryPath] = JSON.parse(category)
-                          await req.payload.db.drizzle
-                            .insert(categoriesPosts)
-                            .values({
-                              categoryId,
-                              postId,
-                              categoryPath,
-                              featured,
-                              recommended,
-                              standalone,
-                            })
+                          await req.payload.db.drizzle.insert(categoriesPosts).values({
+                            categoryId,
+                            postId,
+                            categoryPath,
+                            featured,
+                            recommended,
+                            standalone,
+                          })
                         })
                       }
                     }
@@ -202,25 +263,6 @@ export const Posts: CollectionConfig = {
                 },
               ],
               required: false,
-              hooks: {
-                afterChange: [
-                  async ({ value, req, originalDoc }) => {
-                    const postId = originalDoc?.id
-                    if (postId && value) {
-                      const tags = value.reduce((h, tag) => {
-                        h[tag?.name] = true
-                        return h
-                      }, {})
-                      const recommended = !!tags['recommended']
-                      const featured = !!tags['featured']
-                      await req.payload.db.drizzle
-                        .update(categoriesPosts)
-                        .set({ featured, recommended })
-                        .where(eq(categoriesPosts.postId, postId))
-                    }
-                  },
-                ],
-              },
             },
             {
               name: 'venue',
@@ -228,49 +270,6 @@ export const Posts: CollectionConfig = {
               relationTo: 'venues',
               hasMany: false,
               required: false,
-            },
-            {
-              name: 'hero_image',
-              type: 'upload',
-              relationTo: 'media',
-              access: {
-                read: () => true,
-              },
-              admin: {
-                condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) &&
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
-              },
-            },
-            {
-              name: 'hero_title',
-              type: 'text',
-              admin: {
-                condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) &&
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
-              },
-              validate: (value, { data }) => {
-                if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
-                  return 'Hero Title is needed when Post is a hero'
-                }
-                return true
-              },
-            },
-            {
-              name: 'hero_subtitle',
-              type: 'text',
-              admin: {
-                condition: (_, siblingData) =>
-                  Array.isArray(siblingData?.tags) &&
-                  siblingData.tags.some((_tag) => _tag['name'] === 'hero'),
-              },
-              validate: (value, { data }) => {
-                if (!value && data?.tags?.some((_tag) => _tag['name'] === 'hero')) {
-                  return 'Hero Subtitle is needed when Post is a hero'
-                }
-                return true
-              },
             },
           ],
           label: 'Meta',

@@ -1,9 +1,7 @@
 import React from 'react'
-// import Image from 'next/image'
-import type { Post, Media as MediaType } from '@/payload-types'
+import type { Post } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { isRichTextEmpty } from '@/utilities/isRichTextEmpty'
-// import ResponsiveImage from '@/components/ResponsiveImage'
 import { Media } from '@/components/Media'
 import SocialActions from '@/blocks/PostEntrySocialActions'
 import { CMSLink } from '../Link'
@@ -22,14 +20,12 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
   const formatListPostTitle = (listType: string, index: number) => {
     switch (listType) {
       case 'bulleted':
-        // return `• ${title}`
         return (
           <span className="text-2xl text-[#585858] leading-[128%] tracking-[-1.5px] text-justify capitalize">
             &bull;&nbsp;{' '}
           </span>
         )
       case 'numbered':
-        // return `${index}. ${title}`
         return (
           <span className="text-[#585858] leading-[128%] tracking-[-1.5px] text-justify capitalize">
             {index}.&nbsp;{' '}
@@ -72,15 +68,11 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           <div className="w-full h-[4px] bg-[#EFEFEF] max-w-[300px] mx-auto sm:max-w-[300px]"></div>
         </>
       )}
-      {/* <div className="mt-12 max-w-full w-full px-4 sm:px-6 lg:px-12"> */}
       <div className="mt-2 xl:mt-4 max-w-full w-full">
         <div className="flex gap-5 flex-col-reverse xl:flex-row">
           <div className="flex flex-col w-full xl:w-6/12">
             <div className="flex flex-col grow mt-2 xl:mt-10">
-              {/* <div className="tracking-tighter leading-8 text-black"> */}
               <div className="leading-8 text-black">
-                {/* {formatListPostTitle(listType, index)} */}
-                {/* <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 rounded-[6px] bg-[#EBEBEB] px-2 py-1"> */}
                 <span className="w-full lg:w-[346.605px] h-[44px] flex-shrink-0 py-1 text-2xl font-bold">
                   {formatListPostTitle(listType, index)}
                   {title}
@@ -106,22 +98,14 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
               <div className="flex justify-end mb-1 mr-auto xl:mr-0">
                 <SocialActions postId={post.id} />
               </div>
-              <div className="relative flex flex-col items-start pt-2 pb-2 mt-1 w-full text-xl tracking-tight rounded-md min-h-[320px] max-w-full">
+              <div className="relative flex flex-col items-start mt-1 w-full text-xl tracking-tight rounded-md aspect-[3/2] max-w-full">
                 {image && (
-                  // <ResponsiveImage
-                  //   media={image as MediaType}
-                  //   alt={post.title!}
-                  //   sizes="(max-width: 685px) 100vw, 685px"
-                  //   className="object-cover absolute inset-0 w-full h-full"
-                  // />
                   <Media
-                    // fill
                     priority
-                    size="(max-width: 768px) 100vw, (max-width: 1300px) 60vw, 33vw"
-                    // imgClassName=""
-                    className="inset-0"
-                    imgClassName="object-cover h-[35vh] md:h-[50vh] xl:h-[35vh]"
+                    className="inset-0 w-full h-full"
+                    imgClassName="object-cover w-full h-full"
                     resource={image}
+                    size="(max-width: 767px) 100vw, (max-width: 1020px) 622px, (max-width: 1280px) 741px, 411px"
                   />
                 )}
               </div>
