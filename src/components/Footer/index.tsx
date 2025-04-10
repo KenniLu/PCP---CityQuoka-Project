@@ -12,10 +12,10 @@ const Footer = () => {
               {/* <Image src="/icons/item1-1.svg" alt="Quokka Map" width={138} height={128} /> */}
               <Image
                 className="filter invert w-40 pb-7"
-                src="/city-quokka-label.png"
+                src="/icons/-label.svg"
                 alt="logo"
-                width={144}
-                height={40}
+                width={150}
+                height={60}
               />
             </Link>
             {/* Media */}
@@ -27,7 +27,7 @@ const Footer = () => {
                     className="w-10 h-10"
                     aria-hidden="true"
                     focusable="false"
-                    viewBox="0 0 448 512"
+                    viewBox="0 0 430 500"
                   >
                     <path
                       fill="currentColor"
@@ -59,7 +59,7 @@ const Footer = () => {
                     className="w-10 h-10"
                     aria-hidden="true"
                     focusable="false"
-                    viewBox="0 0 270 270"
+                    viewBox="0 0 280 280"
                   >
                     <path
                       fill="currentColor"
