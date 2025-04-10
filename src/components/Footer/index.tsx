@@ -12,10 +12,10 @@ const Footer = () => {
               {/* <Image src="/icons/item1-1.svg" alt="Quokka Map" width={138} height={128} /> */}
               <Image
                 className="filter invert w-40 pb-7"
-                src="/icons/-label.svg"
+                src="/icons/logo-label.svg"
                 alt="logo"
-                width={150}
-                height={60}
+                width={300}
+                height={230}
               />
             </Link>
             {/* Media */}
