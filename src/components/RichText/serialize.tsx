@@ -209,6 +209,23 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                   reference={fields.doc as any}
                   type={fields.linkType === 'internal' ? 'reference' : 'custom'}
                   url={fields.url}
+                  className={"text-blue-600 underline"}
+                >
+                  {serializedChildren}
+                </CMSLink>
+              )
+            }
+            case 'autolink': {
+              const fields = node.fields
+      
+              return (
+                <CMSLink
+                  key={index}
+                  newTab={Boolean(fields?.newTab)}
+                  reference={fields.doc as any}
+                  type={fields.linkType === 'internal' ? 'reference' : 'custom'}
+                  url={fields.url}
+                  className={"text-blue-600 underline"}
                 >
                   {serializedChildren}
                 </CMSLink>

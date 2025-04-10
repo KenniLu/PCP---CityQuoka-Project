@@ -73,7 +73,7 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
           <div className="flex flex-col w-full xl:w-6/12">
             <div className="flex flex-col grow mt-2 xl:mt-10">
               <div className="leading-8 text-black">
-                <span className="inline-block w-full lg:w-[346.605px] h-[44px] flex-shrink-0 py-1 text-2xl font-bold">
+                <span className="w-full lg:w-[346.605px] h-[44px] flex-shrink-0 py-1 text-2xl font-bold">
                   {formatListPostTitle(listType, index)}
                   {title}
                 </span>
