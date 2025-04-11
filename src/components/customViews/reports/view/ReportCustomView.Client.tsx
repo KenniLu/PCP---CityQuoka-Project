@@ -42,20 +42,20 @@ export function ReportCustomViewClient({
   }
 
   const renderStatusBadge = () => {
-    let color = 'blue'
+    let color = '#4A72B0'
 
     switch (status) {
       case 'COMPLETED':
-        color = 'green'
+        color = '#4CAF50'
         break
       case 'FAILED':
-        color = 'red'
+        color = '#E74C3C'
         break
       case 'PROCESSING':
-        color = 'yellow'
+        color = '#E67E22'
         break
       default:
-        color = 'blue'
+        color = '#4A72B0'
     }
 
     return <Badge color={color}>{status}</Badge>

@@ -69,6 +69,9 @@ export const Reports: CollectionConfig = {
       type: 'select',
       admin: {
         hidden: true,
+        components: {
+          Cell: '/components/customViews/reports/fields/report/ReportCustomCellStatusView#ReportCustomCellStatusView',
+        },
       },
       options: [
         { label: 'Requested', value: 'REQUESTED' },
