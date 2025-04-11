@@ -22,6 +22,8 @@ import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from 
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_6fdaafe522e05f870e10671c2ac79ece } from '@/app/(admin)/venues/google-venue-search'
+import { ReportCustomCellView as ReportCustomCellView_af09c668315a02d26afaf66bfdddf693 } from '../../../components/customViews/reports/fields/report/ReportCustomCellView'
+import { ReportCustomViewServer as ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae } from '../../../components/customViews/reports/view/ReportCustomView.Server'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { default as default_d4048015f466832aa056ed6cce3b1c3f } from '@/components/CustomLogo'
@@ -54,6 +56,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/app/(admin)/venues/google-venue-search#default": default_6fdaafe522e05f870e10671c2ac79ece,
+  "/components/customViews/reports/fields/report/ReportCustomCellView#ReportCustomCellView": ReportCustomCellView_af09c668315a02d26afaf66bfdddf693,
+  "/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer": ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/components/CustomLogo#default": default_d4048015f466832aa056ed6cce3b1c3f,
