@@ -1,0 +1,11 @@
+{
+  "name": "reports-generator-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for generating reports",
+  "dependencies": {
+    "pg": "^8.14.1",
+    "aws-sdk": "^2.1692.0",
+    "archiver": "^7.0.1",
+    "axios": "^1.8.4"
+  }
+}

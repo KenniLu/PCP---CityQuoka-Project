@@ -31,6 +31,9 @@ module "apprunner" {
   instance_size             = var.instance_size
   environment_variables = local.merged_environment_variables
   ecr_repository_url = module.ecr.repository_url
+  images_source_bucket_name = var.images_source_bucket_name
+  reports_bucket_name = var.reports_bucket_name
+  reports_sqs_queue_arn = module.reports-generator-lambda.reports_sqs_queue_arn
 }
 
 module "cicd" {
@@ -79,4 +82,13 @@ module "image-optimization-lambda" {
   images_source_bucket_name = var.images_source_bucket_name
   images_cache_bucket_name = var.images_cache_bucket_name
   cloudfront_distribution_app_arn = module.cdn.cloudfront_distribution_app_arn
+}
+
+module "reports-generator-lambda" {
+  source = "./modules/reports-generator-lambda"
+  app_name = var.app_name
+  environment = var.environment
+  db_uri = var.secret_environment_variables.DATABASE_URI
+  reports_bucket_name = var.reports_bucket_name
+  app_domain = var.secret_environment_variables.NEXT_PUBLIC_SERVER_URL
 }

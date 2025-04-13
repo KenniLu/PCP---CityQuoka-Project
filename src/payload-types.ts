@@ -74,6 +74,7 @@ export interface Config {
     events: Event;
     programmes: Programme;
     venues: Venue;
+    reports: Report;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -92,6 +93,7 @@ export interface Config {
     events: EventsSelect<false> | EventsSelect<true>;
     programmes: ProgrammesSelect<false> | ProgrammesSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
+    reports: ReportsSelect<false> | ReportsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -603,6 +605,9 @@ export interface User {
   name?: string | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -823,6 +828,29 @@ export interface HeroCarouselBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports".
+ */
+export interface Report {
+  id: number;
+  report: 'PostsAuditReport';
+  requestedAt?: string | null;
+  requestor?: (number | null) | User;
+  status?: ('REQUESTED' | 'PROCESSING' | 'COMPLETED' | 'FAILED') | null;
+  errors?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  filename?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -932,6 +960,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'venues';
         value: number | Venue;
+      } | null)
+    | ({
+        relationTo: 'reports';
+        value: number | Report;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1261,6 +1293,9 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1325,6 +1360,20 @@ export interface VenuesSelect<T extends boolean = true> {
   linkedInUrl?: T;
   slug?: T;
   slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports_select".
+ */
+export interface ReportsSelect<T extends boolean = true> {
+  report?: T;
+  requestedAt?: T;
+  requestor?: T;
+  status?: T;
+  errors?: T;
+  filename?: T;
   updatedAt?: T;
   createdAt?: T;
 }
