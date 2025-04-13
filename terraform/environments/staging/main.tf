@@ -40,5 +40,5 @@ module "cq-cms-app" {
   reports_bucket_name = var.reports_bucket_name
   environment_variables = var.environment_variables
   secret_environment_variables = var.secret_environment_variables
-
+  application_api_key = var.application_api_key
 }

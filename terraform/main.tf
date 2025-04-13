@@ -91,4 +91,6 @@ module "reports-generator-lambda" {
   db_uri = var.secret_environment_variables.DATABASE_URI
   reports_bucket_name = var.reports_bucket_name
   app_domain = var.secret_environment_variables.NEXT_PUBLIC_SERVER_URL
+  application_api_key = var.application_api_key
+  app_env = var.environment
 }

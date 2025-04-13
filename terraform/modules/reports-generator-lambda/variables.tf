@@ -28,3 +28,13 @@ variable "app_domain" {
   description = "App domain to make the API call"
   type = string
 }
+
+variable "application_api_key" { 
+  description = "API Authorization key"
+  type = string
+}
+
+variable "app_env" {
+  description = "APPLICATION ENVIRONMENT"
+  type = string
+}

@@ -154,12 +154,14 @@ resource "aws_lambda_function" "reports_generator" {
   
   # Set appropriate memory and timeout for image processing
   memory_size = 1500
-  timeout     = 60
+  timeout     = 30
   environment {
     variables = {
+      APP_ENV = var.app_env
       DATABASE_URI = var.db_uri
       APP_DOMAIN  = var.app_domain
       S3_BUCKET    = var.reports_bucket_name
+      APP_API_KEY = var.application_api_key
     }
   }
 }

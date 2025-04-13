@@ -67,3 +67,8 @@ variable "reports_bucket_name" {
   description = "Name of the S3 bucket for saving reports"
   type        = string
 }
+
+variable "application_api_key" { 
+  description = "API Authorization key"
+  type = string
+}
