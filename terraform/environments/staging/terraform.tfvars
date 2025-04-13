@@ -6,6 +6,7 @@ github_branch      = "staging"
 domain_name        = "staging.cityquokka.com"
 images_source_bucket_name = "cq-cms-staging-images"
 images_cache_bucket_name = "cq-cms-staging-cached-images"
+reports_bucket_name = "cq-cms-staging-reports"
 instance_size = {
   cpu    = "1 vCPU"
   memory = "2 GB"
