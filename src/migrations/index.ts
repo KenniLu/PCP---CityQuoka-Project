@@ -9,6 +9,7 @@ import * as migration_20250321_114359_addCategoriesPosts from './20250321_114359
 import * as migration_20250406_215037_dropImageSizes from './20250406_215037_dropImageSizes';
 import * as migration_20250409_034153_addPasswordResetToken from './20250409_034153_addPasswordResetToken';
 import * as migration_20250409_051947_addFieldsToReplaceTags from './20250409_051947_addFieldsToReplaceTags';
+import * as migration_20250413_100033_addReportModel from './20250413_100033_addReportModel';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20250409_051947_addFieldsToReplaceTags.up,
     down: migration_20250409_051947_addFieldsToReplaceTags.down,
-    name: '20250409_051947_addFieldsToReplaceTags'
+    name: '20250409_051947_addFieldsToReplaceTags',
+  },
+  {
+    up: migration_20250413_100033_addReportModel.up,
+    down: migration_20250413_100033_addReportModel.down,
+    name: '20250413_100033_addReportModel'
   },
 ];
