@@ -27,7 +27,7 @@ const CategoriesBreadCrumb = (
     url: string
   }[],
 ) => {
-  return (
+  return (paths || []).length > 1 ? (
     <Breadcrumb>
       <BreadcrumbList>
         {(paths || []).map((crumb, indx) => (
@@ -44,7 +44,7 @@ const CategoriesBreadCrumb = (
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  ) : null
 }
 
 export default async function CityGuidePage({ params }) {
