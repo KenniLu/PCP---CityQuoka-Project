@@ -34,6 +34,7 @@ module "apprunner" {
   images_source_bucket_name = var.images_source_bucket_name
   reports_bucket_name = var.reports_bucket_name
   reports_sqs_queue_arn = module.reports-generator-lambda.reports_sqs_queue_arn
+  reports_sqs_queue_url = module.reports-generator-lambda.reports_sqs_queue_url
 }
 
 module "cicd" {

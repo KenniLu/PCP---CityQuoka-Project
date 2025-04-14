@@ -120,6 +120,7 @@ locals {
       _AWS_SECRET_ACCESS_KEY = aws_iam_access_key.application_user_key.secret
       _AWS_REGION            = data.aws_region.current.name
       REPORTS_S3_BUCKET = var.reports_bucket_name
+      REPORTS_SQS_QUEUE_URL = var.reports_sqs_queue_url
     }
   )  
 }

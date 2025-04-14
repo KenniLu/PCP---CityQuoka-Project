@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { pupulateDefaultFields } from './hooks/pupulateDefaultFields'
 import { downloadReport } from './hooks/downloadReport'
+import { requestReportGeneration } from './hooks/requestReportGeneration'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
@@ -97,5 +98,6 @@ export const Reports: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [pupulateDefaultFields],
+    afterChange: [requestReportGeneration]
   },
 }
