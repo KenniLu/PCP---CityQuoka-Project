@@ -8,17 +8,16 @@ import { useConfig } from '@payloadcms/ui'
 
 type ReportCustomViewClientProps = {
   report: Report
-  user: User
 }
 
 export function ReportCustomViewClient({
-  report,
-  user,
+  report
 }: ReportCustomViewClientProps) {
   const {
     id,
     report: reportName,
     status,
+    requestorName,
     requestedAt,
     errors,
     filename,
@@ -111,7 +110,7 @@ export function ReportCustomViewClient({
         <div>{formatDate(requestedAt)}</div>
 
         <div className="label">Requested By:</div>
-        <div>{user?.name}</div>
+        <div>{requestorName}</div>
 
         <div className="label">Created At:</div>
         <div>{formatDate(createdAt)}</div>

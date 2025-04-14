@@ -99,17 +99,13 @@ function getSQLQueryForReportType(reportType, params) {
     case 'PostsAuditReport':
       return `
         select p.id as post_id, p.title as title, sub_title as subtitle, _status as status, standalone as is_standalone,
-        max(hero_t.name) as hero_tag,
-        max(feat_t.name) as featured_tag,
         CASE WHEN p.image_id IS NOT NULL THEN TRUE ELSE FALSE END AS has_image,
         string_agg(DISTINCT c.title, ', ') AS categories,
-        string_agg(DISTINCT u.name, ', ') AS users
+        string_agg(DISTINCT u.name, ', ') AS users,
+        CASE when p.hero IS TRUE THEN 'Y' ELSE 'N' END as hero,
+        CASE when p.featured IS TRUE THEN 'Y' ELSE 'N' END as featured
         FROM 
             posts p
-        LEFT JOIN 
-            posts_tags hero_t ON p.id = hero_t._parent_id AND hero_t.name = 'hero'
-        LEFT JOIN 
-            posts_tags feat_t ON p.id = feat_t._parent_id AND feat_t.name = 'featured'
         LEFT JOIN 
             posts_rels pr ON p.id = pr.parent_id
         LEFT JOIN 

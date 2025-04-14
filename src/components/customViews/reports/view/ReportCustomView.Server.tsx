@@ -11,9 +11,6 @@ export async function ReportCustomViewServer({ initPageResult, doc }: DocumentVi
     notFound()
   }
 
-  const { requestor } =
-    doc as Report
-
   const Badge = ({ children, color }) => {
     const badgeStyles = {
       display: 'inline-block',
@@ -48,21 +45,6 @@ export async function ReportCustomViewServer({ initPageResult, doc }: DocumentVi
     return redirect(`${adminRoute}/unauthorized`)
   }
 
-  var requestorUser: User | { [k: string]: string } = { name: 'Archived User' }
-
-  if (requestor) {
-    requestorUser = await payload
-      .find({
-        collection: 'users',
-        where: {
-          id: {
-            equals: requestor,
-          },
-        },
-      })
-      .then((res) => (res.totalDocs > 0 ? res.docs[0] : { name: 'Archived User' }))
-  }
-
   return (
     <Fragment>
       <SetStepNav
@@ -83,7 +65,7 @@ export async function ReportCustomViewServer({ initPageResult, doc }: DocumentVi
           paddingRight: 'var(--gutter-h)',
         }}
       >
-        <ReportCustomViewClient report={doc as Report} user={user}/>
+        <ReportCustomViewClient report={doc as Report}/>
       </div>
     </Fragment>
   )
