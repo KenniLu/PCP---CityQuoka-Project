@@ -2,10 +2,9 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from 'src/utilities/cn'
 import Link from 'next/link'
 import React from 'react'
-import findLongestArray from '@/utilities/findLongestArray'
+import calculatePostLink from '@/utilities/calculatePostLink'
+import type { Page, Post } from '@/payload-types'
 
-import type { Category, Page, Post } from '@/payload-types'
-import {format} from '@/hooks/formatSlug'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -35,28 +34,15 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     url,
   } = props
 
-  // const href =
-  //   type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-  //     ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
-  //         reference.value.slug
-  //       }`
-  //     : url
+  let href = url
 
-  let href = url;
-
-  if (type === 'reference' && typeof reference?.value === 'object' && reference.value.slug) {
+  if (!href && type === 'reference' && typeof reference?.value === 'object' && reference.value.slug) {
     if (reference?.relationTo === 'posts') {
-      const categoryPaths = ((reference.value as Post)?.categories||[]).map((cat: Category) => (cat?.breadcrumbs||[]).map((crumb) => crumb.label))
-      const longestCategoryPath = findLongestArray(categoryPaths)
-      if(!longestCategoryPath){
-        return null
-      }else{
-        href = `/cityguide/${longestCategoryPath.map((category) => format(category!)).join('/')}/posts/${reference.value.slug}`
-      }
+      href = calculatePostLink(reference.value as Post)
     } else if (reference?.relationTo === 'pages') {
-      href = `/${reference.value.slug}`;
+      href = `/${reference.value.slug}`
     } else {
-      href = `/${reference?.relationTo}/${reference.value.slug}`;
+      href = `/${reference?.relationTo}/${reference.value.slug}`
     }
   }
 
