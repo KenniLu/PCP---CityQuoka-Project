@@ -19,7 +19,7 @@ export const Reports: CollectionConfig = {
     handler: downloadReport,
   }],
   admin: {
-    defaultColumns: ['report', 'requestedAt', 'requestor', 'status'],
+    defaultColumns: ['report', 'requestedAt', 'requestorName', 'status'],
     useAsTitle: 'report',
     components: {
       views: {
@@ -57,13 +57,12 @@ export const Reports: CollectionConfig = {
       },
     },
     {
-      name: 'requestor',
-      type: 'relationship',
+      name: 'requestorName',
+      type: 'text',
+      label: 'Requestor',
       admin: {
         hidden: true,
-      },
-      hasMany: false,
-      relationTo: 'users',
+      }
     },
     {
       name: 'status',

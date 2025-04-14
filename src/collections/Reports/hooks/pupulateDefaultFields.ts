@@ -8,8 +8,8 @@ export const pupulateDefaultFields: CollectionBeforeChangeHook<Report> = ({ req,
   if (!data.requestedAt) {
     data.requestedAt = new Date().toISOString()
   }
-  if (!data.requestor) {
-    data.requestor = req.user?.id
+  if (!data.requestorName) {
+    data.requestorName = req.user?.name
   }
   if (!data.status) {
     data.status = 'REQUESTED'

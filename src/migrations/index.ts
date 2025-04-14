@@ -10,6 +10,7 @@ import * as migration_20250406_215037_dropImageSizes from './20250406_215037_dro
 import * as migration_20250409_034153_addPasswordResetToken from './20250409_034153_addPasswordResetToken';
 import * as migration_20250409_051947_addFieldsToReplaceTags from './20250409_051947_addFieldsToReplaceTags';
 import * as migration_20250413_100033_addReportModel from './20250413_100033_addReportModel';
+import * as migration_20250414_024414_addreportRequesterNameColumn from './20250414_024414_addreportRequesterNameColumn';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20250413_100033_addReportModel.up,
     down: migration_20250413_100033_addReportModel.down,
-    name: '20250413_100033_addReportModel'
+    name: '20250413_100033_addReportModel',
+  },
+  {
+    up: migration_20250414_024414_addreportRequesterNameColumn.up,
+    down: migration_20250414_024414_addreportRequesterNameColumn.down,
+    name: '20250414_024414_addreportRequesterNameColumn'
   },
 ];

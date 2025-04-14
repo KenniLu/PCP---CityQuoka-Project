@@ -834,7 +834,7 @@ export interface Report {
   id: number;
   report: 'PostsAuditReport';
   requestedAt?: string | null;
-  requestor?: (number | null) | User;
+  requestorName?: string | null;
   status?: ('REQUESTED' | 'PROCESSING' | 'COMPLETED' | 'FAILED') | null;
   errors?:
     | {
@@ -1370,7 +1370,7 @@ export interface VenuesSelect<T extends boolean = true> {
 export interface ReportsSelect<T extends boolean = true> {
   report?: T;
   requestedAt?: T;
-  requestor?: T;
+  requestorName?: T;
   status?: T;
   errors?: T;
   filename?: T;
