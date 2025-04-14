@@ -42,7 +42,7 @@ const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLog
               className="text-blue-500 hover:underline mx-1"
               onClick={(e) => {
                 e.preventDefault()
-                setCurrentForm('forgot')
+                setCurrentForm('register')
               }}
             >
               Sign up now
@@ -72,7 +72,7 @@ const SignUpOrLogIn: React.FC<SignUpOrLogInProps> = ({ children, onSuccessfulLog
               className="text-blue-500 hover:underline mx-1"
               onClick={(e) => {
                 e.preventDefault()
-                setCurrentForm('login')
+                setCurrentForm('register')
               }}
             >
               Sign up now
