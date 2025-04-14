@@ -40,7 +40,7 @@ const PostBreadCrumb = (breadcrumbs: Category['breadcrumbs']) => {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  ) : null
+  ) : <div></div>
 }
 
 export default async function Post({ post }: Args) {

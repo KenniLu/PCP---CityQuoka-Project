@@ -44,7 +44,7 @@ const CategoriesBreadCrumb = (
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  ) : null
+  ) : <div></div>
 }
 
 export default async function CityGuidePage({ params }) {
