@@ -6,6 +6,7 @@ github_branch      = "production"
 domain_name        = "cityquokka.com"
 images_source_bucket_name = "cq-cms-production"
 images_cache_bucket_name = "cq-cms-production-cached-images"
+reports_bucket_name = "cq-cms-production-reports"
 instance_size = {
   cpu    = "1 vCPU"
   memory = "2 GB"

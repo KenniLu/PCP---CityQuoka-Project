@@ -17,7 +17,7 @@ exports.handler = async (event) => {
 
       // Extract request parameters
       const { reportId, reportType, params } = messageBody
-      updateAPI(reportId, null, 'PROCESSING', null)
+      await updateAPI(reportId, null, 'PROCESSING', null)
 
       // Step 1: Generate report from database
       const csvData = await generateReportFromDatabase(reportType, params)
@@ -30,14 +30,14 @@ exports.handler = async (event) => {
 
       // Step 4: Notify API of completion
       // await notifyAPI(reportId, s3Key);
-      updateAPI(reportId, s3Key, 'COMPLETED', null)
+      await updateAPI(reportId, s3Key, 'COMPLETED', null)
 
       console.log(`Successfully processed report ${reportId}`)
     } catch (error) {
       console.error('Error processing message:', error)
       // Depending on the error, you might want to keep the message in the queue
       // by throwing an error, or just log it and continue to the next message
-      updateAPI(reportId, null, 'FAILED', [error.messageBody])
+      await updateAPI(reportId, null, 'FAILED', [error.messageBody])
     }
   }
 
