@@ -18,7 +18,6 @@ export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
         eq(categoriesPosts.standalone, true),
       ),
     )
-    .orderBy(desc(categoriesPosts.postId))
     .limit(10)
 
   const result = await payload.find({
@@ -46,6 +45,7 @@ export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
         },
       ],
     },
+    sort: '-publishedAt'
   })
   return result.docs || []
 })
@@ -86,6 +86,7 @@ export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset 
         },
       ],
     },
+    sort: '-publishedAt'
   })
   return result.docs || []
 })

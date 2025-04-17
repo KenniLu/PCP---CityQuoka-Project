@@ -18,25 +18,27 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-  })
+// Disabling SSR for pages because only 'home' page is used right now.
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const pages = await payload.find({
+//     collection: 'pages',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//   })
 
-  return params
-}
+//   const params = pages.docs
+//     ?.filter((doc) => {
+//       return doc.slug !== 'home'
+//     })
+//     .map(({ slug }) => {
+//       return { slug }
+//     })
+
+//   return params
+// }
 
 type Args = {
   params: Promise<{
@@ -52,6 +54,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   page = await queryPageBySlug({
     slug,
+    from: 'Route'
   })
 
   // Remove this code once your website is seeded
@@ -91,15 +94,15 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }): Promise<Metadata> {
   const { slug = 'home' } = await paramsPromise
   const page = await queryPageBySlug({
-    slug,
+    slug,from: 'Metadata'
   })
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPageBySlug = cache(async ({ slug, from }: { slug: string, from: string }) => {
   const { isEnabled: draft } = await draftMode()
-
+  console.log(`FETCHING FOR ${slug} from ${from}`)
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({

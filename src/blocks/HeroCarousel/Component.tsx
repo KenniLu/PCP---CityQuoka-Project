@@ -38,7 +38,11 @@ export const HeroCarouselBlock: React.FC<
       hero: {
         equals: true,
       },
+      _status: {
+        equals: 'published'
+      }
     },
+    sort: '-publishedAt'
   })
 
   posts = fetchedPosts.docs
