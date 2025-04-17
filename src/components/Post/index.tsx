@@ -23,7 +23,7 @@ type Args = {
 }
 
 const PostBreadCrumb = (breadcrumbs: Category['breadcrumbs']) => {
-  return (
+  return (breadcrumbs || []).length > 1 ? (
     <Breadcrumb>
       <BreadcrumbList>
         {(breadcrumbs || []).map((crumb, indx) => (
@@ -40,7 +40,7 @@ const PostBreadCrumb = (breadcrumbs: Category['breadcrumbs']) => {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  ) : <div></div>
 }
 
 export default async function Post({ post }: Args) {

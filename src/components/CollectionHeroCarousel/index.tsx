@@ -6,10 +6,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import ClickableCarouselItem from '../ClickableCarouselItem'
 import { Media } from '@/components/Media'
 
 import type { Post, Media as MediaType } from '@/payload-types'
 import { CMSLink } from '../Link'
+import calculatePostLink from '@/utilities/calculatePostLink'
 
 export type Props = {
   useNonHero?: boolean
@@ -39,10 +41,11 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
         <CarouselContent>
           {posts.map((post, indx) => {
             const { image, hero_title, hero_subtitle, slug, hero_image, title, subTitle } = post
-
+            const postLink = calculatePostLink(post as Post)
             return (
               <CarouselItem key={post.id}>
-                <div className="flex max-sm:flex-col sm:max-md:flex-row md:flex-row">
+                <ClickableCarouselItem url={postLink!} className='flex max-sm:flex-col sm:max-md:flex-row md:flex-row'>
+                {/* <div className="flex max-sm:flex-col sm:max-md:flex-row md:flex-row"> */}
                   {(image || hero_image) &&
                     heroImage((image || hero_image) as MediaType, post.title!)}
                   <div className="md:max-lg:w-2/5 sm:max-md:w-1/2 max-sm:w-full flex-col flex-1">
@@ -68,17 +71,20 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                         </div>
                         <div className="mt-auto self-end mr-8 max-md:mt-4 max-md:mr-0">
                           <CMSLink
-                            className="flex w-[100px] h-[30px] p-[10px_16px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[6px] bg-white text-black font-semibold whitespace-nowrap text-sm"
+                            // className="flex w-[100px] h-[30px] p-[10px_16px] justify-center items-center gap-[10px] flex-shrink-0 rounded-[6px] bg-white text-black font-semibold whitespace-nowrap text-sm"
+                            className="btn-gray w-[100px] h-[30px] p-[10px_16px] justify-center items-center font-semibold whitespace-nowrap text-sm"
                             type={'reference'}
                             reference={{ relationTo: 'posts', value: post as Post }}
                             label={'Learn More'}
                             appearance={'default'}
+                            url={postLink}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                {/* </div> */}
+                </ClickableCarouselItem>
               </CarouselItem>
             )
           })}

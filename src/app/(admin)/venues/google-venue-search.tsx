@@ -32,7 +32,7 @@ const listBaseClass = 'list-controls'
 const baseClass = 'search-filter'
 
 const GoogleVenueSearch: React.FC<GoogleVenueSearchProps> = (props) => {
-  const { initialParams, label } = props
+  const { initialParams, label = 'Search Google Locations' } = props
   const pathname = usePathname()
   const [search, setSearch] = useState(
     typeof initialParams?.search === 'string' ? initialParams?.search : undefined,
@@ -131,98 +131,99 @@ const GoogleVenueSearch: React.FC<GoogleVenueSearchProps> = (props) => {
   }
 
   return (
-    <div className='gutter--left gutter--right collection-list__wrap'>
-    <div className={listBaseClass}>
-      <div className={`${listBaseClass}__wrap`}>
-        <SearchIcon />
-        <div className={baseClass} ref={wrapperRef}>
-          <input
-            aria-label={label}
-            className={`${baseClass}__input`}
-            id="search-filter-input"
-            onChange={(e) => {
-              shouldUpdateState.current = true
-              setSearch(e.target.value)
-            }}
-            placeholder={label}
-            type="text"
-            value={search || ''}
-          />
-        </div>
-      </div>
-
-      {showSuggestions && suggestions.length > 0 && (
-        <div
-          style={{
-            backgroundColor: 'white',
-            marginTop: '0.25rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '0.375rem',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          }}
-          className="absolute z-10 w-full bg-white mt-1 border rounded-md shadow-lg max-h-60 overflow-auto"
-        >
-          {suggestions.map((place) => (
-            <div
-              key={place.place_id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingLeft: '1rem',
-                paddingRight: '1rem',
-                borderBottom: '1px solid #e5e7eb',
-                transition: 'background-color 0.2s',
+    <div className="gutter--left gutter--right collection-list__wrap">
+      <p>Search and create locations from Google</p>
+      <div className={listBaseClass}>
+        <div className={`${listBaseClass}__wrap`}>
+          <SearchIcon />
+          <div className={baseClass} ref={wrapperRef}>
+            <input
+              aria-label={label}
+              className={`${baseClass}__input`}
+              id="search-filter-input"
+              onChange={(e) => {
+                shouldUpdateState.current = true
+                setSearch(e.target.value)
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f9fafb')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'white')}
-            >
-              <div style={{ flexGrow: 1 }}>
-                {place.structured_formatting ? (
-                  <>
+              placeholder={label}
+              type="text"
+              value={search || ''}
+            />
+          </div>
+        </div>
+
+        {showSuggestions && suggestions.length > 0 && (
+          <div
+            style={{
+              backgroundColor: 'white',
+              marginTop: '0.25rem',
+              border: '1px solid #e5e7eb',
+              borderRadius: '0.375rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            }}
+            className="absolute z-10 w-full bg-white mt-1 border rounded-md shadow-lg max-h-60 overflow-auto"
+          >
+            {suggestions.map((place) => (
+              <div
+                key={place.place_id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingLeft: '1rem',
+                  paddingRight: '1rem',
+                  borderBottom: '1px solid #e5e7eb',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f9fafb')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'white')}
+              >
+                <div style={{ flexGrow: 1 }}>
+                  {place.structured_formatting ? (
+                    <>
+                      <div
+                        style={{
+                          fontWeight: 500,
+                          color: '#111827',
+                        }}
+                      >
+                        {place.structured_formatting.main_text}
+                      </div>
+                      {place.structured_formatting.secondary_text && (
+                        <div
+                          style={{
+                            fontSize: '0.875rem',
+                            color: '#6b7280',
+                          }}
+                        >
+                          {place.structured_formatting.secondary_text}
+                        </div>
+                      )}
+                    </>
+                  ) : (
                     <div
                       style={{
                         fontWeight: 500,
                         color: '#111827',
                       }}
                     >
-                      {place.structured_formatting.main_text}
+                      {place.description}
                     </div>
-                    {place.structured_formatting.secondary_text && (
-                      <div
-                        style={{
-                          fontSize: '0.875rem',
-                          color: '#6b7280',
-                        }}
-                      >
-                        {place.structured_formatting.secondary_text}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      fontWeight: 500,
-                      color: '#111827',
-                    }}
-                  >
-                    {place.description}
-                  </div>
-                )}
+                  )}
+                </div>
+                <a
+                  onClick={() => handlePlaceSelection(place.place_id)}
+                  className="btn btn--icon-style-without-border btn--size-small btn--withoutPopup btn--style-pill btn--withoutPopup"
+                >
+                  Create
+                </a>
               </div>
-              <a
-                onClick={() => handlePlaceSelection(place.place_id)}
-                className="btn btn--icon-style-without-border btn--size-small btn--withoutPopup btn--style-pill btn--withoutPopup"
-              >
-                Create
-              </a>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-export default GoogleVenueSearch;
+export default GoogleVenueSearch

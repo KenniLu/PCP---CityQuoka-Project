@@ -15,6 +15,7 @@ import { Users } from './collections/Users'
 import { Programmes } from './collections/Programmes'
 import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
+import { Reports } from './collections/Reports';
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -134,7 +135,7 @@ export default buildConfig({
       },
     ],
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Events, Programmes, Venues],
+  collections: [Pages, Posts, Media, Categories, Users, Events, Programmes, Venues, Reports],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

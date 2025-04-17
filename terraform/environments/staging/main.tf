@@ -37,7 +37,8 @@ module "cq-cms-app" {
   github_repository_id = var.github_repository_id
   images_source_bucket_name = var.images_source_bucket_name
   images_cache_bucket_name = var.images_cache_bucket_name
+  reports_bucket_name = var.reports_bucket_name
   environment_variables = var.environment_variables
   secret_environment_variables = var.secret_environment_variables
-
+  application_api_key = var.application_api_key
 }

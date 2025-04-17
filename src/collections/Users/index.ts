@@ -4,6 +4,9 @@ import { authenticated } from '../../access/authenticated'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  auth: {
+    useAPIKey: true,
+  },
   access: {
     admin: authenticated,
     create: authenticated,
@@ -15,7 +18,6 @@ export const Users: CollectionConfig = {
     defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
   },
-  auth: true,
   fields: [
     {
       name: 'name',
