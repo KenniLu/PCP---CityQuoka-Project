@@ -17,6 +17,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
+import { unstable_cache } from 'next/cache';
 
 // Disabling SSR for pages because only 'home' page is used right now.
 
@@ -52,9 +53,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   let page: PageType | null
 
-  page = await queryPageBySlug({
-    slug,
-    from: 'Route'
+  page = await fetchPageBySlug({
+    slug
   })
 
   // Remove this code once your website is seeded
@@ -93,18 +93,15 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }): Promise<Metadata> {
   const { slug = 'home' } = await paramsPromise
-  const page = await queryPageBySlug({
-    slug,from: 'Metadata'
+  const page = await fetchPageBySlug({
+    slug
   })
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = cache(async ({ slug, from }: { slug: string, from: string }) => {
-  const { isEnabled: draft } = await draftMode()
-  console.log(`FETCHING FOR ${slug} from ${from}`)
+const queryPageBySlug = cache(async ({ slug, draft }: { slug: string, draft: boolean }) => {
   const payload = await getPayload({ config: configPromise })
-
   const result = await payload.find({
     collection: 'pages',
     draft,
@@ -119,3 +116,12 @@ const queryPageBySlug = cache(async ({ slug, from }: { slug: string, from: strin
 
   return result.docs?.[0] || null
 })
+
+const fetchPageBySlug = cache(async ({slug}) => {
+  const { isEnabled: draft } = await draftMode()
+  if(draft){
+    return await queryPageBySlug({slug, draft})
+  }else{
+    return await unstable_cache(queryPageBySlug, [slug], {tags: [`page-${slug}`]})({slug, draft})
+  }
+});
