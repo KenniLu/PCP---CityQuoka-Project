@@ -58,7 +58,7 @@ export default async function CityGuidePage({ params }) {
   if (path && path.at(-1) === 'posts') {
     path.pop()
   }
-  const header: Header = await getCachedGlobal('header', 1)()
+  const header: Header = await getCachedGlobal('header', 1)
   var showBreadCrumbs = false
   let categoryPaths: string[] = []
   if (!path || path?.length == 0) {

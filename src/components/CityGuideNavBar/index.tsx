@@ -6,7 +6,7 @@ import type { Header } from '@/payload-types'
 import HamburgerMenuNavBar from '@/components/HamburgerMenuNavBar'
 
 export async function CityGuideNavBar() {
-  const header: Header = await getCachedGlobal('header', 1)()
+  const header: Header = await getCachedGlobal('header', 1)
 
   return (
     <div className="max-w-[1120px] mx-auto w-full">
