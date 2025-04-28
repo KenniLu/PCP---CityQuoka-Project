@@ -1,6 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
-import { fetchCachedPostBySlug } from '../../posts/[slug]/page'
+import { fetchPostBySlug } from '../../posts/[slug]/page'
 import { fetchCategoryPathsForSlugs } from '@/utilities/fetchCategories'
 import { generateMeta } from '@/utilities/generateMeta'
 import Post from '@/components/Post'
@@ -8,12 +8,10 @@ import { CollectionHeroCarousel } from '@/components/CollectionHeroCarousel'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import type { Header } from '@/payload-types'
 import PostTile from '@/components/PostTile'
-
 import {
   fetchFeaturedPostsByCategoryPaths,
   fetchPostsByCategoryPaths,
 } from '@/utilities/fetchPosts'
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -52,7 +50,7 @@ const CategoriesBreadCrumb = (
 export default async function CityGuidePage({ params }) {
   const { path } = await params
   if (path && path.at(-2) === 'posts' && !!path.at(-1)) {
-    const post = await fetchCachedPostBySlug(path.at(-1))
+    const post = await fetchPostBySlug(path.at(-1))
     return <Post post={post} />
   }
   if (path && path.at(-1) === 'posts') {
@@ -105,7 +103,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
       .join(' '),
   )
   if (paths.at(-2) === 'posts' && !!paths.at(-1)) {
-    const post = await fetchCachedPostBySlug(paths.at(-1))
+    const post = await fetchPostBySlug(paths.at(-1))
     return generateMeta({ doc: post })
   } else {
     return {

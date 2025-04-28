@@ -14,4 +14,5 @@ instance_size = {
 environment_variables = {
   NODE_ENV = "production"
   APP_ENV = "staging"
+  # Add other environment-specific variables
 }

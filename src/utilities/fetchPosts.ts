@@ -3,60 +3,6 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { categoriesPosts } from '@/db/schema'
 import { desc, eq, and, inArray } from '@payloadcms/db-postgres/drizzle'
-import { unstable_cache } from 'next/cache'
-import type { Post } from '@/payload-types'
-
-export const fetchHeroPosts = cache(
-  unstable_cache(
-    async (limit: number): Promise<Partial<Post>[]> => {
-      const payload = await getPayload({ config: configPromise })
-      const fetchedPosts = await payload.find({
-        collection: 'posts',
-        select: {
-          id: true,
-          title: true,
-          hero_title: true,
-          hero_subtitle: true,
-          hero_image: true,
-          image: true,
-          slug: true,
-          categories: true,
-        },
-        depth: 1,
-        limit,
-        where: {
-          hero: {
-            equals: true,
-          },
-          _status: {
-            equals: 'published',
-          },
-        },
-        sort: '-publishedAt',
-      })
-
-      return fetchedPosts.docs
-    },
-    [],
-    { tags: ['hero-posts'] },
-  ),
-)
-
-export const fetchPostBySlug = async (slug, draft) => {
-  const payload = await getPayload({ config: configPromise })
-  const result = await payload.find({
-    collection: 'posts',
-    draft,
-    limit: 1,
-    overrideAccess: draft,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-  return result.docs?.[0] || null
-}
 
 export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
   const payload = await getPayload({ config: configPromise })
@@ -99,7 +45,7 @@ export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
         },
       ],
     },
-    sort: '-publishedAt',
+    sort: '-publishedAt'
   })
   return result.docs || []
 })
@@ -140,7 +86,7 @@ export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset 
         },
       ],
     },
-    sort: '-publishedAt',
+    sort: '-publishedAt'
   })
   return result.docs || []
 })

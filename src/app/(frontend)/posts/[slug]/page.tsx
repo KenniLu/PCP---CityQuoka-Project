@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import Post from '@/components/Post'
 import { generateMeta } from '@/utilities/generateMeta'
-import { unstable_cache } from 'next/cache';
-import { fetchPostBySlug } from '@/utilities/fetchPosts'
+
 
 // export async function generateStaticParams() {
 //   const payload = await getPayload({ config: configPromise })
@@ -36,7 +37,7 @@ type Args = {
 export default async function PostPage({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const url = '/posts/' + slug
-  const post = await fetchCachedPostBySlug(slug)
+  const post = await fetchPostBySlug(slug)
 
   if (!post) return <PayloadRedirects url={url} />
   return(<Post post={post}/>)
@@ -45,16 +46,24 @@ export default async function PostPage({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  const post = await fetchCachedPostBySlug(slug)
+  const post = await fetchPostBySlug({ slug })
 
   return generateMeta({ doc: post })
 }
 
-export const fetchCachedPostBySlug = cache(async (slug) => {
+export const fetchPostBySlug = cache(async (slug) => {
   const { isEnabled: draft } = await draftMode()
-  if(draft){
-    return await fetchPostBySlug(slug, draft)
-  }else{
-    return await unstable_cache(fetchPostBySlug, [slug], {tags: [`post-${slug}`]})(slug, draft)
-  }
+  const payload = await getPayload({ config: configPromise })
+  const result = await payload.find({
+    collection: 'posts',
+    draft,
+    limit: 1,
+    overrideAccess: draft,
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+  })
+  return result.docs?.[0] || null
 });
