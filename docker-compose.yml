@@ -32,6 +32,11 @@ services:
       /minio-init/init-bucket.sh & 
       minio server --console-address ':9001' /data
       "
+  valkey:
+    image: valkey/valkey:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
   app:
     build:
       context: .
@@ -45,6 +50,7 @@ services:
     depends_on:
       - db
       - minio
+      - valkey
     env_file:
       - .env
     user: node # This should match your host user ID
