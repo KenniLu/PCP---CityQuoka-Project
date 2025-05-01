@@ -132,7 +132,7 @@ const GoogleVenueSearch: React.FC<GoogleVenueSearchProps> = (props) => {
 
   return (
     <div className="gutter--left gutter--right collection-list__wrap">
-      <p>Search and create locations from Google</p>
+      <p>Create new venue from Google location search</p>
       <div className={listBaseClass}>
         <div className={`${listBaseClass}__wrap`}>
           <SearchIcon />

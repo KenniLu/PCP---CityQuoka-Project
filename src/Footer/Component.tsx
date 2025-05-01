@@ -9,7 +9,7 @@ import type { Footer } from '@/payload-types'
 // import { CMSLink } from '@/components/Link'
 
 export async function Footer() {
-  const footer: Footer = await getCachedGlobal('footer')()
+  const footer: Footer = await getCachedGlobal('footer')
 
   const navItems = footer?.navItems || []
 

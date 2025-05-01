@@ -17,26 +17,29 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
+import { unstable_cache } from 'next/cache'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-  })
+// Disabling SSR for pages because only 'home' page is used right now.
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const pages = await payload.find({
+//     collection: 'pages',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//   })
 
-  return params
-}
+//   const params = pages.docs
+//     ?.filter((doc) => {
+//       return doc.slug !== 'home'
+//     })
+//     .map(({ slug }) => {
+//       return { slug }
+//     })
+
+//   return params
+// }
 
 type Args = {
   params: Promise<{
@@ -50,9 +53,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   let page: PageType | null
 
-  page = await queryPageBySlug({
-    slug,
-  })
+  page = await fetchPageBySlug(slug)
 
   // Remove this code once your website is seeded
   // if (!page && slug === 'home') {
@@ -90,18 +91,13 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }): Promise<Metadata> {
   const { slug = 'home' } = await paramsPromise
-  const page = await queryPageBySlug({
-    slug,
-  })
+  const page = await fetchPageBySlug(slug)
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode()
-
+const queryPageBySlug = async (slug, draft) => {
   const payload = await getPayload({ config: configPromise })
-
   const result = await payload.find({
     collection: 'pages',
     draft,
@@ -115,4 +111,13 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
+}
+
+const fetchPageBySlug = cache(async (slug) => {
+  const { isEnabled: draft } = await draftMode()
+  if (draft) {
+    return await queryPageBySlug(slug, draft)
+  } else {
+    return await unstable_cache(queryPageBySlug, [slug], { tags: [`page-${slug}`] })(slug, draft)
+  }
 })

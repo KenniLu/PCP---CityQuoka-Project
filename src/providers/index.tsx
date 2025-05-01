@@ -12,7 +12,7 @@ export const Providers: React.FC<{
   return (
     <ThemeProvider>
       {/* <AuthProvider initialUser={session?.user}> */}
-      <SessionProvider>
+      <SessionProvider session={session}>
         <HeaderThemeProvider>{children}</HeaderThemeProvider>
       {/* </AuthProvider> */}
       </SessionProvider>

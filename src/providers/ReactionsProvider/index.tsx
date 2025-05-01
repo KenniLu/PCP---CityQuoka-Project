@@ -43,21 +43,19 @@ export function ReactionsProvider({ postIds, children }: {postIds: number[], chi
     if (!isAuthenticated) return;
     
     const hasReaction = isReacted(postId, reaction);
-
-    const updatedReactions = {}
     const _postId = postId.toString()
 
-    Object.keys(reactions).forEach((postId) => {
-      if(postId === _postId){
-        updatedReactions[postId] = {...reactions[postId], [reaction]: !hasReaction}
-      }else{
-        updatedReactions[postId] = reactions[postId]
+    // Update local cache
+    mutate({
+      ...reactions,
+      [_postId]: {
+        ...(reactions[_postId] || {}),
+        [reaction]: !hasReaction
       }
-    })
-    
-    // Update locally first
-    mutate({ reactions: updatedReactions }, false);
+    }, false);
+
     const _reaction = hasReaction ? `un${reaction}` : reaction
+
     // Send API request
     try {
       await fetch('/api/posts/reactions', {

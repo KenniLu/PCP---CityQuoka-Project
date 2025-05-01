@@ -5,7 +5,7 @@ import React, { Fragment } from 'react'
 import type { Header as HeaderType } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 // const pathname = usePathname()
 // import { SearchIcon } from 'lucide-react'

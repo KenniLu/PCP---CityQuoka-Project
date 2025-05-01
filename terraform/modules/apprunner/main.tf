@@ -152,7 +152,9 @@ resource "aws_apprunner_service" "cq_cms_app" {
   }
 
   health_check_configuration {
+    interval = 10
     path = "/api/healthcheck"
+    protocol = "HTTP"
   }
 
   instance_configuration {
