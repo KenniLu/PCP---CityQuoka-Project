@@ -13,7 +13,6 @@ exports.handler = async (event) => {
   for (const record of event.Records) {
     try {
       const messageBody = JSON.parse(record.body)
-      console.log('Processing message:', JSON.stringify(messageBody, null, 2))
 
       // Extract request parameters
       const { reportId, reportType, params } = messageBody

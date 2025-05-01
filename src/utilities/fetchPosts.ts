@@ -58,89 +58,101 @@ export const fetchPostBySlug = async (slug, draft) => {
   return result.docs?.[0] || null
 }
 
-export const fetchFeaturedPostsByCategoryPaths = cache(async (paths) => {
-  const payload = await getPayload({ config: configPromise })
-  const productIds = await payload.db.drizzle
-    .select({
-      postId: categoriesPosts.postId,
-    })
-    .from(categoriesPosts)
-    .where(
-      and(
-        inArray(categoriesPosts.categoryPath, paths),
-        eq(categoriesPosts.featured, true),
-        eq(categoriesPosts.standalone, true),
-      ),
-    )
-    .limit(10)
+export const fetchFeaturedPostsByCategoryPath = cache(async (path: string) => {
+  return await unstable_cache(
+    async (path) => {
+      const payload = await getPayload({ config: configPromise })
+      const productIds = await payload.db.drizzle
+        .select({
+          postId: categoriesPosts.postId,
+        })
+        .from(categoriesPosts)
+        .where(
+          and(
+            eq(categoriesPosts.categoryPath, path),
+            eq(categoriesPosts.featured, true),
+            eq(categoriesPosts.standalone, true),
+          ),
+        )
+        .limit(10)
 
-  const result = await payload.find({
-    collection: 'posts',
-    limit: 10,
-    select: {
-      id: true,
-      title: true,
-      subTitle: true,
-      image: true,
-      slug: true,
-      categories: true,
-    },
-    where: {
-      and: [
-        {
-          id: {
-            in: [...new Set(productIds.map((id) => id['postId']))],
-          },
+      const result = await payload.find({
+        collection: 'posts',
+        limit: 10,
+        select: {
+          id: true,
+          title: true,
+          subTitle: true,
+          image: true,
+          slug: true,
+          categories: true,
         },
-        {
-          _status: {
-            equals: 'published',
-          },
+        where: {
+          and: [
+            {
+              id: {
+                in: [...new Set(productIds.map((id) => id['postId']))],
+              },
+            },
+            {
+              _status: {
+                equals: 'published',
+              },
+            },
+          ],
         },
-      ],
+        sort: '-publishedAt',
+      })
+      return result.docs || []
     },
-    sort: '-publishedAt',
-  })
-  return result.docs || []
+    [],
+    { tags: [`category-featured-${path}`] },
+  )(path)
 })
 
-export const fetchPostsByCategoryPaths = cache(async (paths, limit = 20, offset = 0) => {
-  const payload = await getPayload({ config: configPromise })
-  const productIds = await payload.db.drizzle
-    .select({
-      postId: categoriesPosts.postId,
-    })
-    .from(categoriesPosts)
-    .where(and(inArray(categoriesPosts.categoryPath, paths), eq(categoriesPosts.standalone, true)))
-    .orderBy(desc(categoriesPosts.postId))
-    .limit(limit)
-    .offset(offset)
+export const fetchPostsByCategoryPath = cache(async (path: string, limit = 20, offset = 0) => {
+  return await unstable_cache(
+    async (path, limit, offset) => {
+      const payload = await getPayload({ config: configPromise })
+      const productIds = await payload.db.drizzle
+        .select({
+          postId: categoriesPosts.postId,
+        })
+        .from(categoriesPosts)
+        .where(and(eq(categoriesPosts.categoryPath, path), eq(categoriesPosts.standalone, true)))
+        .orderBy(desc(categoriesPosts.postId))
+        .limit(limit)
+        .offset(offset)
 
-  const result = await payload.find({
-    collection: 'posts',
-    limit: limit,
-    select: {
-      id: true,
-      title: true,
-      image: true,
-      slug: true,
-      categories: true,
-    },
-    where: {
-      and: [
-        {
-          id: {
-            in: [...new Set(productIds.map((id) => id['postId']))],
-          },
+      const result = await payload.find({
+        collection: 'posts',
+        limit: limit,
+        select: {
+          id: true,
+          title: true,
+          image: true,
+          slug: true,
+          categories: true,
         },
-        {
-          _status: {
-            equals: 'published',
-          },
+        where: {
+          and: [
+            {
+              id: {
+                in: [...new Set(productIds.map((id) => id['postId']))],
+              },
+            },
+            {
+              _status: {
+                equals: 'published',
+              },
+            },
+          ],
         },
-      ],
+        sort: '-publishedAt',
+      })
+      return result.docs || []
     },
-    sort: '-publishedAt',
-  })
-  return result.docs || []
+    [],
+    { tags: [`category-posts-${path}`] },
+  )(path, limit, offset)
 })
