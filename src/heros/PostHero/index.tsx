@@ -51,7 +51,7 @@ export const PostHero: React.FC<{
       <div className="flex flex-wrap gap-5 justify-between mt-4 w-full leading-none max-md:max-w-full">
         <div className="text-base tracking-tight">
           <div className="flex flex-col gap-1">
-            <p className="text-base font-bold">Written by {joinWithAnd(authors)}</p>
+            <p className="text-base font-bold" style={{ display: authors.length === 0 ? 'none' : 'block' }}>Written by {joinWithAnd(authors)}</p>
             <p className="text-base">{formatDate(post.publishedAt!)}</p>
           </div>
         </div>
