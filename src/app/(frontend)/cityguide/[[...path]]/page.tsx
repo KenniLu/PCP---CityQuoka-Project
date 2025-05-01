@@ -10,8 +10,8 @@ import type { Header } from '@/payload-types'
 import PostTile from '@/components/PostTile'
 
 import {
-  fetchFeaturedPostsByCategoryPaths,
-  fetchPostsByCategoryPaths,
+  fetchFeaturedPostsByCategoryPath,
+  fetchPostsByCategoryPath,
 } from '@/utilities/fetchPosts'
 
 import {
@@ -60,19 +60,17 @@ export default async function CityGuidePage({ params }) {
   }
   const header: Header = await getCachedGlobal('header', 1)
   var showBreadCrumbs = false
-  let categoryPaths: string[] = []
+  let categoryPath: string
   if (!path || path?.length == 0) {
-    categoryPaths = (header?.navItems || []).map((navItem) =>
-      navItem.link.url?.replace(/\/cityguide/, ''),
-    ) as string[]
+    categoryPath = (header?.navItems || [])[0]?.link?.url?.replace(/\/cityguide/, '') || ''
   } else {
-    categoryPaths = [`/${path?.join('/')}`]
+    categoryPath = `/${path?.join('/')}`
     showBreadCrumbs = true
   }
   const paths = await fetchCategoryPathsForSlugs(path)
 
-  const categoryFeaturedPosts = await fetchFeaturedPostsByCategoryPaths(categoryPaths)
-  const categoryPosts = await fetchPostsByCategoryPaths(categoryPaths)
+  const categoryFeaturedPosts = await fetchFeaturedPostsByCategoryPath(categoryPath)
+  const categoryPosts = await fetchPostsByCategoryPath(categoryPath)
   return (
     <div className="self-center w-full max-w-[1122px] bg-white mx-auto flex flex-col gap-4">
       {showBreadCrumbs && CategoriesBreadCrumb(paths)}
