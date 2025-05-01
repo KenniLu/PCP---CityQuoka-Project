@@ -80,7 +80,7 @@ export default async function CityGuidePage({ params }) {
       <div className="flex items-center w-full my-4">
         <div className="flex-grow border-t border-gray-300"></div>
         <span className="flex-shrink mx-4 px-4 py-1 font-medium bg-quokka-yellow rounded">
-          More Posts in City Quokka
+          Recent Posts in {paths.map((path) => path.title).join(' > ')}
         </span>
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
