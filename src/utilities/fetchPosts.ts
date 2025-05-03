@@ -62,7 +62,7 @@ export const fetchFeaturedPostsByCategoryPath = cache(async (path: string) => {
   return await unstable_cache(
     async (path) => {
       const payload = await getPayload({ config: configPromise })
-      const productIds = await payload.db.drizzle
+      const postIds = await payload.db.drizzle
         .select({
           postId: categoriesPosts.postId,
         })
@@ -91,7 +91,7 @@ export const fetchFeaturedPostsByCategoryPath = cache(async (path: string) => {
           and: [
             {
               id: {
-                in: [...new Set(productIds.map((id) => id['postId']))],
+                in: [...new Set(postIds.map((id) => id['postId']))],
               },
             },
             {
@@ -114,7 +114,7 @@ export const fetchPostsByCategoryPath = cache(async (path: string, limit = 20, o
   return await unstable_cache(
     async (path, limit, offset) => {
       const payload = await getPayload({ config: configPromise })
-      const productIds = await payload.db.drizzle
+      const postIds = await payload.db.drizzle
         .select({
           postId: categoriesPosts.postId,
         })
@@ -138,7 +138,7 @@ export const fetchPostsByCategoryPath = cache(async (path: string, limit = 20, o
           and: [
             {
               id: {
-                in: [...new Set(productIds.map((id) => id['postId']))],
+                in: [...new Set(postIds.map((id) => id['postId']))],
               },
             },
             {
