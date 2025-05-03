@@ -33,14 +33,16 @@ const PostBreadCrumb = (breadcrumbs: Category['breadcrumbs']) => {
                 <ChevronRight />
               </BreadcrumbSeparator>
             )}
-            <BreadcrumbItem className='text-base text-blue-600'>
+            <BreadcrumbItem className="text-base text-blue-600">
               <BreadcrumbLink href={`/cityguide/${crumb.url}`}>{crumb.label}</BreadcrumbLink>
             </BreadcrumbItem>
           </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  ) : <div></div>
+  ) : (
+    <div></div>
+  )
 }
 
 export default async function Post({ post }: Args) {
@@ -105,19 +107,7 @@ export default async function Post({ post }: Args) {
               </PageClient>
               <RecommendedSideBar />
             </div>
-
-            {/* My changes start */}
-            {/* My changes end */}
-
-            {/* <aside className="absolute top-[180px] right-0 max-lg:relative max-lg:mt-8"> */}
-            {/* <aside className="top-0 right-0 w-full md:w-[320px] shrink-0 p-4">
-              <RecommendedSideBar />
-            </aside> */}
-
-            {/* My changes start */}
           </div>
-          {/* My changes end */}
-
           <div className="h-[30px]"></div>
           <div className="w-full h-[4px] bg-[#EFEFEF] max-w-[300px] mx-auto sm:max-w-[300px]"></div>
         </div>

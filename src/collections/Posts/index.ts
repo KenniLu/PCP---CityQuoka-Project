@@ -11,7 +11,7 @@ import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost, invalidateCategoryPosts } from './hooks/revalidatePost'
+import { revalidatePost, loadCurrentPublishedPost } from './hooks/revalidatePost'
 import { updateCategoryPosts } from './hooks/updateCategoryPosts'
 
 import { PostGroup } from '@/blocks/PostGroup/config'
@@ -26,8 +26,6 @@ import {
 
 import { slugField } from '@/fields/slug'
 import { getServerSideURL } from '@/utilities/getURL'
-import { categoriesPosts } from '@/db/schema'
-import { eq } from '@payloadcms/db-postgres/drizzle'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -129,35 +127,13 @@ export const Posts: CollectionConfig = {
       name: 'standalone',
       type: 'checkbox',
       label: 'is Standalone Post',
-      defaultValue: false,
-      hooks: {
-        afterChange: [
-          async ({ value, req, originalDoc }) => {
-            const postId = originalDoc?.id
-            await req.payload.db.drizzle
-              .update(categoriesPosts)
-              .set({ standalone: value })
-              .where(eq(categoriesPosts.postId, postId))
-          },
-        ],
-      },
+      defaultValue: false
     },
     {
       name: 'featured',
       type: 'checkbox',
       label: 'is Featured Post',
-      defaultValue: false,
-      hooks: {
-        afterChange: [
-          async ({ value, req, originalDoc }) => {
-            const postId = originalDoc?.id
-            await req.payload.db.drizzle
-              .update(categoriesPosts)
-              .set({ featured: value })
-              .where(eq(categoriesPosts.postId, postId))
-          },
-        ],
-      },
+      defaultValue: false
     },
     {
       type: 'tabs',
@@ -204,10 +180,7 @@ export const Posts: CollectionConfig = {
                 position: 'sidebar',
               },
               hasMany: true,
-              relationTo: 'categories',
-              hooks: {
-                afterChange: [updateCategoryPosts, invalidateCategoryPosts],
-              },
+              relationTo: 'categories'
             },
             {
               name: 'tags',
@@ -267,17 +240,7 @@ export const Posts: CollectionConfig = {
           pickerAppearance: 'dayAndTime',
         },
         position: 'sidebar',
-      },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
-      },
+      }
     },
     {
       name: 'authors',
@@ -312,7 +275,8 @@ export const Posts: CollectionConfig = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidatePost],
+    beforeChange: [loadCurrentPublishedPost],
+    afterChange: [revalidatePost, updateCategoryPosts],
     afterRead: [populateAuthors],
   },
   versions: {

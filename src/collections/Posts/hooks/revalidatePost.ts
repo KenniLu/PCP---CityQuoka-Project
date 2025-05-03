@@ -1,23 +1,61 @@
-import type { CollectionAfterChangeHook, FieldHook } from 'payload'
+import type { CollectionAfterChangeHook, CollectionBeforeChangeHook, FieldHook } from 'payload'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import type { Category, Post } from '../../../payload-types'
 import { getNameSpacedTable } from '@/utilities/getNameSpacedTable'
 import { format } from '@/hooks/formatSlug'
 
+export const loadCurrentPublishedPost: CollectionBeforeChangeHook<Post> = async ({
+  data,
+  originalDoc,
+  operation,
+  req,
+  context,
+  collection,
+}) => {
+  if (operation === 'update' && data._status === 'published') {
+    // Post is being published. read the current published version in the context to compare in the hooks below
+    const previousPublished = await req.payload.findByID({
+      id: originalDoc?.id!,
+      collection: collection.slug,
+      select: {
+        id: true,
+        title: true,
+        hero_title: true,
+        hero_subtitle: true,
+        hero_image: true,
+        image: true,
+        slug: true,
+        categories: true,
+        hero: true,
+        standalone: true,
+        featured: true,
+      },
+      depth: 0,
+      draft: false,
+      disableErrors: true,
+    })
+    context.previousPublished = previousPublished
+  }
+}
+
 export const revalidatePost: CollectionAfterChangeHook<Post> = async ({
   doc,
-  previousDoc,
-  req: { payload },
+  req: { payload, query },
+  context,
 }) => {
   const tagsToRevalidate: string[] = []
+  // Ignore autosave and drafts
+  if (query.draft === 'true' || query.autosave === 'true') {
+    return doc
+  }
+
   if (doc._status === 'published') {
+    const previousPublished = context.previousPublished as { [key: string]: unknown }
+
     const path = `/posts/${doc.slug}`
-
-    payload.logger.info(`Revalidating post at path: ${path}`)
-
     revalidatePath(path)
     tagsToRevalidate.push(`post-${doc.slug}`)
-    if (doc.hero || previousDoc.hero) {
+    if (doc.hero || previousPublished?.hero) {
       tagsToRevalidate.push('hero-posts')
     }
 
@@ -37,39 +75,23 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = async ({
     })
 
     tagsToRevalidate.push(...parentPosts.rows.map((row) => `post-${row.slug}`))
-  }
+    if (previousPublished.slug !== doc.slug) {
+      const oldPath = `/posts/${previousPublished.slug}`
+      revalidatePath(oldPath)
+      tagsToRevalidate.push(`post-${previousPublished.slug}`)
+    }
 
-  // If the post was previously published, we need to revalidate the old path
-  if (previousDoc._status === 'published' && doc._status !== 'published') {
-    const oldPath = `/posts/${previousDoc.slug}`
+    const previousPublishedCategoryIds = (previousPublished?.categories as number[]) || []
+    const currentCategoryIds = (doc.categories as number[]) || []
+    const categoriesIdsToInvalidate = [
+      ...new Set([...previousPublishedCategoryIds, ...currentCategoryIds]),
+    ]
 
-    payload.logger.info(`Revalidating old post at path: ${oldPath}`)
-
-    revalidatePath(oldPath)
-    tagsToRevalidate.push(`post-${previousDoc.slug}`)
-  }
-
-  ;[...new Set(tagsToRevalidate)].forEach((tag) => revalidateTag(tag))
-
-  return doc
-}
-
-export const invalidateCategoryPosts: FieldHook = async ({
-  value,
-  previousValue,
-  req,
-}) => {
-  const currval = value.map((v) => v?.id || v)
-  const prevval = previousValue
-
-  if (JSON.stringify(currval) !== JSON.stringify(prevval)) {
-    const tagsToRevalidate: string[] = []
-    const allCategoryIds = [...new Set([...currval, ...prevval])]
-    const categories = await req.payload.find({
+    const categories = await payload.find({
       collection: 'categories',
       where: {
         id: {
-          in: allCategoryIds,
+          in: categoriesIdsToInvalidate,
         },
       },
     })
@@ -77,9 +99,15 @@ export const invalidateCategoryPosts: FieldHook = async ({
       let path: string = ''
       ;(category?.breadcrumbs || []).forEach((crumb) => {
         path = `${path}/${format(crumb.label!)}`
-        tagsToRevalidate.push(`category-featured-${path}`, `category-posts-${path}`)
+        if (previousPublished.featured || doc.featured) {
+          tagsToRevalidate.push(`category-featured-${path}`)
+        }
+        tagsToRevalidate.push(`category-posts-${path}`)
       })
     })
-    ;[...new Set(tagsToRevalidate)].forEach((tag) => revalidateTag(tag))
   }
+
+  ;[...new Set(tagsToRevalidate)].forEach((tag) => revalidateTag(tag))
+
+  return doc
 }
