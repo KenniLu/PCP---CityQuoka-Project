@@ -20,6 +20,9 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "email": "email dev --dir src/emails"
   },
+  "peerDependencies": {
+    "pg": ">=8.0"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.703.0",
     "@aws-sdk/client-sqs": "^3.787.0",
