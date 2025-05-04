@@ -23,11 +23,36 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { getS3StorageConfig } from './config/s3Config'
+import { contextLog } from './utilities/requestContext';
 
 import fs from 'node:fs'
+import pg from 'pg';
+import { performance } from 'perf_hooks';
+
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+
+// Patch pg before PayloadCMS uses it
+const originalSubmit = pg.Query.prototype.submit;
+pg.Query.prototype.submit = function (...args) {
+  const startTime = performance.now();
+  const text = this.text;
+  const values = this.values || [];
+
+  this.once("end", () => {
+    const duration = performance.now() - startTime;
+    contextLog(`(${duration.toFixed(2)}) DB Query Completed: ${text}. values: ${values}`)
+  });
+  
+  this.once("error", (err: Error) => {
+    const duration = performance.now() - startTime;
+    contextLog(`(${duration.toFixed(2)}) DB Query Error: ${text}. values: ${values}. Error: ${err.message}`)
+  });
+  
+  return originalSubmit.apply(this, args);
+};
 
 const getPostgresSslConfig = () => {
   if (
@@ -114,7 +139,7 @@ export default buildConfig({
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: postgresAdapter({
-    logger: process.env.NODE_ENV === 'development',
+    // logger: process.env.NODE_ENV === 'development',
     pool: {
       connectionString: process.env.DATABASE_URI || '',
       ...getPostgresSslConfig(),
