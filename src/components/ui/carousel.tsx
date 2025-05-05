@@ -210,10 +210,10 @@ const CarouselPrevious = React.forwardRef<
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
-        className
+        className,
+        canScrollPrev ? 'cursor-pointer' : 'cursor-default opacity-40'
       )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      onClick={canScrollPrev ? scrollPrev : ()=>{}}
       {...props}
     >
       <ArrowLeft className="h-4 w-4" />
@@ -239,10 +239,10 @@ const CarouselNext = React.forwardRef<
         orientation === "horizontal"
           ? "-right-12 top-1/2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        className
+        className,
+        canScrollNext ? 'cursor-pointer' : 'cursor-default opacity-40'
       )}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
+      onClick={canScrollNext ? scrollNext : () => {}}
       {...props}
     >
       <ArrowRight className="h-4 w-4" />
