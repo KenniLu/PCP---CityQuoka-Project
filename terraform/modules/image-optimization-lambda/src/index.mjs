@@ -157,6 +157,8 @@ export const handler = async (event) => {
         Key: originalImagePath + '/' + operationsPrefix,
         ContentType: contentType,
         CacheControl: TRANSFORMED_IMAGE_CACHE_TTL,
+        ContentDisposition: 'inline',
+        Vary: 'Accept'
       })
       await s3Client.send(putImageCommand)
       timingLog = timingLog + ',img-upload;dur=' + parseInt(performance.now() - startTime)
@@ -187,6 +189,9 @@ export const handler = async (event) => {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': TRANSFORMED_IMAGE_CACHE_TTL,
+        'Content-Disposition': 'inline',
+        'X-Content-Type-Options': 'nosniff',
+        'Vary': 'Accept',
         'Server-Timing': timingLog,
       },
     }
