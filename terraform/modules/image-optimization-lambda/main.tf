@@ -144,7 +144,7 @@ resource "aws_lambda_function" "image_optimizer" {
     variables = {
       originalImageBucketName = data.aws_s3_bucket.source_bucket.id
       transformedImageBucketName = aws_s3_bucket.cache_bucket.id
-      transformedImageCacheTTL = "max-age=31622400"
+      transformedImageCacheTTL = "public, max-age=31536000, immutable"
       maxImageSize = "1048576" # Max image size is 1 MB
     }
   }

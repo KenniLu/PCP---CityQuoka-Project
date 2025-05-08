@@ -162,6 +162,9 @@ resource "aws_apprunner_service" "cq_cms_app" {
     memory = var.instance_size.memory
   }
 
+  observability_configuration {
+    observability_enabled          = false
+  }
   # dynamic "tags" {
   #   for_each = {
   #     Environment = var.environment

@@ -56,10 +56,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_policy" {
   }
 }
 
-# Create a custom response headers policy that includes cookies
-resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
-  name    = "${var.app_name}-${var.environment}-CookiesCORSPolicy"
-  comment = "Policy for CORS with cookies passthrough"
+resource "aws_cloudfront_response_headers_policy" "image_optimization_headers" {
+  name    = "${var.app_name}-${var.environment}-ImageOptimizationHeaders"
+  comment = "Headers for optimized image delivery"
 
   cors_config {
     access_control_allow_credentials = false
@@ -67,7 +66,7 @@ resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
       items = ["*"]
     }
     access_control_allow_methods {
-      items = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+      items = ["GET", "HEAD", "OPTIONS"]
     }
     access_control_allow_origins {
       items = ["*"]  # Or specify your domains for better security
@@ -75,27 +74,73 @@ resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
     origin_override = true
   }
 
-  # This ensures cookies are passed through
+  # Performance headers
+  custom_headers_config {
+    items {
+      header   = "Cache-Control"
+      override = true
+      value    = "public, max-age=31536000, immutable"
+    }
+    items {
+      header   = "Content-Disposition"
+      override = true
+      value    = "inline"
+    }
+    items {
+      header   = "Vary"
+      override = true
+      value    = "Accept"
+    }
+  }
+
+  # Optional security headers
   security_headers_config {
-    # Optional security headers
     content_type_options {
       override = true
     }
-    frame_options {
-      frame_option = "SAMEORIGIN"
-      override     = true
-    }
-    referrer_policy {
-      referrer_policy = "same-origin"
-      override        = true
-    }
-    xss_protection {
-      mode_block = true
-      protection = true
-      override   = true
-    }
   }
 }
+
+# Create a custom response headers policy that includes cookies
+# resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
+#   name    = "${var.app_name}-${var.environment}-CookiesCORSPolicy"
+#   comment = "Policy for CORS with cookies passthrough"
+
+#   cors_config {
+#     access_control_allow_credentials = false
+#     access_control_allow_headers {
+#       items = ["*"]
+#     }
+#     access_control_allow_methods {
+#       items = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+#     }
+#     access_control_allow_origins {
+#       items = ["*"]  # Or specify your domains for better security
+#     }
+#     origin_override = true
+#   }
+
+#   # This ensures cookies are passed through
+#   security_headers_config {
+#     # Optional security headers
+#     content_type_options {
+#       override = true
+#     }
+#     frame_options {
+#       frame_option = "SAMEORIGIN"
+#       override     = true
+#     }
+#     referrer_policy {
+#       referrer_policy = "same-origin"
+#       override        = true
+#     }
+#     xss_protection {
+#       mode_block = true
+#       protection = true
+#       override   = true
+#     }
+#   }
+# }
 
 resource "aws_iam_role" "lambda_edge_role" {
   # name = "lambda-edge-header-role"
@@ -347,15 +392,19 @@ resource "aws_cloudfront_distribution" "app" {
 
   ordered_cache_behavior {
     path_pattern = "/media/*"
+    compress = true
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "ImageOriginGroup"
     viewer_protocol_policy = "redirect-to-https"
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.image_optimization_headers.id
+
     forwarded_values {
       query_string = true
       cookies {
         forward = "none" # Image optimization doesn't need cookies
       }
+      headers = ["Accept"]
     }
     min_ttl = 0
     default_ttl = 86400 # 1 day
