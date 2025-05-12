@@ -27,10 +27,11 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
     <div className="md:max-lg:w-3/5 sm:max-md:w-1/2 max-sm:w-full lg:h-[420px] flex-shrink-0">
       <Media
         className={'relative flex w-full justify-center h-full aspect-[3/2] max-h-[420px]'}
-        priority
+        priority={true}
         imgClassName="object-cover object-center overflow-hidden rounded-md w-full h-full"
         resource={image}
         size={'(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 60vw, 630px'}
+        fetchPriority={'high'}
       />
     </div>
   )
@@ -44,8 +45,11 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
             const postLink = calculatePostLink(post as Post)
             return (
               <CarouselItem key={post.id}>
-                <ClickableCarouselItem url={postLink!} className='flex max-sm:flex-col sm:max-md:flex-row md:flex-row'>
-                {/* <div className="flex max-sm:flex-col sm:max-md:flex-row md:flex-row"> */}
+                <ClickableCarouselItem
+                  url={postLink!}
+                  className="flex max-sm:flex-col sm:max-md:flex-row md:flex-row"
+                >
+                  {/* <div className="flex max-sm:flex-col sm:max-md:flex-row md:flex-row"> */}
                   {(image || hero_image) &&
                     heroImage((image || hero_image) as MediaType, post.title!)}
                   <div className="md:max-lg:w-2/5 sm:max-md:w-1/2 max-sm:w-full flex-col flex-1">
@@ -83,7 +87,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
                       </div>
                     </div>
                   </div>
-                {/* </div> */}
+                  {/* </div> */}
                 </ClickableCarouselItem>
               </CarouselItem>
             )
