@@ -13,6 +13,8 @@ export const Logo = () => {
           alt="CityQuokka"
           width={600}
           height={0}
+          priority={true}
+          fetchPriority="high"
         />
       </Link>
     </div>

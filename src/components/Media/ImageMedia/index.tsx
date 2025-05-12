@@ -20,6 +20,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     resource,
     size: sizeFromProps,
     src: srcFromProps,
+    fetchPriority,
   } = props
 
   let width: number | undefined
@@ -35,13 +36,16 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
       url,
       width: fullWidth,
       focalX,
-      focalY
+      focalY,
     } = resource
 
     width = fullWidth!
     height = fullHeight!
     alt = altFromResource || ''
-    src = ( process.env.NODE_ENV === 'development' ?  `${url}?focus=${focalX}_${focalY}` : `/media/${fullFilename}?focus=${focalX}_${focalY}` )
+    src =
+      process.env.NODE_ENV === 'development'
+        ? `${url}?focus=${focalX}_${focalY}`
+        : `/media/${fullFilename}?focus=${focalX}_${focalY}`
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -61,6 +65,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
       sizes={sizes}
       src={src}
       width={!fill ? width : undefined}
+      fetchPriority={fetchPriority ? fetchPriority : undefined}
     />
   )
 }
