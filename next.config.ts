@@ -10,8 +10,8 @@ const nextConfig = {
   cacheMaxMemorySize: 0, // Disable default in-memory caching
   images: {
     loaderFile: './cloudfrontLoader.ts',
-    deviceSizes: [300, 600, 900], // Smaller viewport sizes
-    imageSizes: [1400, 1920], // Larger image sizes
+    deviceSizes: [640, 768, 1024, 1122], 
+    imageSizes: [ 256, 384],
   },
   reactStrictMode: true,
   redirects,

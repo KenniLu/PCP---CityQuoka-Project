@@ -58,6 +58,7 @@ module "cdn" {
   image_optimizer_lambda_origin_access_control_id = module.image-optimization-lambda.image_optimizer_lambda_origin_access_control_id
   images_cache_bucket_oai_id_path = module.image-optimization-lambda.images_cache_bucket_oai_id_path
   image_url_rewrite_lambda_qualified_arn = module.image-url-rewrite-lambda.image_url_rewrite_lambda_qualified_arn
+  image_url_rewrite_lambda_function_name = module.image-url-rewrite-lambda.image_url_rewrite_lambda_function_name
   images_cache_bucket_regional_domain_name = module.image-optimization-lambda.images_cache_bucket_regional_domain_name
   providers = {
     aws.us-east-1 = aws.us-east-1

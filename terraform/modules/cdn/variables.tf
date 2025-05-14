@@ -49,6 +49,11 @@ variable "image_url_rewrite_lambda_qualified_arn" {
   type = string
 }
 
+variable "image_url_rewrite_lambda_function_name" {
+  description = "Function Name of Image URL Wewrite Lambda Function"
+  type = string
+}
+
 variable "images_cache_bucket_regional_domain_name" {
   description = "Regional Domain Name for S3 bucket caching optimized images"
   type = string

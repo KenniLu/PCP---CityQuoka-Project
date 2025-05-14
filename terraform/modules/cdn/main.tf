@@ -101,47 +101,6 @@ resource "aws_cloudfront_response_headers_policy" "image_optimization_headers" {
   }
 }
 
-# Create a custom response headers policy that includes cookies
-# resource "aws_cloudfront_response_headers_policy" "cookies_cors_policy" {
-#   name    = "${var.app_name}-${var.environment}-CookiesCORSPolicy"
-#   comment = "Policy for CORS with cookies passthrough"
-
-#   cors_config {
-#     access_control_allow_credentials = false
-#     access_control_allow_headers {
-#       items = ["*"]
-#     }
-#     access_control_allow_methods {
-#       items = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-#     }
-#     access_control_allow_origins {
-#       items = ["*"]  # Or specify your domains for better security
-#     }
-#     origin_override = true
-#   }
-
-#   # This ensures cookies are passed through
-#   security_headers_config {
-#     # Optional security headers
-#     content_type_options {
-#       override = true
-#     }
-#     frame_options {
-#       frame_option = "SAMEORIGIN"
-#       override     = true
-#     }
-#     referrer_policy {
-#       referrer_policy = "same-origin"
-#       override        = true
-#     }
-#     xss_protection {
-#       mode_block = true
-#       protection = true
-#       override   = true
-#     }
-#   }
-# }
-
 resource "aws_iam_role" "lambda_edge_role" {
   # name = "lambda-edge-header-role"
   name = "${var.app_name}-${var.environment}-lambda-edge-header-role"
@@ -436,10 +395,21 @@ resource "aws_cloudfront_distribution" "app" {
 
 
 # Add permission for CloudFront to invoke Lambda
-resource "aws_lambda_permission" "allow_cloudfront" {
-  statement_id  = "AllowCloudFrontToInvokeLambda"
+resource "aws_lambda_permission" "allow_cloudfront_invoke_header_modifier" {
+  statement_id  = "AllowCloudFrontToInvokeHeaderModifierLambda"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.header_modifier.function_name
+  principal     = "edgelambda.amazonaws.com"
+  source_arn    = aws_cloudfront_distribution.app.arn
+  
+  provider = aws.us-east-1  # Must match the Lambda region
+}
+
+# Add permission for CloudFront to invoke Lambda
+resource "aws_lambda_permission" "allow_cloudfront_invoke_url_rewriter" {
+  statement_id  = "AllowCloudFrontToInvokeUrlRewriterLambda"
+  action        = "lambda:InvokeFunction"
+  function_name = var.image_url_rewrite_lambda_function_name
   principal     = "edgelambda.amazonaws.com"
   source_arn    = aws_cloudfront_distribution.app.arn
   

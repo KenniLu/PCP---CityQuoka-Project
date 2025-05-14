@@ -106,6 +106,7 @@ export const handler = async (event) => {
     // check if formatting is requested
     if (operationsJSON['format']) {
       var isLossy = false
+      var effort = null
       switch (operationsJSON['format']) {
         case 'jpeg':
           contentType = 'image/jpeg'
@@ -124,6 +125,7 @@ export const handler = async (event) => {
         case 'avif':
           contentType = 'image/avif'
           isLossy = true
+          effort = 4 // Lower effort = faster encoding (range 0-9)
           break
         default:
           contentType = 'image/jpeg'
@@ -132,6 +134,7 @@ export const handler = async (event) => {
       if (operationsJSON['quality'] && isLossy) {
         transformedImage = transformedImage.toFormat(operationsJSON['format'], {
           quality: parseInt(operationsJSON['quality']),
+          ...(effort ? {effort} : {})
         })
       } else transformedImage = transformedImage.toFormat(operationsJSON['format'])
     } else {

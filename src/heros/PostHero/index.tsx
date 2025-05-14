@@ -71,6 +71,7 @@ export const PostHero: React.FC<{
             imgClassName="object-cover"
             resource={image}
             size="(max-width: 767px) 100vw, (max-width: 1020px) 622px, (max-width: 1280px) 741px, 862px"
+            maxWidth={1724}
           />
         )}
       </div>
