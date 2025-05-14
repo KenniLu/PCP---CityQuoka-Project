@@ -138,7 +138,7 @@ resource "aws_lambda_function" "image_optimizer" {
   depends_on = [null_resource.lambda_build]
   
   # Set appropriate memory and timeout for image processing
-  memory_size = 1500
+  memory_size = 3008
   timeout     = 60
   environment {
     variables = {

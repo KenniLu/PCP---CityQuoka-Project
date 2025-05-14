@@ -18,4 +18,6 @@ export interface Props {
   src?: StaticImageData // for static media
   videoClassName?: string
   fetchPriority?: 'high' | 'low' | 'auto'
+  maxWidth?: number
+  // maxHeight?: number
 }

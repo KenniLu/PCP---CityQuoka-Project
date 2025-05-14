@@ -101,11 +101,12 @@ const PostGroupEntry = ({ postLink, index, listType, useSeparator }: PostGroupEn
               <div className="relative flex flex-col items-start mt-1 w-full text-xl tracking-tight rounded-md aspect-[3/2] max-w-full">
                 {image && (
                   <Media
-                    priority
+                    priority={false}
                     className="inset-0 w-full h-full"
                     imgClassName="object-cover w-full h-full"
                     resource={image}
                     size="(max-width: 767px) 100vw, (max-width: 1020px) 622px, (max-width: 1280px) 741px, 411px"
+                    maxWidth={1482}
                   />
                 )}
               </div>

@@ -32,6 +32,7 @@ export const CollectionHeroCarousel: React.FC<Props> = (props) => {
         resource={image}
         size={'(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 60vw, 630px'}
         fetchPriority={'high'}
+        maxWidth={1260}
       />
     </div>
   )

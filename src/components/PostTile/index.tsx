@@ -18,7 +18,7 @@ export const PostTile: React.FC<PostTileProps> = async ({ post }) => {
       >
         <div className="hover:cursor-pointer max-md:w-[180px]">
           {image && (
-            <Media priority imgClassName="w-[200px] aspect-[3/2] object-cover" resource={image} size="184px"/>
+            <Media priority={false} imgClassName="w-[200px] aspect-[3/2] object-cover" resource={image} size="184px" maxWidth={368}/>
           )}
           <p className="tracking-tighter text-lg mt-2">{title}</p>
         </div>
