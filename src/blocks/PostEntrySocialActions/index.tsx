@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { AuthRequiredDialog } from '@/components/AuthRequiredDialog'
 import { useReactions } from '@/providers/ReactionsProvider'
-import { Heart, Bookmark, Upload } from 'lucide-react'
+import { Heart, Bookmark, Copy } from 'lucide-react'
 
 export default function SocialActions({ postId }: { postId: number }) {
   const { data: session } = useSession()
@@ -13,12 +13,23 @@ export default function SocialActions({ postId }: { postId: number }) {
   const { isLoading, toggleReaction, isReacted } = useReactions()
   const isLiked = isReacted(postId, 'like')
   const isSaved = isReacted(postId, 'save')
+  const [isCopied, setIsCopied] = useState(false)
 
-  const updateReaction = (reaction: 'like' | 'save' | 'share') => {
+  const updateReaction = (reaction: 'like' | 'save') => {
     if (session?.user) {
       if (reaction === 'like' || reaction === 'save') toggleReaction(postId, reaction)
     } else {
       setShowAuthDialog(true)
+    }
+  }
+
+  const copyToClipboard = async () => {
+    try {
+        await navigator.clipboard.writeText(window.location.href)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000) 
+    } catch (err) {
+        console.error("Failed to copy the link: ", err)
     }
   }
 
@@ -60,13 +71,16 @@ export default function SocialActions({ postId }: { postId: number }) {
         {/* Divider */}
         <div className="h-8 w-px bg-gray-300"></div>
 
-        {/* Share section */}
-        <button onClick={() => updateReaction('share')} className="flex items-center group px-4">
-          <Upload
+        {/* Share section - copy link */} 
+        <button onClick={copyToClipboard} className="flex items-center group px-4">
+          <Copy
             size={20}
-            className="text-gray-500 group-hover:text-gray-700 transition-colors duration-200"
+            className={`transition-colors duration-200 ${isCopied ? 'fill-green-500 text-green-500' : 'text-gray-500 group-hover:text-gray-700'}`}
           />
-          <span className="text-sm ml-2 text-gray-500 group-hover:text-gray-700">Share</span>
+          <span className={`text-sm ml-2 ${isCopied ? 'text-green-500' : 'text-gray-500 group-hover:text-gray-700'}`}
+          >
+            Copy      
+          </span>
         </button>
       </div>
       <AuthRequiredDialog onOpenChange={setShowAuthDialog} isOpen={showAuthDialog}>
