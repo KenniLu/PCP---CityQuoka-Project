@@ -1,19 +1,14 @@
-import type { Metadata } from 'next'
+// 'use client';
+
+import React from 'react'
 
 import { cn } from 'src/utilities/cn'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
-import localFont from 'next/font/local'
-import React from 'react'
-
-import { Header } from '@/Header/Component'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { Providers } from '@/providers'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { draftMode } from 'next/headers'
+import { Logo } from '@/components/Logo/Logo'
 
 import '../../globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+import localFont from 'next/font/local'
 
 const acuminFont = localFont({
   src: [
@@ -96,9 +91,7 @@ const authorFont = localFont({
   variable: '--font-author',
 })
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled: draft } = await draftMode()
-
+export default function ProviderLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       className={cn(
@@ -111,27 +104,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <title>City Quokka - Provider Management</title>
+        <meta name="description" content="Manage your provider profile and users" />
       </head>
       <body>
-        <Providers>
-          {draft && <LivePreviewListener />}
-          <div className="flex flex-col min-h-screen w-full bg-white">
-            <main className="flex-grow flex justify-center w-full">
-              <div className="flex flex-col items-center w-full bg-white">
-                <Header />
-                {children}
+        <div className="flex flex-col min-h-screen w-full bg-white">
+          <main className="flex-grow flex justify-center w-full">
+            <div className="flex flex-col items-center w-full bg-white">
+              <div className="flex flex-col w-full bg-white pt-6 mb-4">
+                <div className="flex flex-col self-center w-full max-w-4xl mx-auto lg:max-w-6xl xl:max-w-7xl px-3">
+                  <Logo />
+                  <div className="w-full h-[4px] bg-[#EFEFEF]"></div>
+                </div>
               </div>
-            </main>
-          </div>
-        </Providers>
+              {children}
+            </div>
+          </main>
+        </div>
       </body>
     </html>
   )
-}
-
-export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
 }

@@ -27,8 +27,8 @@ import { ReportCustomCellStatusView as ReportCustomCellStatusView_5eb52212136821
 import { ReportCustomViewServer as ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae } from '../../../components/customViews/reports/view/ReportCustomView.Server'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
+import { default as default_f36461f98231c4e398d0b070b5454fc5 } from '@/components/CustomIcon'
 import { default as default_d4048015f466832aa056ed6cce3b1c3f } from '@/components/CustomLogo'
-import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
@@ -62,8 +62,8 @@ export const importMap = {
   "/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer": ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
+  "@/components/CustomIcon#default": default_f36461f98231c4e398d0b070b5454fc5,
   "@/components/CustomLogo#default": default_d4048015f466832aa056ed6cce3b1c3f,
-  "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,
   "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -12,6 +12,7 @@ import {
   passwordResetSchema,
   PasswordResetFormValues,
 } from '@/validationSchemas/passwordResetSchema'
+import { transformZodErrors } from '@/utilities/transformZodErrors'
 import { sql } from '@payloadcms/db-postgres'
 
 // import type { SendEmailCommandInput } from '@aws-sdk/client-ses'
@@ -23,13 +24,6 @@ import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend'
 
 async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, await bcrypt.genSalt(10))
-}
-
-export const transformZodErrors = async (error: z.ZodError) => {
-  return error.issues.map((issue) => ({
-    path: issue.path.join('.'),
-    message: issue.message,
-  }))
 }
 
 export async function registerUser(formData: RegisterFormValues) {

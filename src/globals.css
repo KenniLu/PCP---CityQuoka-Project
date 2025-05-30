@@ -115,14 +115,14 @@
   }
 }
 
-html {
+/* html {
   opacity: 0;
-}
+} */
 
-html[data-theme='dark'],
+/* html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
-}
+} */
 
 .btn-gray {
   @apply bg-gray-600 hover:bg-gray-500 text-white hover:text-gray-100 px-4 py-2 rounded transition-colors duration-200;

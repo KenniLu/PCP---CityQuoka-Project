@@ -75,6 +75,8 @@ export interface Config {
     programmes: Programme;
     venues: Venue;
     reports: Report;
+    providers: Provider;
+    'user-roles': UserRole;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +96,8 @@ export interface Config {
     programmes: ProgrammesSelect<false> | ProgrammesSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
+    providers: ProvidersSelect<false> | ProvidersSelect<true>;
+    'user-roles': UserRolesSelect<false> | UserRolesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -603,6 +607,7 @@ export interface Venue {
 export interface User {
   id: number;
   name?: string | null;
+  userRoles?: (number | UserRole)[] | null;
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -616,6 +621,60 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-roles".
+ */
+export interface UserRole {
+  id: number;
+  name: string;
+  permissions:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  provider?: (number | null) | Provider;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "providers".
+ */
+export interface Provider {
+  id: number;
+  name: string;
+  description?: string | null;
+  phone: string;
+  email: string;
+  address?: string | null;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  images?:
+    | {
+        image: number | Media;
+        altText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  status?: ('active' | 'inactive') | null;
+  verificationStatus?: ('pending' | 'verified' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -966,6 +1025,14 @@ export interface PayloadLockedDocument {
         value: number | Report;
       } | null)
     | ({
+        relationTo: 'providers';
+        value: number | Provider;
+      } | null)
+    | ({
+        relationTo: 'user-roles';
+        value: number | UserRole;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1291,6 +1358,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  userRoles?: T;
   updatedAt?: T;
   createdAt?: T;
   enableAPIKey?: T;
@@ -1374,6 +1442,42 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   errors?: T;
   filename?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "providers_select".
+ */
+export interface ProvidersSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  phone?: T;
+  email?: T;
+  address?: T;
+  website?: T;
+  logo?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        altText?: T;
+        id?: T;
+      };
+  socialLinks?: T;
+  status?: T;
+  verificationStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-roles_select".
+ */
+export interface UserRolesSelect<T extends boolean = true> {
+  name?: T;
+  permissions?: T;
+  provider?: T;
   updatedAt?: T;
   createdAt?: T;
 }
