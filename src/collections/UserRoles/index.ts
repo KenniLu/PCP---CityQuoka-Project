@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
-
 import { authenticated } from '../../access/authenticated'
-import { adminReadAccessCheck, userProviderIds } from '@/utilities/userUtilities'
+import { adminReadWithScope } from '@/utilities/userUtilities'
 
 export const UserRoles: CollectionConfig = {
   slug: 'user-roles',
@@ -9,13 +8,13 @@ export const UserRoles: CollectionConfig = {
     admin: authenticated,
     create: authenticated,
     delete: authenticated,
-    read: (args) =>
-      adminReadAccessCheck(args, {
+    read: async (args) =>
+      adminReadWithScope(args, {
         slug: 'user-roles',
-        where: (user) => {
+        where: ({ currentProviderId }) => {
           return {
             provider: {
-              in: [...userProviderIds(user), 999],
+              equals: currentProviderId,
             },
           }
         },
@@ -36,6 +35,11 @@ export const UserRoles: CollectionConfig = {
       name: 'permissions',
       type: 'json',
       required: true,
+      admin: {
+        components: {
+          Field: '@/components/PermissionsField'
+        }
+      }
     },
     {
       name: 'provider',

@@ -3,6 +3,8 @@ import { getNameSpacedTable } from '@/utilities/getNameSpacedTable'
 import { cookies as nextCookies } from 'next/headers.js'
 import { generatePayloadCookie } from 'payload'
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import { PersistedContextType } from '@/utilities/userUtilities'
+import { SUPERADMIN } from '@/utilities/userUtilities'
 
 // This hook establishes the Providers that are applicable to the user and also sets current Provider
 export const afterUserLogin: CollectionAfterLoginHook = async ({
@@ -23,14 +25,16 @@ export const afterUserLogin: CollectionAfterLoginHook = async ({
     h[row.name] = row.id
     return h
   }, {})
-  let currentId = null
-  let currentName = null
+  let currentId: number|null = null
+  let currentName: string = ''
   if (userProviders.rows.length > 0) {
     const currentProvider = userProviders.rows[0]
     currentId = currentProvider.id
     currentName = currentProvider.name
+  }else{
+    currentName = SUPERADMIN
   }
-  const sessionContext = { p: providers, i: currentId, n: currentName, r: userRoles }
+  const sessionContext: PersistedContextType = { u: user.id, p: providers, i: currentId!, n: currentName!, r: userRoles }
 
   const sessionContextCookie = generatePayloadCookie({
     cookiePrefix: 'cq-session-context',

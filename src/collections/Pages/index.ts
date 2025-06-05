@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
-// import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { HeroCarousel } from '@/blocks/HeroCarousel/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
@@ -13,8 +12,6 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidatePage } from './hooks/revalidatePage'
-import { isUserSuperAdmin } from '@/utilities/userUtilities'
-// import { User } from 'payload'
 
 import {
   MetaDescriptionField,
@@ -30,9 +27,10 @@ export const Pages: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    // read: authenticatedOrPublished,
     read: async (args) => {
-      return await isUserSuperAdmin()
+      const { req: { user } } = args
+      // return await isUserSuperAdmin(user)
+      return true
     },
     update: authenticated,
   },

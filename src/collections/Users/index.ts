@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { afterUserLogin } from './hooks/afterLogin'
+import { adminReadWithScope } from '@/utilities/userUtilities'
+import { UserRole } from '@/payload-types'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -9,14 +11,24 @@ export const Users: CollectionConfig = {
     useAPIKey: true,
     removeTokenFromResponses: true,
     cookies: {
-      secure: true
-    }
+      secure: true,
+    },
   },
   access: {
     admin: authenticated,
     create: authenticated,
     delete: authenticated,
-    read: authenticated,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'users',
+        where: ({ roles }) => {
+          return {
+            userRoles: {
+              in: roles.map((role: UserRole) => role.id),
+            },
+          }
+        },
+      }),
     update: authenticated,
   },
   admin: {
@@ -32,11 +44,11 @@ export const Users: CollectionConfig = {
       name: 'userRoles',
       type: 'relationship',
       relationTo: 'user-roles',
-      hasMany: true
-    }
+      hasMany: true,
+    },
   ],
   hooks: {
-    afterLogin: [afterUserLogin]
+    afterLogin: [afterUserLogin],
   },
   timestamps: true,
 }

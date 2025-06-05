@@ -1,6 +1,6 @@
 import { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
-import { adminReadAccessCheck, userProviderIds } from '@/utilities/userUtilities'
+import { adminReadWithScope } from '@/utilities/userUtilities'
 
 export const Providers: CollectionConfig = {
   slug: 'providers',
@@ -11,14 +11,18 @@ export const Providers: CollectionConfig = {
     admin: authenticated,
     create: authenticated,
     delete: authenticated,
-    read: (args) =>
-      adminReadAccessCheck(args, {
+    read: async (args) =>
+      adminReadWithScope(args, {
         slug: 'providers',
-        where: (user) => {
-          return {
-            id: {
-              in: [...userProviderIds(user), 999],
-            },
+        where: ({ currentProviderId, isSuperAdmin }) => {
+          if (isSuperAdmin) {
+            return true
+          } else {
+            return {
+              id: {
+                equals: currentProviderId,
+              },
+            }
           }
         },
       }),
