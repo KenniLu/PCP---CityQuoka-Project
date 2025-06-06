@@ -2,7 +2,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import * as tables from './db/schema/tables'
 import * as enums from './db/schema/enums'
 
-// import sharp from 'sharp' // sharp-import
+
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -59,6 +59,9 @@ const getPostgresSslConfig = () => {
 
 export default buildConfig({
   admin: {
+    avatar: {
+      Component: '@/components/CustomAvatar'
+    },
     meta: {
       title: 'City Quokka',
       description: 'City Quokka',
@@ -87,6 +90,7 @@ export default buildConfig({
         Logo: '@/components/CustomLogo',
         Icon: '@/components/CustomIcon'
       },
+      actions: ['@/components/ProviderSwitcher']
     },
     importMap: {
       baseDir: path.resolve(dirname),

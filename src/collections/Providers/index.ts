@@ -6,6 +6,9 @@ export const Providers: CollectionConfig = {
   slug: 'providers',
   admin: {
     useAsTitle: 'name',
+    components: {
+      listMenuItems: ['@/components/ProviderSwitchButton']
+    }
   },
   access: {
     admin: authenticated,
