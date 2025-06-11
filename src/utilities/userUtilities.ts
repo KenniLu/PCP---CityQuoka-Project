@@ -181,13 +181,15 @@ export const sessionContext = cache(
   },
 )
 
-export const useSessionContext = cache(async (): Promise<SessionContextType | null> => {
+export const useSessionContext = cache(async (): Promise<{sessionContext: SessionContextType, user: User} | null> => {
   const user = await currentUser()
   if (user) {
-    return await sessionContext(user.id)
-  } else {
-    return null
+    const context = await sessionContext(user.id)
+    if(context){
+      return {sessionContext: context, user}
+    }
   }
+  return null
 })
 
 export const checkUserPermission = async (

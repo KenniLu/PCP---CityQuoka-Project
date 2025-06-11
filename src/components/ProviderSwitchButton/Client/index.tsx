@@ -3,8 +3,9 @@ import { useSelection } from '@payloadcms/ui'
 
 export type ProviderSwitchButtonClientProps = {
   currentProviderId: number | null
-  setProvider: (providerId: number) => Promise<void>
+  setProvider: (providerId: number|null) => Promise<void>
 }
+
 const ProviderSwitchButtonClient: React.FC<ProviderSwitchButtonClientProps> = ({
   currentProviderId,
   setProvider,
