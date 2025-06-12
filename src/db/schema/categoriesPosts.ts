@@ -5,7 +5,7 @@ import {
   uuid,
   index,
   text,
-  boolean
+  boolean,
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 
 export const categoriesPosts = pgTable(
@@ -18,6 +18,7 @@ export const categoriesPosts = pgTable(
     featured: boolean('is_featured'),
     recommended: boolean('is_recommended'),
     standalone: boolean('standalone'),
+    providerId: integer('provider_id'),
     createdAt: timestamp('created_at', { mode: 'string' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
   },
@@ -27,6 +28,7 @@ export const categoriesPosts = pgTable(
     index('categories_posts_category_path_idx').on(categoriesPosts.categoryPath),
     index('categories_posts_featured_idx').on(categoriesPosts.featured),
     index('categories_posts_recommended_idx').on(categoriesPosts.recommended),
-    index('categories_posts_standalone_idx').on(categoriesPosts.standalone)
+    index('categories_posts_standalone_idx').on(categoriesPosts.standalone),
+    index('categories_posts_provider_id_idx').on(categoriesPosts.providerId),
   ],
 )

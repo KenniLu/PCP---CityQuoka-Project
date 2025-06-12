@@ -54,6 +54,7 @@ export type SupportedTimezones =
   | 'Asia/Singapore'
   | 'Asia/Tokyo'
   | 'Asia/Seoul'
+  | 'Australia/Brisbane'
   | 'Australia/Sydney'
   | 'Pacific/Guam'
   | 'Pacific/Noumea'
@@ -75,6 +76,8 @@ export interface Config {
     programmes: Programme;
     venues: Venue;
     reports: Report;
+    providers: Provider;
+    'user-roles': UserRole;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +97,8 @@ export interface Config {
     programmes: ProgrammesSelect<false> | ProgrammesSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
+    providers: ProvidersSelect<false> | ProvidersSelect<true>;
+    'user-roles': UserRolesSelect<false> | UserRolesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -195,6 +200,7 @@ export interface Page {
     description?: string | null;
   };
   publishedAt?: string | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -223,6 +229,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  provider?: (number | null) | Provider;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -235,6 +242,40 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "providers".
+ */
+export interface Provider {
+  id: number;
+  name: string;
+  description?: string | null;
+  phone: string;
+  email: string;
+  address?: string | null;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  images?:
+    | {
+        image: number | Media;
+        altText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  status?: ('active' | 'inactive') | null;
+  verificationStatus?: ('pending' | 'verified' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -500,6 +541,7 @@ export interface Post {
         name?: string | null;
       }[]
     | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -531,6 +573,7 @@ export interface Programme {
   };
   categories?: (number | Category)[] | null;
   events: (number | Event)[];
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -559,6 +602,7 @@ export interface Event {
     };
     [k: string]: unknown;
   };
+  provider?: (number | null) | Provider;
   venue?: (number | null) | Venue;
   event_start_datetime?: string | null;
   event_end_datetime?: string | null;
@@ -591,6 +635,7 @@ export interface Venue {
   facebookUrl?: string | null;
   linktreeUrl?: string | null;
   linkedInUrl?: string | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -603,6 +648,7 @@ export interface Venue {
 export interface User {
   id: number;
   name?: string | null;
+  userRoles?: (number | UserRole)[] | null;
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -616,6 +662,26 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-roles".
+ */
+export interface UserRole {
+  id: number;
+  name: string;
+  permissions:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  provider?: (number | null) | Provider;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -715,6 +781,7 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             defaultValue?: string | null;
+            placeholder?: string | null;
             options?:
               | {
                   label: string;
@@ -846,6 +913,7 @@ export interface Report {
     | boolean
     | null;
   filename?: string | null;
+  provider?: (number | null) | Provider;
   updatedAt: string;
   createdAt: string;
 }
@@ -966,6 +1034,14 @@ export interface PayloadLockedDocument {
         value: number | Report;
       } | null)
     | ({
+        relationTo: 'providers';
+        value: number | Provider;
+      } | null)
+    | ({
+        relationTo: 'user-roles';
+        value: number | UserRole;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1069,6 +1145,7 @@ export interface PagesSelect<T extends boolean = true> {
         description?: T;
       };
   publishedAt?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1238,6 +1315,7 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1251,6 +1329,7 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  provider?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1291,6 +1370,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  userRoles?: T;
   updatedAt?: T;
   createdAt?: T;
   enableAPIKey?: T;
@@ -1312,6 +1392,7 @@ export interface EventsSelect<T extends boolean = true> {
   name?: T;
   banner?: T;
   content?: T;
+  provider?: T;
   venue?: T;
   event_start_datetime?: T;
   event_end_datetime?: T;
@@ -1330,6 +1411,7 @@ export interface ProgrammesSelect<T extends boolean = true> {
   content?: T;
   categories?: T;
   events?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1358,6 +1440,7 @@ export interface VenuesSelect<T extends boolean = true> {
   facebookUrl?: T;
   linktreeUrl?: T;
   linkedInUrl?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1374,6 +1457,43 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   errors?: T;
   filename?: T;
+  provider?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "providers_select".
+ */
+export interface ProvidersSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  phone?: T;
+  email?: T;
+  address?: T;
+  website?: T;
+  logo?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        altText?: T;
+        id?: T;
+      };
+  socialLinks?: T;
+  status?: T;
+  verificationStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-roles_select".
+ */
+export interface UserRolesSelect<T extends boolean = true> {
+  name?: T;
+  permissions?: T;
+  provider?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1458,6 +1578,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               defaultValue?: T;
+              placeholder?: T;
               options?:
                 | T
                 | {

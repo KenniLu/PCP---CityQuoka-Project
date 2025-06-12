@@ -1,5 +1,7 @@
-import { CollectionConfig, FieldHook } from "payload";
+import { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
+import { adminReadWithScope } from '@/utilities/permissions'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Venues: CollectionConfig = {
   slug: 'venues',
@@ -7,11 +9,21 @@ export const Venues: CollectionConfig = {
     useAsTitle: 'name',
     components: {
       afterList: ['@/app/(admin)/venues/google-venue-search'],
-    }
+    },
   },
   access: {
     create: () => true,
-    read: () => true,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'venues',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
   },
   fields: [
     {
@@ -23,7 +35,7 @@ export const Venues: CollectionConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      required: false
+      required: false,
     },
     {
       name: 'address',
@@ -48,13 +60,12 @@ export const Venues: CollectionConfig = {
     {
       name: 'postal_code',
       type: 'text',
-      required: false
+      required: false,
     },
     {
       name: 'latitude',
       type: 'text',
       required: false,
-
     },
     {
       name: 'longitude',
@@ -64,58 +75,57 @@ export const Venues: CollectionConfig = {
     {
       name: 'googlePlaceId',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'phone',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'website',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'instagramHandle',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'tiktokHandle',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'xHandle',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'facebookUrl',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'linktreeUrl',
       type: 'text',
-      required: false,
-      unique: true
+      required: false
     },
     {
       name: 'linkedInUrl',
       type: 'text',
       required: false,
-      unique: true,
-      label: 'Linkedin URL'
+      label: 'Linkedin URL',
     },
-    ...slugField('slug')
-  ]
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
+    ...slugField('slug'),
+  ],
+  hooks: {
+    beforeChange: [injectProvider],
+  },
 }

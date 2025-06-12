@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { HeroCarousel } from '@/blocks/HeroCarousel/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
@@ -13,6 +12,7 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidatePage } from './hooks/revalidatePage'
+import { adminReadWithScope } from '@/utilities/permissions'
 
 import {
   MetaDescriptionField,
@@ -22,13 +22,29 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { getServerSideURL } from '@/utilities/getURL'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'pages',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+        unAuthenticated: {
+          _status: {
+            equals: 'published',
+          },
+        },
+      }),
     update: authenticated,
   },
   admin: {
@@ -113,11 +129,16 @@ export const Pages: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
     ...slugField(),
   ],
   hooks: {
     afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
+    beforeChange: [populatePublishedAt, injectProvider],
   },
   versions: {
     drafts: {

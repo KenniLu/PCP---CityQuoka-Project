@@ -8,8 +8,9 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { anyone } from '../access/anyone'
-import { authenticated } from '../access/authenticated'
+import { adminReadWithScope } from "@/utilities/permissions";
+import { authenticated } from '../../access/authenticated'
+import { injectProvider } from '@/hooks/injectProvider';
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -19,7 +20,18 @@ export const Media: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'media',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+        unAuthenticated: true
+      }),
     update: authenticated,
   },
   fields: [
@@ -37,6 +49,11 @@ export const Media: CollectionConfig = {
         },
       }),
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    }
   ],
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
@@ -44,4 +61,7 @@ export const Media: CollectionConfig = {
     mimeTypes: ['image/*'],
     focalPoint: true
   },
+  hooks: {
+    beforeChange: [injectProvider]
+  }
 }

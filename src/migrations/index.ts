@@ -11,6 +11,9 @@ import * as migration_20250409_034153_addPasswordResetToken from './20250409_034
 import * as migration_20250409_051947_addFieldsToReplaceTags from './20250409_051947_addFieldsToReplaceTags';
 import * as migration_20250413_100033_addReportModel from './20250413_100033_addReportModel';
 import * as migration_20250414_024414_addreportRequesterNameColumn from './20250414_024414_addreportRequesterNameColumn';
+import * as migration_20250612_032538_addProviderRelationships from './20250612_032538_addProviderRelationships';
+import * as migration_20250612_035800_addProviderToCategoriesPosts from './20250612_035800_addProviderToCategoriesPosts';
+import * as migration_20250612_064615_removeVenueUniqueContraint from './20250612_064615_removeVenueUniqueContraint';
 
 export const migrations = [
   {
@@ -76,6 +79,21 @@ export const migrations = [
   {
     up: migration_20250414_024414_addreportRequesterNameColumn.up,
     down: migration_20250414_024414_addreportRequesterNameColumn.down,
-    name: '20250414_024414_addreportRequesterNameColumn'
+    name: '20250414_024414_addreportRequesterNameColumn',
+  },
+  {
+    up: migration_20250612_032538_addProviderRelationships.up,
+    down: migration_20250612_032538_addProviderRelationships.down,
+    name: '20250612_032538_addProviderRelationships',
+  },
+  {
+    up: migration_20250612_035800_addProviderToCategoriesPosts.up,
+    down: migration_20250612_035800_addProviderToCategoriesPosts.down,
+    name: '20250612_035800_addProviderToCategoriesPosts',
+  },
+  {
+    up: migration_20250612_064615_removeVenueUniqueContraint.up,
+    down: migration_20250612_064615_removeVenueUniqueContraint.down,
+    name: '20250612_064615_removeVenueUniqueContraint'
   },
 ];

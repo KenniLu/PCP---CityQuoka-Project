@@ -4,20 +4,34 @@ import { authenticated } from '../../access/authenticated'
 import { pupulateDefaultFields } from './hooks/pupulateDefaultFields'
 import { downloadReport } from './hooks/downloadReport'
 import { requestReportGeneration } from './hooks/requestReportGeneration'
+import { adminReadWithScope } from '@/utilities/permissions'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticated,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'reports',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
     update: authenticated,
   },
-  endpoints: [{
-    path: '/download/:id',
-    method: 'get',
-    handler: downloadReport,
-  }],
+  endpoints: [
+    {
+      path: '/download/:id',
+      method: 'get',
+      handler: downloadReport,
+    },
+  ],
   admin: {
     defaultColumns: ['report', 'requestedAt', 'requestorName', 'status'],
     useAsTitle: 'report',
@@ -25,7 +39,8 @@ export const Reports: CollectionConfig = {
       views: {
         edit: {
           customReportView: {
-            Component: '/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer',
+            Component:
+              '/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer',
             path: '/view',
           },
         },
@@ -62,7 +77,7 @@ export const Reports: CollectionConfig = {
       label: 'Requestor',
       admin: {
         hidden: true,
-      }
+      },
     },
     {
       name: 'status',
@@ -94,9 +109,14 @@ export const Reports: CollectionConfig = {
         hidden: true,
       },
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
   ],
   hooks: {
-    beforeChange: [pupulateDefaultFields],
-    afterChange: [requestReportGeneration]
+    beforeChange: [pupulateDefaultFields, injectProvider],
+    afterChange: [requestReportGeneration],
   },
 }

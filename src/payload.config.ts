@@ -1,12 +1,13 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import * as tables from './db/schema/tables';
+import * as tables from './db/schema/tables'
 import * as enums from './db/schema/enums'
 
-// import sharp from 'sharp' // sharp-import
+
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Providers } from './collections/Providers'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -15,7 +16,9 @@ import { Users } from './collections/Users'
 import { Programmes } from './collections/Programmes'
 import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
-import { Reports } from './collections/Reports';
+import { Reports } from './collections/Reports'
+import { UserRoles } from './collections/UserRoles'
+
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -56,6 +59,9 @@ const getPostgresSslConfig = () => {
 
 export default buildConfig({
   admin: {
+    avatar: {
+      Component: '@/components/CustomAvatar'
+    },
     meta: {
       title: 'City Quokka',
       description: 'City Quokka',
@@ -79,10 +85,13 @@ export default buildConfig({
       beforeLogin: ['@/components/BeforeLogin'],
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      // beforeDashboard: ['@/components/BeforeDashboard'],
       graphics: {
         Logo: '@/components/CustomLogo',
+        Icon: '@/components/CustomIcon'
       },
+      actions: ['@/components/ProviderSwitcher'],
+      providers: ['@/providers/RemoveDarkModeProvider']
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -125,17 +134,30 @@ export default buildConfig({
           ...schema,
           enums: {
             ...schema.enums,
-            ...enums
+            ...enums,
           },
           tables: {
             ...schema.tables,
-            ...tables
+            ...tables,
           },
         }
       },
     ],
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Events, Programmes, Venues, Reports],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Events,
+    Programmes,
+    Venues,
+    Reports,
+    Providers,
+    UserRoles,
+    // UserRolesUsers
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
@@ -154,4 +176,5 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  cookiePrefix: 'cityquokka'
 })

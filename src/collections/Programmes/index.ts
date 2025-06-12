@@ -1,6 +1,8 @@
 import { CollectionConfig, FieldHook } from "payload";
 import { slugField } from '@/fields/slug'
 import { defaultLexical } from '@/fields/defaultLexical'
+import { adminReadWithScope } from "@/utilities/permissions";
+import { injectProvider } from '@/hooks/injectProvider';
 
 export const Programmes: CollectionConfig = {
   slug: 'programmes',
@@ -32,7 +34,17 @@ export const Programmes: CollectionConfig = {
   },
   access: {
     create: () => true,
-    read: () => true,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'programmes',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
     readVersions: () => true,
   },
   fields: [
@@ -70,6 +82,14 @@ export const Programmes: CollectionConfig = {
       hasMany: true,
       required: true
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
     ...slugField()
   ],
+  hooks: {
+    beforeChange: [injectProvider]
+  }
 }
