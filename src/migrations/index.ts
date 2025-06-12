@@ -13,6 +13,7 @@ import * as migration_20250413_100033_addReportModel from './20250413_100033_add
 import * as migration_20250414_024414_addreportRequesterNameColumn from './20250414_024414_addreportRequesterNameColumn';
 import * as migration_20250612_032538_addProviderRelationships from './20250612_032538_addProviderRelationships';
 import * as migration_20250612_035800_addProviderToCategoriesPosts from './20250612_035800_addProviderToCategoriesPosts';
+import * as migration_20250612_064615_removeVenueUniqueContraint from './20250612_064615_removeVenueUniqueContraint';
 
 export const migrations = [
   {
@@ -88,6 +89,11 @@ export const migrations = [
   {
     up: migration_20250612_035800_addProviderToCategoriesPosts.up,
     down: migration_20250612_035800_addProviderToCategoriesPosts.down,
-    name: '20250612_035800_addProviderToCategoriesPosts'
+    name: '20250612_035800_addProviderToCategoriesPosts',
+  },
+  {
+    up: migration_20250612_064615_removeVenueUniqueContraint.up,
+    down: migration_20250612_064615_removeVenueUniqueContraint.down,
+    name: '20250612_064615_removeVenueUniqueContraint'
   },
 ];
