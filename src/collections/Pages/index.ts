@@ -12,6 +12,7 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidatePage } from './hooks/revalidatePage'
+import { adminReadWithScope } from '@/utilities/permissions'
 
 import {
   MetaDescriptionField,
@@ -21,17 +22,24 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { getServerSideURL } from '@/utilities/getURL'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: async (args) => {
-      const { req: { user } } = args
-      // return await isUserSuperAdmin(user)
-      return true
-    },
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'pages',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
     update: authenticated,
   },
   admin: {
@@ -116,11 +124,16 @@ export const Pages: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
     ...slugField(),
   ],
   hooks: {
     afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
+    beforeChange: [populatePublishedAt, injectProvider],
   },
   versions: {
     drafts: {

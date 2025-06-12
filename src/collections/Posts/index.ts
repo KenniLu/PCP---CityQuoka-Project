@@ -8,7 +8,6 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidatePost, loadCurrentPublishedPost } from './hooks/revalidatePost'
@@ -23,16 +22,28 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { adminReadWithScope } from '@/utilities/permissions'
 
 import { slugField } from '@/fields/slug'
 import { getServerSideURL } from '@/utilities/getURL'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'posts',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
     update: authenticated,
   },
   admin: {
@@ -127,13 +138,13 @@ export const Posts: CollectionConfig = {
       name: 'standalone',
       type: 'checkbox',
       label: 'is Standalone Post',
-      defaultValue: false
+      defaultValue: false,
     },
     {
       name: 'featured',
       type: 'checkbox',
       label: 'is Featured Post',
-      defaultValue: false
+      defaultValue: false,
     },
     {
       type: 'tabs',
@@ -180,7 +191,7 @@ export const Posts: CollectionConfig = {
                 position: 'sidebar',
               },
               hasMany: true,
-              relationTo: 'categories'
+              relationTo: 'categories',
             },
             {
               name: 'tags',
@@ -240,7 +251,7 @@ export const Posts: CollectionConfig = {
           pickerAppearance: 'dayAndTime',
         },
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'authors',
@@ -272,10 +283,15 @@ export const Posts: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
+    },
     ...slugField(),
   ],
   hooks: {
-    beforeChange: [loadCurrentPublishedPost],
+    beforeChange: [loadCurrentPublishedPost, injectProvider],
     afterChange: [revalidatePost, updateCategoryPosts],
     afterRead: [populateAuthors],
   },

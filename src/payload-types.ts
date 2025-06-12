@@ -200,6 +200,7 @@ export interface Page {
     description?: string | null;
   };
   publishedAt?: string | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -228,6 +229,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  provider?: (number | null) | Provider;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -240,6 +242,40 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "providers".
+ */
+export interface Provider {
+  id: number;
+  name: string;
+  description?: string | null;
+  phone: string;
+  email: string;
+  address?: string | null;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  images?:
+    | {
+        image: number | Media;
+        altText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  status?: ('active' | 'inactive') | null;
+  verificationStatus?: ('pending' | 'verified' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -505,6 +541,7 @@ export interface Post {
         name?: string | null;
       }[]
     | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -536,6 +573,7 @@ export interface Programme {
   };
   categories?: (number | Category)[] | null;
   events: (number | Event)[];
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -564,6 +602,7 @@ export interface Event {
     };
     [k: string]: unknown;
   };
+  provider?: (number | null) | Provider;
   venue?: (number | null) | Venue;
   event_start_datetime?: string | null;
   event_end_datetime?: string | null;
@@ -596,6 +635,7 @@ export interface Venue {
   facebookUrl?: string | null;
   linktreeUrl?: string | null;
   linkedInUrl?: string | null;
+  provider?: (number | null) | Provider;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -640,40 +680,6 @@ export interface UserRole {
     | boolean
     | null;
   provider?: (number | null) | Provider;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "providers".
- */
-export interface Provider {
-  id: number;
-  name: string;
-  description?: string | null;
-  phone: string;
-  email: string;
-  address?: string | null;
-  website?: string | null;
-  logo?: (number | null) | Media;
-  images?:
-    | {
-        image: number | Media;
-        altText?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  socialLinks?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  status?: ('active' | 'inactive') | null;
-  verificationStatus?: ('pending' | 'verified' | 'rejected') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -907,6 +913,7 @@ export interface Report {
     | boolean
     | null;
   filename?: string | null;
+  provider?: (number | null) | Provider;
   updatedAt: string;
   createdAt: string;
 }
@@ -1138,6 +1145,7 @@ export interface PagesSelect<T extends boolean = true> {
         description?: T;
       };
   publishedAt?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1307,6 +1315,7 @@ export interface PostsSelect<T extends boolean = true> {
         id?: T;
         name?: T;
       };
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1320,6 +1329,7 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  provider?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1382,6 +1392,7 @@ export interface EventsSelect<T extends boolean = true> {
   name?: T;
   banner?: T;
   content?: T;
+  provider?: T;
   venue?: T;
   event_start_datetime?: T;
   event_end_datetime?: T;
@@ -1400,6 +1411,7 @@ export interface ProgrammesSelect<T extends boolean = true> {
   content?: T;
   categories?: T;
   events?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1428,6 +1440,7 @@ export interface VenuesSelect<T extends boolean = true> {
   facebookUrl?: T;
   linktreeUrl?: T;
   linkedInUrl?: T;
+  provider?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1444,6 +1457,7 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   errors?: T;
   filename?: T;
+  provider?: T;
   updatedAt?: T;
   createdAt?: T;
 }

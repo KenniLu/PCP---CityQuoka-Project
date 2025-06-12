@@ -1,7 +1,9 @@
-import { CollectionConfig, FieldHook } from "payload";
+import { CollectionConfig } from 'payload'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { slugField } from '@/fields/slug'
+import { adminReadWithScope } from '@/utilities/permissions'
+import { injectProvider } from '@/hooks/injectProvider'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -33,7 +35,17 @@ export const Events: CollectionConfig = {
   },
   access: {
     create: () => true,
-    read: () => true,
+    read: async (args) =>
+      adminReadWithScope(args, {
+        slug: 'events',
+        where: ({ currentProviderId }) => {
+          return {
+            provider: {
+              equals: currentProviderId,
+            },
+          }
+        },
+      }),
     readVersions: () => true,
   },
   fields: [
@@ -48,34 +60,40 @@ export const Events: CollectionConfig = {
       relationTo: 'media',
       required: false,
       access: {
-        read: () => true
-      }
+        read: () => true,
+      },
     },
     {
       name: 'content',
       type: 'richText',
       required: true,
-      editor: defaultLexical
+      editor: defaultLexical,
+    },
+    {
+      name: 'provider',
+      type: 'relationship',
+      relationTo: 'providers',
     },
     {
       name: 'venue',
       type: 'relationship',
       relationTo: 'venues',
       hasMany: false,
-      required: false
+      required: false,
     },
     {
       name: 'event_start_datetime',
       type: 'date',
-      required: false
-
+      required: false,
     },
     {
       name: 'event_end_datetime',
       type: 'date',
-      required: false
-
+      required: false,
     },
-    ...slugField()
+    ...slugField(),
   ],
+  hooks: {
+    beforeChange: [injectProvider],
+  },
 }

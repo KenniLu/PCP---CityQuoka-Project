@@ -90,7 +90,8 @@ export default buildConfig({
         Logo: '@/components/CustomLogo',
         Icon: '@/components/CustomIcon'
       },
-      actions: ['@/components/ProviderSwitcher']
+      actions: ['@/components/ProviderSwitcher'],
+      providers: ['@/providers/RemoveDarkModeProvider']
     },
     importMap: {
       baseDir: path.resolve(dirname),

@@ -1,6 +1,6 @@
 import { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
-import { adminReadWithScope } from '@/utilities/userUtilities'
+import { adminReadWithScope } from '@/utilities/permissions'
 
 export const Providers: CollectionConfig = {
   slug: 'providers',

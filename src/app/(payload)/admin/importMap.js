@@ -35,6 +35,7 @@ import { default as default_f36461f98231c4e398d0b070b5454fc5 } from '@/component
 import { default as default_d4048015f466832aa056ed6cce3b1c3f } from '@/components/CustomLogo'
 import { default as default_dc1b0272519213f628858894836a1c56 } from '@/components/ProviderSwitcher'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
+import { default as default_05e985aee4b43de0120fcd9c1743a8ee } from '@/providers/RemoveDarkModeProvider'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
@@ -75,5 +76,6 @@ export const importMap = {
   "@/components/CustomLogo#default": default_d4048015f466832aa056ed6cce3b1c3f,
   "@/components/ProviderSwitcher#default": default_dc1b0272519213f628858894836a1c56,
   "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
+  "@/providers/RemoveDarkModeProvider#default": default_05e985aee4b43de0120fcd9c1743a8ee,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

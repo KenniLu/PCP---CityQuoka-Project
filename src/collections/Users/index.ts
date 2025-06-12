@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { afterUserLogin } from './hooks/afterLogin'
-import { adminReadWithScope } from '@/utilities/userUtilities'
+import { adminReadWithScope } from '@/utilities/permissions'
 import { UserRole } from '@/payload-types'
 
 export const Users: CollectionConfig = {
