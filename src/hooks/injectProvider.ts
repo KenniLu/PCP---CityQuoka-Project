@@ -1,5 +1,5 @@
 import type { CollectionBeforeChangeHook } from 'payload'
-import { useSessionContext } from '@/utilities/userUtilities'
+import { getSessionContext } from '@/utilities/userUtilities'
 import { CustomBackendError } from '@/errors/CustomBackendError'
 
 export const injectProvider: CollectionBeforeChangeHook = async ({
@@ -7,7 +7,7 @@ export const injectProvider: CollectionBeforeChangeHook = async ({
   operation,
   originalDoc,
 }) => {
-  const { sessionContext } = (await useSessionContext()) || {}
+  const { sessionContext } = (await getSessionContext()) || {}
 
   if (operation === 'create') {
     data.provider = sessionContext?.currentProviderId
