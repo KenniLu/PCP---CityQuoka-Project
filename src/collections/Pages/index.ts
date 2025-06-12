@@ -39,6 +39,11 @@ export const Pages: CollectionConfig = {
             },
           }
         },
+        unAuthenticated: {
+          _status: {
+            equals: 'published',
+          },
+        },
       }),
     update: authenticated,
   },

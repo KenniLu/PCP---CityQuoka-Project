@@ -33,11 +33,13 @@ export const adminReadWithScope = async (
     where: (sessionContext: SessionContextType) => Where | boolean
     slug: (typeof PERMISSION_KEYS)[number]
     checkpath?: string
+    unAuthenticated?: Where | boolean
   },
 ): Promise<AccessResult> => {
   const { user, pathname } = args.req
-  const { where, slug, checkpath } = checkArgs
+  const { where, slug, checkpath, unAuthenticated } = checkArgs
   if (user) {
+    console.log(`PATHNAME IS ${pathname}`)    
     const session = (await sessionContext(user.id)) as SessionContextType
     const canRead = await checkUserPermission(session, slug, 'read')
     if (canRead) {
@@ -51,6 +53,6 @@ export const adminReadWithScope = async (
       return false
     }
   } else {
-    return false
+    return unAuthenticated || false
   }
 }

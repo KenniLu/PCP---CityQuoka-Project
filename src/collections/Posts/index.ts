@@ -43,6 +43,11 @@ export const Posts: CollectionConfig = {
             },
           }
         },
+        unAuthenticated: {
+          _status: {
+            equals: 'published',
+          },
+        },
       }),
     update: authenticated,
   },

@@ -41,12 +41,14 @@ export const updateCategoryPosts: CollectionAfterChangeHook<Post> = async ({
         ;(category?.breadcrumbs || []).forEach((crumb) => {
           path = `${path}/${format(crumb.label!)}`
           if (!collectedPaths[path]) {
+            const providerId = ( doc.provider && typeof doc.provider === 'object' ) ? doc.provider.id : typeof doc.provider === 'number' ? doc.provider : null
             recordsToAdd.push({
               categoryId: crumb.doc as number,
               postId: doc.id,
               categoryPath: path,
               featured: doc.featured,
               standalone: doc.standalone,
+              providerId
             })
             collectedPaths[path] = true
           }

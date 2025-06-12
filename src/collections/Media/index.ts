@@ -30,6 +30,7 @@ export const Media: CollectionConfig = {
             },
           }
         },
+        unAuthenticated: true
       }),
     update: authenticated,
   },
