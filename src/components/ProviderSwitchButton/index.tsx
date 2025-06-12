@@ -1,8 +1,8 @@
 import ProviderSwitchButtonClient from './Client'
-import { useSessionContext, setSessionContext } from '@/utilities/userUtilities'
+import { getSessionContext, setSessionContext } from '@/utilities/userUtilities'
 
 const ProviderSwitchButton: React.FC = async () => {
-  const { sessionContext, user } = await useSessionContext() || {}
+  const { sessionContext, user } = await getSessionContext() || {}
 
   const setProvider = async (providerId: number|null) => {
     'use server'

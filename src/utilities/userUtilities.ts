@@ -185,7 +185,7 @@ export const sessionContext = cache(
   },
 )
 
-export const useSessionContext = cache(
+export const getSessionContext = cache(
   async (): Promise<{ sessionContext: SessionContextType; user: User } | null> => {
     const user = await currentUser()
     if (user) {
