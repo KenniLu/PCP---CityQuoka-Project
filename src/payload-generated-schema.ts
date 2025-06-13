@@ -6,6 +6,7 @@
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
 
+import type {} from '@payloadcms/db-postgres'
 import {
   pgTable,
   index,
@@ -132,6 +133,19 @@ export const enum__posts_v_blocks_post_group_block_list_type = pgEnum(
 export const enum__posts_v_version_status = pgEnum('enum__posts_v_version_status', [
   'draft',
   'published',
+])
+export const enum_reports_report = pgEnum('enum_reports_report', ['PostsAuditReport'])
+export const enum_reports_status = pgEnum('enum_reports_status', [
+  'REQUESTED',
+  'PROCESSING',
+  'COMPLETED',
+  'FAILED',
+])
+export const enum_providers_status = pgEnum('enum_providers_status', ['active', 'inactive'])
+export const enum_providers_verification_status = pgEnum('enum_providers_verification_status', [
+  'pending',
+  'verified',
+  'rejected',
 ])
 export const enum_redirects_to_type = pgEnum('enum_redirects_to_type', ['reference', 'custom'])
 export const enum_forms_confirmation_type = pgEnum('enum_forms_confirmation_type', [
@@ -382,6 +396,9 @@ export const pages = pgTable(
     }),
     meta_description: varchar('meta_description'),
     publishedAt: timestamp('published_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     slug: varchar('slug'),
     slugLock: boolean('slug_lock').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
@@ -395,6 +412,7 @@ export const pages = pgTable(
   (columns) => ({
     pages_hero_hero_media_idx: index('pages_hero_hero_media_idx').on(columns.hero_media),
     pages_meta_meta_image_idx: index('pages_meta_meta_image_idx').on(columns.meta_image),
+    pages_provider_idx: index('pages_provider_idx').on(columns.provider),
     pages_slug_idx: index('pages_slug_idx').on(columns.slug),
     pages_updated_at_idx: index('pages_updated_at_idx').on(columns.updatedAt),
     pages_created_at_idx: index('pages_created_at_idx').on(columns.createdAt),
@@ -697,6 +715,9 @@ export const _pages_v = pgTable(
       withTimezone: true,
       precision: 3,
     }),
+    version_provider: integer('version_provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     version_slug: varchar('version_slug'),
     version_slugLock: boolean('version_slug_lock').default(true),
     version_updatedAt: timestamp('version_updated_at', {
@@ -727,6 +748,9 @@ export const _pages_v = pgTable(
     _pages_v_version_meta_version_meta_image_idx: index(
       '_pages_v_version_meta_version_meta_image_idx',
     ).on(columns.version_meta_image),
+    _pages_v_version_version_provider_idx: index('_pages_v_version_version_provider_idx').on(
+      columns.version_provider,
+    ),
     _pages_v_version_version_slug_idx: index('_pages_v_version_version_slug_idx').on(
       columns.version_slug,
     ),
@@ -926,6 +950,9 @@ export const posts = pgTable(
     }),
     meta_description: varchar('meta_description'),
     publishedAt: timestamp('published_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     slug: varchar('slug'),
     slugLock: boolean('slug_lock').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
@@ -941,6 +968,7 @@ export const posts = pgTable(
     posts_hero_image_idx: index('posts_hero_image_idx').on(columns.hero_image),
     posts_venue_idx: index('posts_venue_idx').on(columns.venue),
     posts_meta_meta_image_idx: index('posts_meta_meta_image_idx').on(columns.meta_image),
+    posts_provider_idx: index('posts_provider_idx').on(columns.provider),
     posts_slug_idx: index('posts_slug_idx').on(columns.slug),
     posts_updated_at_idx: index('posts_updated_at_idx').on(columns.updatedAt),
     posts_created_at_idx: index('posts_created_at_idx').on(columns.createdAt),
@@ -1138,6 +1166,9 @@ export const _posts_v = pgTable(
       withTimezone: true,
       precision: 3,
     }),
+    version_provider: integer('version_provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     version_slug: varchar('version_slug'),
     version_slugLock: boolean('version_slug_lock').default(true),
     version_updatedAt: timestamp('version_updated_at', {
@@ -1174,6 +1205,9 @@ export const _posts_v = pgTable(
     _posts_v_version_meta_version_meta_image_idx: index(
       '_posts_v_version_meta_version_meta_image_idx',
     ).on(columns.version_meta_image),
+    _posts_v_version_version_provider_idx: index('_posts_v_version_version_provider_idx').on(
+      columns.version_provider,
+    ),
     _posts_v_version_version_slug_idx: index('_posts_v_version_version_slug_idx').on(
       columns.version_slug,
     ),
@@ -1244,6 +1278,9 @@ export const media = pgTable(
     id: serial('id').primaryKey(),
     alt: varchar('alt'),
     caption: jsonb('caption'),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     prefix: varchar('prefix').default('media'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
@@ -1262,6 +1299,7 @@ export const media = pgTable(
     focalY: numeric('focal_y'),
   },
   (columns) => ({
+    media_provider_idx: index('media_provider_idx').on(columns.provider),
     media_updated_at_idx: index('media_updated_at_idx').on(columns.updatedAt),
     media_created_at_idx: index('media_created_at_idx').on(columns.createdAt),
     media_filename_idx: uniqueIndex('media_filename_idx').on(columns.filename),
@@ -1357,6 +1395,9 @@ export const users = pgTable(
     createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
+    enableAPIKey: boolean('enable_a_p_i_key'),
+    apiKey: varchar('api_key'),
+    apiKeyIndex: varchar('api_key_index'),
     email: varchar('email').notNull(),
     resetPasswordToken: varchar('reset_password_token'),
     resetPasswordExpiration: timestamp('reset_password_expiration', {
@@ -1376,6 +1417,33 @@ export const users = pgTable(
   }),
 )
 
+export const users_rels = pgTable(
+  'users_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    'user-rolesID': integer('user_roles_id'),
+  },
+  (columns) => ({
+    order: index('users_rels_order_idx').on(columns.order),
+    parentIdx: index('users_rels_parent_idx').on(columns.parent),
+    pathIdx: index('users_rels_path_idx').on(columns.path),
+    users_rels_user_roles_id_idx: index('users_rels_user_roles_id_idx').on(columns['user-rolesID']),
+    parentFk: foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [users.id],
+      name: 'users_rels_parent_fk',
+    }).onDelete('cascade'),
+    'user-rolesIdFk': foreignKey({
+      columns: [columns['user-rolesID']],
+      foreignColumns: [user_roles.id],
+      name: 'users_rels_user_roles_fk',
+    }).onDelete('cascade'),
+  }),
+)
+
 export const events = pgTable(
   'events',
   {
@@ -1385,6 +1453,9 @@ export const events = pgTable(
       onDelete: 'set null',
     }),
     content: jsonb('content').notNull(),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     venue: integer('venue_id').references(() => venues.id, {
       onDelete: 'set null',
     }),
@@ -1409,6 +1480,7 @@ export const events = pgTable(
   },
   (columns) => ({
     events_banner_idx: index('events_banner_idx').on(columns.banner),
+    events_provider_idx: index('events_provider_idx').on(columns.provider),
     events_venue_idx: index('events_venue_idx').on(columns.venue),
     events_slug_idx: index('events_slug_idx').on(columns.slug),
     events_updated_at_idx: index('events_updated_at_idx').on(columns.updatedAt),
@@ -1425,6 +1497,9 @@ export const programmes = pgTable(
       onDelete: 'set null',
     }),
     content: jsonb('content').notNull(),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     slug: varchar('slug'),
     slugLock: boolean('slug_lock').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
@@ -1436,6 +1511,7 @@ export const programmes = pgTable(
   },
   (columns) => ({
     programmes_banner_idx: index('programmes_banner_idx').on(columns.banner),
+    programmes_provider_idx: index('programmes_provider_idx').on(columns.provider),
     programmes_slug_idx: index('programmes_slug_idx').on(columns.slug),
     programmes_updated_at_idx: index('programmes_updated_at_idx').on(columns.updatedAt),
     programmes_created_at_idx: index('programmes_created_at_idx').on(columns.createdAt),
@@ -1502,6 +1578,9 @@ export const venues = pgTable(
     facebookUrl: varchar('facebook_url'),
     linktreeUrl: varchar('linktree_url'),
     linkedInUrl: varchar('linked_in_url'),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
     slug: varchar('slug'),
     slugLock: boolean('slug_lock').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
@@ -1513,20 +1592,116 @@ export const venues = pgTable(
   },
   (columns) => ({
     venues_image_idx: index('venues_image_idx').on(columns.image),
-    venues_google_place_id_idx: uniqueIndex('venues_google_place_id_idx').on(columns.googlePlaceId),
-    venues_phone_idx: uniqueIndex('venues_phone_idx').on(columns.phone),
-    venues_website_idx: uniqueIndex('venues_website_idx').on(columns.website),
-    venues_instagram_handle_idx: uniqueIndex('venues_instagram_handle_idx').on(
-      columns.instagramHandle,
-    ),
-    venues_tiktok_handle_idx: uniqueIndex('venues_tiktok_handle_idx').on(columns.tiktokHandle),
-    venues_x_handle_idx: uniqueIndex('venues_x_handle_idx').on(columns.xHandle),
-    venues_facebook_url_idx: uniqueIndex('venues_facebook_url_idx').on(columns.facebookUrl),
-    venues_linktree_url_idx: uniqueIndex('venues_linktree_url_idx').on(columns.linktreeUrl),
-    venues_linked_in_url_idx: uniqueIndex('venues_linked_in_url_idx').on(columns.linkedInUrl),
+    venues_provider_idx: index('venues_provider_idx').on(columns.provider),
     venues_slug_idx: index('venues_slug_idx').on(columns.slug),
     venues_updated_at_idx: index('venues_updated_at_idx').on(columns.updatedAt),
     venues_created_at_idx: index('venues_created_at_idx').on(columns.createdAt),
+  }),
+)
+
+export const reports = pgTable(
+  'reports',
+  {
+    id: serial('id').primaryKey(),
+    report: enum_reports_report('report').notNull(),
+    requestedAt: timestamp('requested_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    requestorName: varchar('requestor_name'),
+    status: enum_reports_status('status'),
+    errors: jsonb('errors'),
+    filename: varchar('filename'),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    reports_provider_idx: index('reports_provider_idx').on(columns.provider),
+    reports_updated_at_idx: index('reports_updated_at_idx').on(columns.updatedAt),
+    reports_created_at_idx: index('reports_created_at_idx').on(columns.createdAt),
+  }),
+)
+
+export const providers_images = pgTable(
+  'providers_images',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    image: integer('image_id')
+      .notNull()
+      .references(() => media.id, {
+        onDelete: 'set null',
+      }),
+    altText: varchar('alt_text'),
+  },
+  (columns) => ({
+    _orderIdx: index('providers_images_order_idx').on(columns._order),
+    _parentIDIdx: index('providers_images_parent_id_idx').on(columns._parentID),
+    providers_images_image_idx: index('providers_images_image_idx').on(columns.image),
+    _parentIDFk: foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [providers.id],
+      name: 'providers_images_parent_id_fk',
+    }).onDelete('cascade'),
+  }),
+)
+
+export const providers = pgTable(
+  'providers',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name').notNull(),
+    description: varchar('description'),
+    phone: varchar('phone').notNull(),
+    email: varchar('email').notNull(),
+    address: varchar('address'),
+    website: varchar('website'),
+    logo: integer('logo_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    socialLinks: jsonb('social_links'),
+    status: enum_providers_status('status').default('active'),
+    verificationStatus:
+      enum_providers_verification_status('verification_status').default('pending'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    providers_logo_idx: index('providers_logo_idx').on(columns.logo),
+    providers_updated_at_idx: index('providers_updated_at_idx').on(columns.updatedAt),
+    providers_created_at_idx: index('providers_created_at_idx').on(columns.createdAt),
+  }),
+)
+
+export const user_roles = pgTable(
+  'user_roles',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name').notNull(),
+    permissions: jsonb('permissions').notNull(),
+    provider: integer('provider_id').references(() => providers.id, {
+      onDelete: 'set null',
+    }),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => ({
+    user_roles_provider_idx: index('user_roles_provider_idx').on(columns.provider),
+    user_roles_updated_at_idx: index('user_roles_updated_at_idx').on(columns.updatedAt),
+    user_roles_created_at_idx: index('user_roles_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -1740,6 +1915,7 @@ export const forms_blocks_select = pgTable(
     label: varchar('label'),
     width: numeric('width'),
     defaultValue: varchar('default_value'),
+    placeholder: varchar('placeholder'),
     required: boolean('required'),
     blockName: varchar('block_name'),
   },
@@ -1843,7 +2019,7 @@ export const forms_emails = pgTable(
     bcc: varchar('bcc'),
     replyTo: varchar('reply_to'),
     emailFrom: varchar('email_from'),
-    subject: varchar('subject').notNull().default("You''ve received a new message."),
+    subject: varchar('subject').notNull().default("You've received a new message."),
     message: jsonb('message'),
   },
   (columns) => ({
@@ -2036,6 +2212,9 @@ export const payload_locked_documents_rels = pgTable(
     eventsID: integer('events_id'),
     programmesID: integer('programmes_id'),
     venuesID: integer('venues_id'),
+    reportsID: integer('reports_id'),
+    providersID: integer('providers_id'),
+    'user-rolesID': integer('user_roles_id'),
     redirectsID: integer('redirects_id'),
     formsID: integer('forms_id'),
     'form-submissionsID': integer('form_submissions_id'),
@@ -2069,6 +2248,15 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_venues_id_idx: index(
       'payload_locked_documents_rels_venues_id_idx',
     ).on(columns.venuesID),
+    payload_locked_documents_rels_reports_id_idx: index(
+      'payload_locked_documents_rels_reports_id_idx',
+    ).on(columns.reportsID),
+    payload_locked_documents_rels_providers_id_idx: index(
+      'payload_locked_documents_rels_providers_id_idx',
+    ).on(columns.providersID),
+    payload_locked_documents_rels_user_roles_id_idx: index(
+      'payload_locked_documents_rels_user_roles_id_idx',
+    ).on(columns['user-rolesID']),
     payload_locked_documents_rels_redirects_id_idx: index(
       'payload_locked_documents_rels_redirects_id_idx',
     ).on(columns.redirectsID),
@@ -2125,6 +2313,21 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['venuesID']],
       foreignColumns: [venues.id],
       name: 'payload_locked_documents_rels_venues_fk',
+    }).onDelete('cascade'),
+    reportsIdFk: foreignKey({
+      columns: [columns['reportsID']],
+      foreignColumns: [reports.id],
+      name: 'payload_locked_documents_rels_reports_fk',
+    }).onDelete('cascade'),
+    providersIdFk: foreignKey({
+      columns: [columns['providersID']],
+      foreignColumns: [providers.id],
+      name: 'payload_locked_documents_rels_providers_fk',
+    }).onDelete('cascade'),
+    'user-rolesIdFk': foreignKey({
+      columns: [columns['user-rolesID']],
+      foreignColumns: [user_roles.id],
+      name: 'payload_locked_documents_rels_user_roles_fk',
     }).onDelete('cascade'),
     redirectsIdFk: foreignKey({
       columns: [columns['redirectsID']],
@@ -2475,6 +2678,11 @@ export const relations_pages = relations(pages, ({ one, many }) => ({
     references: [media.id],
     relationName: 'meta_image',
   }),
+  provider: one(providers, {
+    fields: [pages.provider],
+    references: [providers.id],
+    relationName: 'provider',
+  }),
   _rels: many(pages_rels, {
     relationName: '_rels',
   }),
@@ -2638,6 +2846,11 @@ export const relations__pages_v = relations(_pages_v, ({ one, many }) => ({
     references: [media.id],
     relationName: 'version_meta_image',
   }),
+  version_provider: one(providers, {
+    fields: [_pages_v.version_provider],
+    references: [providers.id],
+    relationName: 'version_provider',
+  }),
   _rels: many(_pages_v_rels, {
     relationName: '_rels',
   }),
@@ -2748,6 +2961,11 @@ export const relations_posts = relations(posts, ({ one, many }) => ({
   }),
   populatedAuthors: many(posts_populated_authors, {
     relationName: 'populatedAuthors',
+  }),
+  provider: one(providers, {
+    fields: [posts.provider],
+    references: [providers.id],
+    relationName: 'provider',
   }),
   _rels: many(posts_rels, {
     relationName: '_rels',
@@ -2868,11 +3086,22 @@ export const relations__posts_v = relations(_posts_v, ({ one, many }) => ({
   version_populatedAuthors: many(_posts_v_version_populated_authors, {
     relationName: 'version_populatedAuthors',
   }),
+  version_provider: one(providers, {
+    fields: [_posts_v.version_provider],
+    references: [providers.id],
+    relationName: 'version_provider',
+  }),
   _rels: many(_posts_v_rels, {
     relationName: '_rels',
   }),
 }))
-export const relations_media = relations(media, () => ({}))
+export const relations_media = relations(media, ({ one }) => ({
+  provider: one(providers, {
+    fields: [media.provider],
+    references: [providers.id],
+    relationName: 'provider',
+  }),
+}))
 export const relations_categories_breadcrumbs = relations(categories_breadcrumbs, ({ one }) => ({
   _parentID: one(categories, {
     fields: [categories_breadcrumbs._parentID],
@@ -2910,12 +3139,33 @@ export const relations_categories = relations(categories, ({ one, many }) => ({
     relationName: '_rels',
   }),
 }))
-export const relations_users = relations(users, () => ({}))
+export const relations_users_rels = relations(users_rels, ({ one }) => ({
+  parent: one(users, {
+    fields: [users_rels.parent],
+    references: [users.id],
+    relationName: '_rels',
+  }),
+  'user-rolesID': one(user_roles, {
+    fields: [users_rels['user-rolesID']],
+    references: [user_roles.id],
+    relationName: 'user-roles',
+  }),
+}))
+export const relations_users = relations(users, ({ many }) => ({
+  _rels: many(users_rels, {
+    relationName: '_rels',
+  }),
+}))
 export const relations_events = relations(events, ({ one }) => ({
   banner: one(media, {
     fields: [events.banner],
     references: [media.id],
     relationName: 'banner',
+  }),
+  provider: one(providers, {
+    fields: [events.provider],
+    references: [providers.id],
+    relationName: 'provider',
   }),
   venue: one(venues, {
     fields: [events.venue],
@@ -2946,6 +3196,11 @@ export const relations_programmes = relations(programmes, ({ one, many }) => ({
     references: [media.id],
     relationName: 'banner',
   }),
+  provider: one(providers, {
+    fields: [programmes.provider],
+    references: [providers.id],
+    relationName: 'provider',
+  }),
   _rels: many(programmes_rels, {
     relationName: '_rels',
   }),
@@ -2955,6 +3210,47 @@ export const relations_venues = relations(venues, ({ one }) => ({
     fields: [venues.image],
     references: [media.id],
     relationName: 'image',
+  }),
+  provider: one(providers, {
+    fields: [venues.provider],
+    references: [providers.id],
+    relationName: 'provider',
+  }),
+}))
+export const relations_reports = relations(reports, ({ one }) => ({
+  provider: one(providers, {
+    fields: [reports.provider],
+    references: [providers.id],
+    relationName: 'provider',
+  }),
+}))
+export const relations_providers_images = relations(providers_images, ({ one }) => ({
+  _parentID: one(providers, {
+    fields: [providers_images._parentID],
+    references: [providers.id],
+    relationName: 'images',
+  }),
+  image: one(media, {
+    fields: [providers_images.image],
+    references: [media.id],
+    relationName: 'image',
+  }),
+}))
+export const relations_providers = relations(providers, ({ one, many }) => ({
+  logo: one(media, {
+    fields: [providers.logo],
+    references: [media.id],
+    relationName: 'logo',
+  }),
+  images: many(providers_images, {
+    relationName: 'images',
+  }),
+}))
+export const relations_user_roles = relations(user_roles, ({ one }) => ({
+  provider: one(providers, {
+    fields: [user_roles.provider],
+    references: [providers.id],
+    relationName: 'provider',
   }),
 }))
 export const relations_redirects_rels = relations(redirects_rels, ({ one }) => ({
@@ -3194,6 +3490,21 @@ export const relations_payload_locked_documents_rels = relations(
       references: [venues.id],
       relationName: 'venues',
     }),
+    reportsID: one(reports, {
+      fields: [payload_locked_documents_rels.reportsID],
+      references: [reports.id],
+      relationName: 'reports',
+    }),
+    providersID: one(providers, {
+      fields: [payload_locked_documents_rels.providersID],
+      references: [providers.id],
+      relationName: 'providers',
+    }),
+    'user-rolesID': one(user_roles, {
+      fields: [payload_locked_documents_rels['user-rolesID']],
+      references: [user_roles.id],
+      relationName: 'user-roles',
+    }),
     redirectsID: one(redirects, {
       fields: [payload_locked_documents_rels.redirectsID],
       references: [redirects.id],
@@ -3329,6 +3640,10 @@ type DatabaseSchema = {
   enum_posts_status: typeof enum_posts_status
   enum__posts_v_blocks_post_group_block_list_type: typeof enum__posts_v_blocks_post_group_block_list_type
   enum__posts_v_version_status: typeof enum__posts_v_version_status
+  enum_reports_report: typeof enum_reports_report
+  enum_reports_status: typeof enum_reports_status
+  enum_providers_status: typeof enum_providers_status
+  enum_providers_verification_status: typeof enum_providers_verification_status
   enum_redirects_to_type: typeof enum_redirects_to_type
   enum_forms_confirmation_type: typeof enum_forms_confirmation_type
   enum_header_nav_items_link_type: typeof enum_header_nav_items_link_type
@@ -3374,10 +3689,15 @@ type DatabaseSchema = {
   categories: typeof categories
   categories_rels: typeof categories_rels
   users: typeof users
+  users_rels: typeof users_rels
   events: typeof events
   programmes: typeof programmes
   programmes_rels: typeof programmes_rels
   venues: typeof venues
+  reports: typeof reports
+  providers_images: typeof providers_images
+  providers: typeof providers
+  user_roles: typeof user_roles
   redirects: typeof redirects
   redirects_rels: typeof redirects_rels
   forms_blocks_checkbox: typeof forms_blocks_checkbox
@@ -3448,11 +3768,16 @@ type DatabaseSchema = {
   relations_categories_breadcrumbs: typeof relations_categories_breadcrumbs
   relations_categories_rels: typeof relations_categories_rels
   relations_categories: typeof relations_categories
+  relations_users_rels: typeof relations_users_rels
   relations_users: typeof relations_users
   relations_events: typeof relations_events
   relations_programmes_rels: typeof relations_programmes_rels
   relations_programmes: typeof relations_programmes
   relations_venues: typeof relations_venues
+  relations_reports: typeof relations_reports
+  relations_providers_images: typeof relations_providers_images
+  relations_providers: typeof relations_providers
+  relations_user_roles: typeof relations_user_roles
   relations_redirects_rels: typeof relations_redirects_rels
   relations_redirects: typeof relations_redirects
   relations_forms_blocks_checkbox: typeof relations_forms_blocks_checkbox
@@ -3485,7 +3810,7 @@ type DatabaseSchema = {
   relations_footer: typeof relations_footer
 }
 
-declare module '@payloadcms/db-postgres/types' {
+declare module '@payloadcms/db-postgres' {
   export interface GeneratedDatabaseSchema {
     schema: DatabaseSchema
   }

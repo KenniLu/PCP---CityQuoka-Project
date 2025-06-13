@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize: async (credentials) => loginUser(credentials as LoginFormValues) as User
+      authorize: async (credentials) => await loginUser(credentials as LoginFormValues) as User
     }),
   ],
   session: {
