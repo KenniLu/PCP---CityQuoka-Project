@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
-import { adminReadWithScope } from '@/utilities/permissions'
+import { authenticatedAsAdmin } from '@/access/authenticatedAsAdmin'
+import { providerListFilter } from '@/utilities/permissions'
 
 export const UserRoles: CollectionConfig = {
   slug: 'user-roles',
@@ -8,22 +9,13 @@ export const UserRoles: CollectionConfig = {
     admin: authenticated,
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'user-roles',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-      }),
+    read: authenticatedAsAdmin,
     update: authenticated,
   },
   admin: {
     defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
+    baseListFilter: providerListFilter,
   },
   fields: [
     {
@@ -37,14 +29,19 @@ export const UserRoles: CollectionConfig = {
       required: true,
       admin: {
         components: {
-          Field: '@/components/PermissionsField'
-        }
-      }
+          Field: '@/components/PermissionsField',
+        },
+      },
     },
     {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+      },
     },
   ],
   timestamps: true,

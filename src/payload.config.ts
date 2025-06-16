@@ -156,7 +156,6 @@ export default buildConfig({
     Reports,
     Providers,
     UserRoles,
-    // UserRolesUsers
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],

@@ -22,33 +22,19 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { adminReadWithScope } from '@/utilities/permissions'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 
 import { slugField } from '@/fields/slug'
 import { getServerSideURL } from '@/utilities/getURL'
 import { injectProvider } from '@/hooks/injectProvider'
+import { providerListFilter } from "@/utilities/permissions";
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'posts',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-        unAuthenticated: {
-          _status: {
-            equals: 'published',
-          },
-        },
-      }),
+    read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
@@ -72,6 +58,7 @@ export const Posts: CollectionConfig = {
       return `${getServerSideURL()}${path}`
     },
     useAsTitle: 'title',
+    baseListFilter: providerListFilter
   },
   fields: [
     {
@@ -292,6 +279,11 @@ export const Posts: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+      },
     },
     ...slugField(),
   ],

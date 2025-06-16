@@ -2,8 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { afterUserLogin } from './hooks/afterLogin'
-import { adminReadWithScope } from '@/utilities/permissions'
-import { UserRole } from '@/payload-types'
+import { accessUsers } from '@/access/accessUsers'
+import { roleListFilter } from '@/utilities/permissions'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -18,22 +18,13 @@ export const Users: CollectionConfig = {
     admin: authenticated,
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'users',
-        where: ({ roles }) => {
-          return {
-            userRoles: {
-              in: roles.map((role: UserRole) => role.id),
-            },
-          }
-        },
-      }),
+    read: accessUsers,
     update: authenticated,
   },
   admin: {
     defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
+    baseListFilter: roleListFilter,
   },
   fields: [
     {

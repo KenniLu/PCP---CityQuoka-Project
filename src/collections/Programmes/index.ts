@@ -1,13 +1,15 @@
 import { CollectionConfig, FieldHook } from "payload";
 import { slugField } from '@/fields/slug'
 import { defaultLexical } from '@/fields/defaultLexical'
-import { adminReadWithScope } from "@/utilities/permissions";
 import { injectProvider } from '@/hooks/injectProvider';
+import { providerListFilter } from "@/utilities/permissions";
+import { anyone } from "@/access/anyone";
 
 export const Programmes: CollectionConfig = {
   slug: 'programmes',
   admin: {
     useAsTitle: 'name',
+    baseListFilter: providerListFilter
     // livePreview: {
     //   url: ({ data }) => `http://localhost:3000/events/${data.slug}?preview=1`,
     //   breakpoints: [
@@ -34,17 +36,7 @@ export const Programmes: CollectionConfig = {
   },
   access: {
     create: () => true,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'programmes',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-      }),
+    read: anyone,
     readVersions: () => true,
   },
   fields: [
@@ -86,6 +78,11 @@ export const Programmes: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+      },
     },
     ...slugField()
   ],

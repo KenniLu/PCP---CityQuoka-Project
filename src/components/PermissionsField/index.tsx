@@ -27,9 +27,6 @@ const PermissionsField: React.FC<PermissionsFieldProps> = ({
 }) => {
   const { value, setValue } = useField<Permissions>({ path })
 
-  // Define the permission categories (excluding top-level admin)
-  // const permissionCategories = ['posts', 'pages', 'roles', 'users']
-
   // Initialize permissions state
   const [permissions, setPermissions] = useState<Permissions>(() => {
     if (value && typeof value === 'object') {
@@ -38,7 +35,7 @@ const PermissionsField: React.FC<PermissionsFieldProps> = ({
     // Default permissions structure
     const defaultPerms: Permissions = { admin: false }
     PERMISSION_KEYS.forEach((category) => {
-      defaultPerms[category] = { read: false, admin: false }
+      defaultPerms[category] = { read: true, admin: false }
     })
     return defaultPerms
   })
@@ -73,33 +70,20 @@ const PermissionsField: React.FC<PermissionsFieldProps> = ({
     setPermissions(newPermissions)
   }
 
-  // Check if a permission is checked
   const isPermissionChecked = (category: string, permissionType: 'read' | 'admin'): boolean => {
     if (permissions.admin) {
       return true
     }
     const categoryPerms = permissions[category] as PermissionItem
     if (permissionType === 'read') {
-      return categoryPerms?.['admin'] || categoryPerms?.[permissionType] || false
+      return true
     } else {
       return categoryPerms?.[permissionType] || false
     }
   }
 
-  // Check if a permission should be disabled
-  const isPermissionDisabled = (category: string, permissionType: 'read' | 'admin'): boolean => {
-    if (permissions.admin) {
-      // If global admin is true, all permissions are disabled (but checked)
-      return true
-    }
-
-    if (permissionType === 'read') {
-      // Read is disabled when category admin is enabled
-      return isPermissionChecked(category, 'admin')
-    }
-
-    return false
-  }
+  const isPermissionDisabled = (category: string, permissionType: 'read' | 'admin'): boolean =>
+    permissions.admin === true
 
   return (
     <div className="permissions-field">
@@ -133,17 +117,15 @@ const PermissionsField: React.FC<PermissionsFieldProps> = ({
           {PERMISSION_KEYS.map((category) => (
             <tr key={category}>
               <td>
-                <span className="category-name">{category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
+                <span className="category-name">
+                  {category
+                    .split('-')
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')}
+                </span>
               </td>
               <td className="permission-checkbox">
-                <input
-                  type="checkbox"
-                  checked={isPermissionChecked(category, 'read')}
-                  disabled={isPermissionDisabled(category, 'read')}
-                  onChange={(e) =>
-                    handleCategoryPermissionChange(category, 'read', e.target.checked)
-                  }
-                />
+                <input type="checkbox" checked={true} disabled={true} />
               </td>
               <td className="permission-checkbox">
                 <input

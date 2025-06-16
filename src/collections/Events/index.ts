@@ -2,50 +2,19 @@ import { CollectionConfig } from 'payload'
 
 import { defaultLexical } from '@/fields/defaultLexical'
 import { slugField } from '@/fields/slug'
-import { adminReadWithScope } from '@/utilities/permissions'
 import { injectProvider } from '@/hooks/injectProvider'
+import { providerListFilter } from "@/utilities/permissions";
+import { anyone } from '@/access/anyone';
 
 export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'name',
-    // livePreview: {
-    //   url: ({ data }) => `http://localhost:3000/events/${data.slug}?preview=1`,
-    //   breakpoints: [
-    //     {
-    //       label: 'Mobile',
-    //       name: 'mobile',
-    //       width: 375,
-    //       height: 667,
-    //     },
-    //     {
-    //       label: 'Tablet',
-    //       name: 'tablet',
-    //       width: 768,
-    //       height: 1024,
-    //     },
-    //     {
-    //       label: 'Desktop',
-    //       name: 'desktop',
-    //       width: 1440,
-    //       height: 900,
-    //     },
-    //   ],
-    // },
+    baseListFilter: providerListFilter
   },
   access: {
     create: () => true,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'events',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-      }),
+    read: anyone,
     readVersions: () => true,
   },
   fields: [
@@ -73,6 +42,11 @@ export const Events: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+      },
     },
     {
       name: 'venue',
