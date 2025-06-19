@@ -180,5 +180,6 @@ export default buildConfig({
   email: mailerSendAdapter({
     defaultFromAddress: 'noreply@cityquokka.com',
     defaultFromName: 'City Quokka'
-  })
+  }),
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL
 })
