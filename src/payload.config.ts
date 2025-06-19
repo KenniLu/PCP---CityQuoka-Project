@@ -26,6 +26,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { getS3StorageConfig } from './config/s3Config'
+import { mailerSendAdapter } from './payload/adapters/email-mailersend'
 
 import fs from 'node:fs'
 
@@ -175,5 +176,9 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  cookiePrefix: 'cityquokka'
+  cookiePrefix: 'cityquokka',
+  email: mailerSendAdapter({
+    defaultFromAddress: 'noreply@cityquokka.com',
+    defaultFromName: 'City Quokka'
+  })
 })

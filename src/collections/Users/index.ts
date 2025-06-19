@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { afterUserLogin } from './hooks/afterLogin'
+import { afterForgotPassword } from './hooks/afterForgotPassword'
 import { accessUsers } from '@/access/accessUsers'
 import { roleListFilter } from '@/utilities/permissions'
 
@@ -39,7 +40,7 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
-    afterLogin: [afterUserLogin],
+    afterLogin: [afterUserLogin, afterForgotPassword],
   },
   timestamps: true,
 }
