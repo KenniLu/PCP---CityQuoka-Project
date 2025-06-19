@@ -44,13 +44,13 @@ export const userRoles = cache(async (userId: User['id']): Promise<Partial<UserR
   const roles = await payload.db.execute({
     drizzle: payload.db.drizzle,
     raw: `select r.id as id, r.permissions as permissions, r.provider_id as provider from ${userRolesTable} r
-      inner join ${usersRelsTable} u on u.user_roles_id = r.id where u.parent_id = ${userId}`,
+      inner join ${usersRelsTable} u on u.user_roles_id = r.id where u.parent_id = ${userId} and u.path = 'userRoles'`,
   })
   return roles.rows
 })
 
 export const providerRoles = cache(
-  async (providerId: Provider['id']): Promise<Partial<UserRole>[]> => {
+  async (providerId: Provider['id']|null): Promise<Partial<UserRole>[]> => {
     const payload = await payloadInstance()
     const userRolesTable = getNameSpacedTable(payload, 'user_roles')
     const roles = await payload.db.execute({
@@ -165,12 +165,19 @@ export const sessionContext = cache(
       const isSuperAdmin = roles.some(
         (role: UserRole) => !role.provider && (role.permissions as RolePermissionType)?.admin,
       )
-      // If we are in the context of a provider, Assume the admin role of the provider
-      if (isSuperAdmin && context.i) {
-        const _providerRoles = await providerRoles(context.i)
-        const _providerAdminRole = _providerRoles.find((role) => role.permissions?.['admin'])
-        roles = _providerAdminRole ? [_providerAdminRole] : []
+
+      if (context.i) {
+        if (isSuperAdmin) {
+          // Assume the admin role for the provider if current user is a superAdmin
+          const _providerRoles = await providerRoles(context.i)
+          const _providerAdminRole = _providerRoles.find((role) => role.permissions?.['admin'])
+          roles = _providerAdminRole ? [_providerAdminRole] : []
+        } else {
+          // Filter user roles that are for the current provider
+          roles = roles.filter((role) => role.provider === context.i)
+        }
       }
+
       return {
         userId: context.u,
         providers: context.p,

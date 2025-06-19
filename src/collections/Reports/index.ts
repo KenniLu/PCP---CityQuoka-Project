@@ -4,25 +4,16 @@ import { authenticated } from '../../access/authenticated'
 import { pupulateDefaultFields } from './hooks/pupulateDefaultFields'
 import { downloadReport } from './hooks/downloadReport'
 import { requestReportGeneration } from './hooks/requestReportGeneration'
-import { adminReadWithScope } from '@/utilities/permissions'
 import { injectProvider } from '@/hooks/injectProvider'
+import { providerListFilter } from "@/utilities/permissions";
+import { anyone } from '@/access/anyone'
 
 export const Reports: CollectionConfig = {
   slug: 'reports',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'reports',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-      }),
+    read: anyone,
     update: authenticated,
   },
   endpoints: [
@@ -46,6 +37,7 @@ export const Reports: CollectionConfig = {
         },
       },
     },
+    baseListFilter: providerListFilter
   },
   fields: [
     {

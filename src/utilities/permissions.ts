@@ -1,7 +1,34 @@
-import { AccessResult, AccessArgs, Where } from 'payload'
-import { sessionContext, SessionContextType } from './userUtilities'
+import { Where } from 'payload'
+import { SessionContextType, getSessionContext, providerRoles } from './userUtilities'
 import { PERMISSION_KEYS, RolePermissionType } from '@/types/permissions'
 import { UserRole } from '@/payload-types'
+
+export const providerListFilter = async ({ limit, page, req, sort }): Promise<Where | null> => {
+  const { sessionContext } = (await getSessionContext()) || {}
+  if (sessionContext) {
+    return {
+      provider: {
+        equals: sessionContext.currentProviderId,
+      },
+    }
+  } else {
+    return null
+  }
+}
+
+export const roleListFilter = async ({ limit, page, req, sort }): Promise<Where | null> => {
+  const { sessionContext } = (await getSessionContext()) || {}
+  if (sessionContext) {
+    const roles = await providerRoles(sessionContext.currentProviderId)
+    return {
+      userRoles: {
+        in: roles.map((role) => role.id),
+      },
+    }
+  } else {
+    return null
+  }
+}
 
 export const checkUserPermission = async (
   session: SessionContextType,
@@ -24,34 +51,5 @@ export const checkUserPermission = async (
     })
   } else {
     return false
-  }
-}
-
-export const adminReadWithScope = async (
-  args: AccessArgs,
-  checkArgs: {
-    where: (sessionContext: SessionContextType) => Where | boolean
-    slug: (typeof PERMISSION_KEYS)[number]
-    checkpath?: string
-    unAuthenticated?: Where | boolean
-  },
-): Promise<AccessResult> => {
-  const { user, pathname } = args.req
-  const { where, slug, checkpath, unAuthenticated } = checkArgs
-  if (user) {
-    const session = (await sessionContext(user.id)) as SessionContextType
-    const canRead = await checkUserPermission(session, slug, 'read')
-    if (canRead) {
-      const pathToCheck = checkpath ? checkpath : `/${slug}(?:/|$)`
-      if (!pathname.match(new RegExp(pathToCheck!))) {
-        return true
-      } else {
-        return where(session)
-      }
-    } else {
-      return false
-    }
-  } else {
-    return unAuthenticated || false
   }
 }

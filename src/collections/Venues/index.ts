@@ -1,7 +1,8 @@
 import { CollectionConfig } from 'payload'
 import { slugField } from '@/fields/slug'
-import { adminReadWithScope } from '@/utilities/permissions'
 import { injectProvider } from '@/hooks/injectProvider'
+import { providerListFilter } from "@/utilities/permissions";
+import { anyone } from '@/access/anyone';
 
 export const Venues: CollectionConfig = {
   slug: 'venues',
@@ -10,20 +11,11 @@ export const Venues: CollectionConfig = {
     components: {
       afterList: ['@/app/(admin)/venues/google-venue-search'],
     },
+    baseListFilter: providerListFilter
   },
   access: {
     create: () => true,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'venues',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-      }),
+    read: anyone,
   },
   fields: [
     {

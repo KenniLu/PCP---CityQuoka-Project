@@ -19,6 +19,7 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
+import { default as default_318c48b31e46af37d9eecc37cee004b5 } from '@/components/HiddenProviderField'
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
@@ -28,8 +29,6 @@ import { ReportCustomCellStatusView as ReportCustomCellStatusView_5eb52212136821
 import { ReportCustomViewServer as ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae } from '../../../components/customViews/reports/view/ReportCustomView.Server'
 import { default as default_a20f84beefaf7bff89229d04d7d4eb4a } from '@/components/ProviderSwitchButton'
 import { default as default_f8f53e21d399c183eef1861f029a13c8 } from '@/components/PermissionsField'
-import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
-import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { default as default_5dec3e793ba6aa7cec927d03001e4e4f } from '@/components/CustomAvatar'
 import { default as default_f36461f98231c4e398d0b070b5454fc5 } from '@/components/CustomIcon'
 import { default as default_d4048015f466832aa056ed6cce3b1c3f } from '@/components/CustomLogo'
@@ -60,6 +59,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+  "@/components/HiddenProviderField#default": default_318c48b31e46af37d9eecc37cee004b5,
   "@/fields/slug/SlugComponent#SlugComponent": SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
@@ -69,8 +69,6 @@ export const importMap = {
   "/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer": ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae,
   "@/components/ProviderSwitchButton#default": default_a20f84beefaf7bff89229d04d7d4eb4a,
   "@/components/PermissionsField#default": default_f8f53e21d399c183eef1861f029a13c8,
-  "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
-  "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/components/CustomAvatar#default": default_5dec3e793ba6aa7cec927d03001e4e4f,
   "@/components/CustomIcon#default": default_f36461f98231c4e398d0b070b5454fc5,
   "@/components/CustomLogo#default": default_d4048015f466832aa056ed6cce3b1c3f,

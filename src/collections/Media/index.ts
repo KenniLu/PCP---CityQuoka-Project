@@ -8,30 +8,23 @@ import {
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { adminReadWithScope } from "@/utilities/permissions";
+import { providerListFilter } from "@/utilities/permissions";
 import { authenticated } from '../../access/authenticated'
 import { injectProvider } from '@/hooks/injectProvider';
+import { anyone } from '@/access/anyone';
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: {
+    baseListFilter: providerListFilter
+  },
   access: {
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'media',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-        unAuthenticated: true
-      }),
+    read: anyone,
     update: authenticated,
   },
   fields: [
@@ -53,6 +46,11 @@ export const Media: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField'
+        }
+      }
     }
   ],
   upload: {

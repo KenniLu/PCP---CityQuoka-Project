@@ -14,6 +14,7 @@ import * as migration_20250414_024414_addreportRequesterNameColumn from './20250
 import * as migration_20250612_032538_addProviderRelationships from './20250612_032538_addProviderRelationships';
 import * as migration_20250612_035800_addProviderToCategoriesPosts from './20250612_035800_addProviderToCategoriesPosts';
 import * as migration_20250612_064615_removeVenueUniqueContraint from './20250612_064615_removeVenueUniqueContraint';
+import * as migration_20250619_030147_cleanupCollectionMigrations from './20250619_030147_cleanupCollectionMigrations';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20250612_064615_removeVenueUniqueContraint.up,
     down: migration_20250612_064615_removeVenueUniqueContraint.down,
-    name: '20250612_064615_removeVenueUniqueContraint'
+    name: '20250612_064615_removeVenueUniqueContraint',
+  },
+  {
+    up: migration_20250619_030147_cleanupCollectionMigrations.up,
+    down: migration_20250619_030147_cleanupCollectionMigrations.down,
+    name: '20250619_030147_cleanupCollectionMigrations'
   },
 ];

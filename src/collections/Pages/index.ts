@@ -12,7 +12,8 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidatePage } from './hooks/revalidatePage'
-import { adminReadWithScope } from '@/utilities/permissions'
+import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
+import { providerListFilter } from "@/utilities/permissions";
 
 import {
   MetaDescriptionField,
@@ -29,22 +30,7 @@ export const Pages: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: async (args) =>
-      adminReadWithScope(args, {
-        slug: 'pages',
-        where: ({ currentProviderId }) => {
-          return {
-            provider: {
-              equals: currentProviderId,
-            },
-          }
-        },
-        unAuthenticated: {
-          _status: {
-            equals: 'published',
-          },
-        },
-      }),
+    read: authenticatedOrPublished,
     update: authenticated,
   },
   admin: {
@@ -68,6 +54,7 @@ export const Pages: CollectionConfig = {
       return `${getServerSideURL()}${path}`
     },
     useAsTitle: 'title',
+    baseListFilter: providerListFilter
   },
   fields: [
     {
@@ -133,6 +120,11 @@ export const Pages: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+      },
     },
     ...slugField(),
   ],

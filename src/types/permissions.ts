@@ -7,8 +7,6 @@ export const PERMISSION_KEYS = [
   'programmes',
   'providers',
   'reports',
-  'user-roles',
-  'users',
   'venues',
 ] as const
 
@@ -17,5 +15,5 @@ type PermissionKeysType = (typeof PERMISSION_KEYS)[number]
 export type RolePermissionType = {
   admin: boolean
 } & {
-  [k in PermissionKeysType]: { read?: boolean; admin?: boolean }
+  [k in PermissionKeysType]: { admin?: boolean }
 }
