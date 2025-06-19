@@ -5,13 +5,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
    ALTER TABLE "search_categories" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "search" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "search_rels" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_search_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "search_id";
   DROP TABLE "search_categories" CASCADE;
   DROP TABLE "search" CASCADE;
   DROP TABLE "search_rels" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_search_fk";
-  
-  DROP INDEX IF EXISTS "payload_locked_documents_rels_search_id_idx";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "search_id";`)
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_search_id_idx";`)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
