@@ -56,7 +56,7 @@ export const providerRoles = cache(
     const roles = await payload.db.execute({
       drizzle: payload.db.drizzle,
       raw: `select r.id as id, r.permissions as permissions, r.provider_id as provider from ${userRolesTable} r
-      where r.provider_id = ${providerId}`,
+      where r.provider_id ${providerId ? `= ${providerId}` : 'is null' }`,
     })
     return roles.rows
   },
