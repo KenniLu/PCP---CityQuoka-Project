@@ -11,6 +11,14 @@ const ProviderSwitcherClient: React.FC<ProviderSwitcherProps> = ({
   sessionContext,
   setProvider,
 }) => {
+  const providerName = (sessionContext: SessionContextType) => {
+    if (sessionContext?.currentProvider) {
+      return sessionContext?.currentProvider.name
+    } else {
+      return sessionContext.isSuperAdmin ? 'Super Admin' : 'No Session'
+    }
+  }
+
   return (
     <div
       style={{
@@ -21,8 +29,8 @@ const ProviderSwitcherClient: React.FC<ProviderSwitcherProps> = ({
         flexWrap: 'nowrap',
       }}
     >
-      <p style={{ whiteSpace: 'nowrap' }}>{sessionContext?.currentProviderName || 'No Session'}</p>
-      {sessionContext?.isSuperAdmin && sessionContext.currentProviderId !== null && (
+      <p style={{ whiteSpace: 'nowrap' }}>{providerName(sessionContext)}</p>
+      {sessionContext?.isSuperAdmin && sessionContext.currentProvider?.id !== null && (
         <button style={{ cursor: 'pointer' }} onClick={async () => await setProvider(null)}>
           reset
         </button>
