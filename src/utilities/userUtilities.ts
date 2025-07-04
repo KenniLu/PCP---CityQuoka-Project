@@ -17,18 +17,15 @@ import { RolePermissionType } from '@/types/permissions'
 
 // Short form for smaller token size
 export type PersistedContextType = {
-  u: User['id']
-  p: { [key: string]: string }
-  i: number | null
-  n: string
+  u: User['id'] // User ID of user
+  i: number | null // Current Provider Number
+  m: boolean // User belongs multiple providers?
 }
 
 export type SessionContextType = {
   userId: User['id']
-  providers: { [key: string]: string }
-  currentProviderId: number | null
-  currentProviderName: string
   roles: Partial<UserRole>[]
+  currentProvider: Partial<Provider> | null
   isSuperAdmin: boolean
 }
 
@@ -49,14 +46,25 @@ export const userRoles = cache(async (userId: User['id']): Promise<Partial<UserR
   return roles.rows
 })
 
+export const getProvider = cache(async (providerId: Provider['id']): Promise<Partial<Provider>> => {
+  const payload = await payloadInstance()
+  const providersTable = getNameSpacedTable(payload, 'providers')
+  const results = await payload.db.execute({
+    drizzle: payload.db.drizzle,
+    raw: `select p.id, p.name from ${providersTable} p
+    where p.id = ${providerId} limit 1`,
+  })
+  return results.rows[0]
+})
+
 export const providerRoles = cache(
-  async (providerId: Provider['id']|null): Promise<Partial<UserRole>[]> => {
+  async (providerId: Provider['id'] | null): Promise<Partial<UserRole>[]> => {
     const payload = await payloadInstance()
     const userRolesTable = getNameSpacedTable(payload, 'user_roles')
     const roles = await payload.db.execute({
       drizzle: payload.db.drizzle,
       raw: `select r.id as id, r.permissions as permissions, r.provider_id as provider from ${userRolesTable} r
-      where r.provider_id = ${providerId}`,
+      where r.provider_id ${providerId ? `= ${providerId}` : 'is null'}`,
     })
     return roles.rows
   },
@@ -83,44 +91,30 @@ export const setSessionContext = async (
       const userRolesTable = getNameSpacedTable(payload, 'user_roles')
       const userProviders = await payload.db.execute({
         drizzle: payload.db.drizzle,
-        raw: `select p.id, p.name from ${providersTable} p
+        raw: `select p.id, p.name, p.verification_status from ${providersTable} p
         inner join ${userRolesTable} r on r.provider_id = p.id
         where r.id in (${roles.map((role) => role.id).join(',')})`,
       })
       providers = userProviders.rows.reduce((h, row) => {
-        h[row.id.toString()] = row.name
+        h[row.id.toString()] = {name: row.name, verification_status: row.verification_status}
         return h
       }, {})
     }
 
     let currentId: number | null = providerId
-    let currentName: string = ''
-    if (isSuperAdmin) {
-      if (currentId) {
-        const providersTable = getNameSpacedTable(payload, 'providers')
-        const providerNames = await payload.db.execute({
-          drizzle: payload.db.drizzle,
-          raw: `select p.name from ${providersTable} p where id=${currentId} limit 1`,
-        })
-        currentName = providerNames.rows[0].name
-      } else {
-        currentName = SUPERADMIN
-      }
-    } else {
-      if (currentId && currentId.toString() in providers) {
-        currentName = providers[currentId.toString()]
-      } else {
-        const defaultID = Object.keys(providers)[0]
-        currentId = Number(defaultID)
-        currentName = providers[defaultID]
+
+    if (!isSuperAdmin) {
+      if (!(currentId && currentId.toString() in providers)) {
+        let defaultProviderId: string|undefined = Object.keys(providers).find((providerId) => providers[providerId]['verification_status'] === 'verified')
+        defaultProviderId ||= Object.keys(providers)[0]
+        currentId = Number(defaultProviderId)
       }
     }
 
     const sessionContext: PersistedContextType = {
       u: user.id,
-      p: providers,
       i: currentId!,
-      n: currentName!,
+      m: Object.keys(providers).length > 1,
     }
 
     const sessionContextCookie = generatePayloadCookie({
@@ -160,8 +154,11 @@ export const sessionContext = cache(
       const decryptedContext = (await payloadInstance()).decrypt(contextValue)
       context = JSON.parse(decryptedContext) as PersistedContextType
     }
+
     if (context?.u === userId) {
+
       let roles = await userRoles(userId)
+      let provider: Partial<Provider> | null = null
       const isSuperAdmin = roles.some(
         (role: UserRole) => !role.provider && (role.permissions as RolePermissionType)?.admin,
       )
@@ -176,13 +173,11 @@ export const sessionContext = cache(
           // Filter user roles that are for the current provider
           roles = roles.filter((role) => role.provider === context.i)
         }
+        provider = await getProvider(context.i)
       }
-
       return {
         userId: context.u,
-        providers: context.p,
-        currentProviderId: context.i,
-        currentProviderName: context.n,
+        currentProvider: provider,
         roles,
         isSuperAdmin,
       }

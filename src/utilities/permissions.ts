@@ -8,7 +8,7 @@ export const providerListFilter = async ({ limit, page, req, sort }): Promise<Wh
   if (sessionContext) {
     return {
       provider: {
-        equals: sessionContext.currentProviderId,
+        equals: sessionContext.currentProvider?.id || null,
       },
     }
   } else {
@@ -19,7 +19,7 @@ export const providerListFilter = async ({ limit, page, req, sort }): Promise<Wh
 export const roleListFilter = async ({ limit, page, req, sort }): Promise<Where | null> => {
   const { sessionContext } = (await getSessionContext()) || {}
   if (sessionContext) {
-    const roles = await providerRoles(sessionContext.currentProviderId)
+    const roles = await providerRoles(sessionContext.currentProvider?.id||null)
     return {
       userRoles: {
         in: roles.map((role) => role.id),
@@ -41,7 +41,7 @@ export const checkUserPermission = async (
   const roles = session.roles
   if (roles.length > 0) {
     return roles.some((role: UserRole) => {
-      if (role.provider !== session.currentProviderId) {
+      if (role.provider !== session.currentProvider?.id) {
         return false
       }
       const permissions = role.permissions as RolePermissionType

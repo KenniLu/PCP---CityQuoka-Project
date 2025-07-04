@@ -2,7 +2,7 @@
 import { useSelection } from '@payloadcms/ui'
 
 export type ProviderSwitchButtonClientProps = {
-  currentProviderId: number | null
+  currentProviderId: number | null | undefined
   setProvider: (providerId: number|null) => Promise<void>
 }
 
