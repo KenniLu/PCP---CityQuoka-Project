@@ -29,6 +29,7 @@ const Page = async ({ params, searchParams }: Args) => {
       return false
     }
     if (sessionContext) {
+      console.log(`SESSION CONTEXT IS PRESENT WITH sessionContext.isSuperAdmin:${sessionContext.isSuperAdmin}. STATUS IS |${sessionContext.currentProvider?.verificationStatus}|`)
       if (!sessionContext.isSuperAdmin) {
         if (
           !sessionContext.currentProvider ||
