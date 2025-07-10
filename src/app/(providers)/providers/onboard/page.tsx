@@ -2,11 +2,9 @@
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
-export const revalidate = 0
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { headers } from 'next/headers'
 import { ProviderUserRegisterFormValues } from '@/validationSchemas/providerUserRegisterSchema'
 import { ProviderInfoFormValues } from '@/validationSchemas/providerInfoSchema'
 import ProviderUserForm from '@/components/ProviderUserForm'
@@ -21,8 +19,6 @@ type OnboardingFormData = {
 }
 
 const OnboardingPage = () => {
-  // Force dynamic rendering by accessing headers
-  headers()
   
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
