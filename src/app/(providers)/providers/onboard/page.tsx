@@ -10,6 +10,8 @@ import SocialLinksEditor from '@/components/SocialLinksEditor'
 import { onboardProvider } from '@/app/actions/providers/onboard'
 import Link from 'next/link'
 
+const dynamic = 'force-dynamic'
+
 type OnboardingFormData = {
   user: ProviderUserRegisterFormValues
   provider: ProviderInfoFormValues
