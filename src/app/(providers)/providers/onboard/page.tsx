@@ -1,7 +1,12 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
+
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { headers } from 'next/headers'
 import { ProviderUserRegisterFormValues } from '@/validationSchemas/providerUserRegisterSchema'
 import { ProviderInfoFormValues } from '@/validationSchemas/providerInfoSchema'
 import ProviderUserForm from '@/components/ProviderUserForm'
@@ -10,14 +15,15 @@ import SocialLinksEditor from '@/components/SocialLinksEditor'
 import { onboardProvider } from '@/app/actions/providers/onboard'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
-
 type OnboardingFormData = {
   user: ProviderUserRegisterFormValues
   provider: ProviderInfoFormValues
 }
 
 const OnboardingPage = () => {
+  // Force dynamic rendering by accessing headers
+  headers()
+  
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [errorMessage, setErrorMessage] = useState('')
