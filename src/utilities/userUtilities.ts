@@ -175,6 +175,7 @@ export const sessionContext = cache(
         }
         provider = await getProvider(context.i)
       }
+      console.log(`PARSED SESSION IS ${JSON.stringify(context)} WITH PROVIDER ID ${provider?.id}`)
       return {
         userId: context.u,
         currentProvider: provider,
