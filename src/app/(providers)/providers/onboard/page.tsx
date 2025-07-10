@@ -79,7 +79,7 @@ const OnboardingPage = () => {
       {currentStep > 3 ? (
         <div className="mx-auto mt-8 text-center">
           <p>Thanks for your interest in City Quokka</p>
-          <p>We'll get in touch with you soon and guide you through the next steps.</p>
+          <p>We&#39;ll get in touch with you soon and guide you through the next steps.</p>
           <Link href="/">
             <button
               type="submit"
