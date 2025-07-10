@@ -76,9 +76,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     alt = altFromResource || ''
     src =
       process.env.NODE_ENV === 'development'
-        ? `${url}?focus=${focalX}_${focalY}`
+        ? `/api/media/file/${fullFilename}?focus=${focalX}_${focalY}`
         : `/media/${fullFilename}?focus=${focalX}_${focalY}`
-    
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes

@@ -8,6 +8,7 @@ import ProviderUserForm from '@/components/ProviderUserForm'
 import ProviderInfoForm from '@/components/ProviderInfoForm'
 import SocialLinksEditor from '@/components/SocialLinksEditor'
 import { onboardProvider } from '@/app/actions/providers/onboard'
+import Link from 'next/link'
 
 type OnboardingFormData = {
   user: ProviderUserRegisterFormValues
@@ -59,87 +60,106 @@ const OnboardingPage = () => {
   const submitWithSocials = async (socialLinks: ProviderInfoFormValues['socialLinks']) => {
     const providerInfo = { ...formData.provider, socialLinks }
     setFormData({ ...formData, provider: providerInfo })
-    const resp = await onboardProvider(formData)
-    console.log(`RESP IS ${JSON.stringify(resp)}`)
+    const resp = await onboardProvider({ ...formData, provider: providerInfo })
+    handleNext()
   }
 
   return (
     <div className="bg-gray-50 flex flex-col py-6 sm:px-6 lg:px-8 sm:w-[600px]">
       <div className="sm:mx-auto sm:w-full">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {currentStep === 1 ? 'Create your account' : 'Tell us about your business'}
+          {currentStep === 1
+            ? 'Create your account'
+            : currentStep > 3
+              ? 'Thank You!'
+              : 'Tell us about your business'}
         </h2>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {/* Progress indicator */}
-          <div className="mb-8 hidden sm:block">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div
-                  className={`flex items-center justify-center h-10 w-10 rounded-full ${
-                    currentStep >= 1 ? 'bg-amber-500' : 'bg-gray-200'
-                  } text-white font-medium`}
-                >
-                  1
-                </div>
-                <div className="ml-4 text-sm font-medium text-gray-900">Account</div>
-              </div>
-              <div
-                className={`flex-1 h-1 mx-4 ${currentStep >= 2 ? 'bg-amber-500' : 'bg-gray-200'}`}
-              ></div>
-              <div className="flex items-center">
-                <div
-                  className={`flex items-center justify-center h-10 w-10 rounded-full ${
-                    currentStep >= 2 ? 'bg-amber-500' : 'bg-gray-200'
-                  } text-white font-medium`}
-                >
-                  2
-                </div>
-                <div className="ml-4 text-sm font-medium text-gray-900">Business</div>
-              </div>
-              <div
-                className={`flex-1 h-1 mx-4 ${currentStep >= 3 ? 'bg-amber-500' : 'bg-gray-200'}`}
-              ></div>
-              <div className="flex items-center">
-                <div
-                  className={`flex items-center justify-center h-10 w-10 rounded-full ${
-                    currentStep >= 3 ? 'bg-amber-500' : 'bg-gray-200'
-                  } text-white font-medium`}
-                >
-                  3
-                </div>
-                <div className="ml-4 text-sm font-medium text-gray-900">Social</div>
-              </div>
-            </div>
-          </div>
-
-          {errorMessage && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {errorMessage}
-            </div>
-          )}
-
-          {currentStep === 1 && (
-            <ProviderUserForm defaultValues={formData.user} submitUserInfo={submitUserInfo} />
-          )}
-          {currentStep === 2 && (
-            <ProviderInfoForm
-              defaultValues={formData.provider}
-              submitProviderInfo={submitProviderInfo}
-              handleBack={handleBack}
-            />
-          )}
-          {currentStep === 3 && (
-            <SocialLinksEditor
-              value={formData.provider.socialLinks}
-              onSubmit={submitWithSocials}
-              handleBack={handleBack}
-            />
-          )}
+      {currentStep > 3 ? (
+        <div className="mx-auto mt-8 text-center">
+          <p>Thanks for your interest in City Quokka</p>
+          <p>We'll get in touch with you soon and guide you through the next steps.</p>
+          <Link href="/">
+            <button
+              type="submit"
+              className="ml-auto inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 mt-8"
+            >
+              Home
+            </button>
+          </Link>
         </div>
-      </div>
+      ) : (
+        <div className="mt-8 sm:mx-auto sm:w-full">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            {/* Progress indicator */}
+            <div className="mb-8 hidden sm:block">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div
+                    className={`flex items-center justify-center h-10 w-10 rounded-full ${
+                      currentStep >= 1 ? 'bg-amber-500' : 'bg-gray-200'
+                    } text-white font-medium`}
+                  >
+                    1
+                  </div>
+                  <div className="ml-4 text-sm font-medium text-gray-900">Account</div>
+                </div>
+                <div
+                  className={`flex-1 h-1 mx-4 ${currentStep >= 2 ? 'bg-amber-500' : 'bg-gray-200'}`}
+                ></div>
+                <div className="flex items-center">
+                  <div
+                    className={`flex items-center justify-center h-10 w-10 rounded-full ${
+                      currentStep >= 2 ? 'bg-amber-500' : 'bg-gray-200'
+                    } text-white font-medium`}
+                  >
+                    2
+                  </div>
+                  <div className="ml-4 text-sm font-medium text-gray-900">Business</div>
+                </div>
+                <div
+                  className={`flex-1 h-1 mx-4 ${currentStep >= 3 ? 'bg-amber-500' : 'bg-gray-200'}`}
+                ></div>
+                <div className="flex items-center">
+                  <div
+                    className={`flex items-center justify-center h-10 w-10 rounded-full ${
+                      currentStep >= 3 ? 'bg-amber-500' : 'bg-gray-200'
+                    } text-white font-medium`}
+                  >
+                    3
+                  </div>
+                  <div className="ml-4 text-sm font-medium text-gray-900">Social</div>
+                </div>
+              </div>
+            </div>
+
+            {errorMessage && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {errorMessage}
+              </div>
+            )}
+
+            {currentStep === 1 && (
+              <ProviderUserForm defaultValues={formData.user} submitUserInfo={submitUserInfo} />
+            )}
+            {currentStep === 2 && (
+              <ProviderInfoForm
+                defaultValues={formData.provider}
+                submitProviderInfo={submitProviderInfo}
+                handleBack={handleBack}
+              />
+            )}
+            {currentStep === 3 && (
+              <SocialLinksEditor
+                value={formData.provider.socialLinks}
+                onSubmit={submitWithSocials}
+                handleBack={handleBack}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
