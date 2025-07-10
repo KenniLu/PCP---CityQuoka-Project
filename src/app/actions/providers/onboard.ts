@@ -33,6 +33,7 @@ export async function onboardProvider(formData: OnboardingFormData) {
       socialLinks,
     } = providerInfoSchema.parse(providerData)
 
+
     const provider = await payload.create({
       collection: 'providers',
       data: {

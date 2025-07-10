@@ -30,7 +30,7 @@ const ProviderSwitcherClient: React.FC<ProviderSwitcherProps> = ({
       }}
     >
       <p style={{ whiteSpace: 'nowrap' }}>{providerName(sessionContext)}</p>
-      {sessionContext?.isSuperAdmin && sessionContext.currentProvider?.id !== null && (
+      {sessionContext?.isSuperAdmin && sessionContext.currentProvider?.id && (
         <button style={{ cursor: 'pointer' }} onClick={async () => await setProvider(null)}>
           reset
         </button>
