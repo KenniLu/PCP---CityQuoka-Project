@@ -25,12 +25,10 @@ const Page = async ({ params, searchParams }: Args) => {
     sessionContext: SessionContextType,
     segments: string[],
   ): boolean => {
-    console.log(`SESSION CONTEXT HERE IS ${JSON.stringify(sessionContext)} for ${JSON.stringify(segments)}`)
     if (segments && segments.length === 1 && segments[0] === 'logout') {
       return false
     }
     if (sessionContext) {
-      console.log(`SESSION CONTEXT IS PRESENT WITH sessionContext.isSuperAdmin:${sessionContext.isSuperAdmin}. STATUS IS |${sessionContext.currentProvider?.verificationStatus}|`)
       if (!sessionContext.isSuperAdmin) {
         if (
           !sessionContext.currentProvider ||
