@@ -51,7 +51,7 @@ export const getProvider = cache(async (providerId: Provider['id']): Promise<Par
   const providersTable = getNameSpacedTable(payload, 'providers')
   const results = await payload.db.execute({
     drizzle: payload.db.drizzle,
-    raw: `select p.id, p.name from ${providersTable} p
+    raw: `select p.id, p.name, p.verification_status from ${providersTable} p
     where p.id = ${providerId} limit 1`,
   })
   return results.rows[0]
@@ -175,7 +175,6 @@ export const sessionContext = cache(
         }
         provider = await getProvider(context.i)
       }
-      console.log(`PARSED SESSION IS ${JSON.stringify(context)} WITH PROVIDER ID ${JSON.stringify(provider)}`)
       return {
         userId: context.u,
         currentProvider: provider,
@@ -194,7 +193,6 @@ export const getSessionContext = cache(
     if (user) {
       const context = await sessionContext(user.id)
       if (context) {
-        console.log(`RETURNING CONTEXT : ${JSON.stringify(context)}`)
         return { sessionContext: context, user }
       }
     }
