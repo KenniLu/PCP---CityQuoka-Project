@@ -28,6 +28,7 @@ const Page = async ({ params, searchParams }: Args) => {
     if (segments && segments.length === 1 && segments[0] === 'logout') {
       return false
     }
+    console.log(`IN SHOWPENDING VERIFICATION : ${JSON.stringify(sessionContext)}`)
     if (sessionContext) {
       if (!sessionContext.isSuperAdmin) {
         if (
