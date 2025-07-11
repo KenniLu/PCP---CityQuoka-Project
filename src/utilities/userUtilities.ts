@@ -54,7 +54,12 @@ export const getProvider = cache(async (providerId: Provider['id']): Promise<Par
     raw: `select p.id, p.name, p.verification_status from ${providersTable} p
     where p.id = ${providerId} limit 1`,
   })
-  return results.rows[0]
+  const provider = results.rows[0]
+  return {
+    id: provider.id,
+    name: provider.name,
+    verificationStatus: provider.verification_status
+  }
 })
 
 export const providerRoles = cache(
