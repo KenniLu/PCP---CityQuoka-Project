@@ -25,6 +25,7 @@ const Page = async ({ params, searchParams }: Args) => {
     sessionContext: SessionContextType,
     segments: string[],
   ): boolean => {
+    console.log(`SESSION CONTEXT HERE IS ${JSON.stringify(sessionContext)} for ${JSON.stringify(segments)}`)
     if (segments && segments.length === 1 && segments[0] === 'logout') {
       return false
     }
