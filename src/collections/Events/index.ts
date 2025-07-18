@@ -46,6 +46,7 @@ export const Events: CollectionConfig = {
         components: {
           Field: '@/components/HiddenProviderField',
         },
+        disableListColumn: true
       },
     },
     {

@@ -82,6 +82,7 @@ export const Programmes: CollectionConfig = {
         components: {
           Field: '@/components/HiddenProviderField',
         },
+        disableListColumn: true
       },
     },
     ...slugField()

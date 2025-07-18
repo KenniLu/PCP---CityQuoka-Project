@@ -49,7 +49,8 @@ export const Media: CollectionConfig = {
       admin: {
         components: {
           Field: '@/components/HiddenProviderField'
-        }
+        },
+        disableListColumn: true
       }
     }
   ],

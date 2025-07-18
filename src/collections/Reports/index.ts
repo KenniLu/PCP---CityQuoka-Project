@@ -105,6 +105,12 @@ export const Reports: CollectionConfig = {
       name: 'provider',
       type: 'relationship',
       relationTo: 'providers',
+      admin: {
+        components: {
+          Field: '@/components/HiddenProviderField',
+        },
+        disableListColumn: true
+      },
     },
   ],
   hooks: {

@@ -124,6 +124,7 @@ export const Pages: CollectionConfig = {
         components: {
           Field: '@/components/HiddenProviderField',
         },
+        disableListColumn: true
       },
     },
     ...slugField(),
