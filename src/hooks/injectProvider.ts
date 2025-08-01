@@ -11,7 +11,10 @@ export const injectProvider: CollectionBeforeChangeHook = async ({
 
   if (operation === 'create') {
     data.provider = sessionContext?.currentProvider?.id
-  } else if (operation === 'update' && originalDoc.provider?.id !== sessionContext?.currentProvider?.id) {
-    throw new CustomBackendError('Document does not belong to current Provider')
+  } else if (operation === 'update') {
+    const documentProvider = originalDoc.provider?.id || originalDoc.provider_id || originalDoc.provider
+    if ( documentProvider !== sessionContext?.currentProvider?.id){
+      throw new CustomBackendError('Document does not belong to current Provider')
+    }
   }
 }
