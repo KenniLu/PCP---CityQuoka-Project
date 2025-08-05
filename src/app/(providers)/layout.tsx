@@ -10,6 +10,8 @@ import { Logo } from '@/components/Logo/Logo'
 import '../../globals.css'
 import localFont from 'next/font/local'
 
+export const dynamic = 'force-dynamic'
+
 const acuminFont = localFont({
   src: [
     {
