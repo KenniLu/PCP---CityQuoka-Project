@@ -105,7 +105,7 @@ const GoogleVenueSearch: React.FC<GoogleVenueSearchProps> = (props) => {
         // const data = await searchPlaces(input, -33.836031793933465, 151.2123683522662, 50000)
         const data = await googleAutoCompleteSearch(input)
 
-        if (data.predictions) {
+        if (data?.predictions) {
           setShowSuggestions(true)
           setSuggestions(data.predictions)
         }

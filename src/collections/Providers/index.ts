@@ -144,6 +144,15 @@ export const Providers: CollectionConfig = {
       ],
       defaultValue: 'pending',
     },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      validate: (value) => /^[a-zA-Z0-9]+$/.test(value) || 'Slug can only include a-z, A-Z and 0-9',
+      admin: {
+        readOnly: true
+      }
+    }
     // {
     //    name: 'userRoles',
     //    type: 'join',

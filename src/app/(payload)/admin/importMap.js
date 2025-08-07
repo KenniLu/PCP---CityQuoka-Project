@@ -29,6 +29,7 @@ import { ReportCustomCellStatusView as ReportCustomCellStatusView_5eb52212136821
 import { ReportCustomViewServer as ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae } from '../../../components/customViews/reports/view/ReportCustomView.Server'
 import { default as default_a20f84beefaf7bff89229d04d7d4eb4a } from '@/components/ProviderSwitchButton'
 import { default as default_f8f53e21d399c183eef1861f029a13c8 } from '@/components/PermissionsField'
+import { default as default_1e94e17a9e1a62958198cd0ffe040643 } from '@/components/GoogleLocationSearchField'
 import { default as default_5dec3e793ba6aa7cec927d03001e4e4f } from '@/components/CustomAvatar'
 import { default as default_f36461f98231c4e398d0b070b5454fc5 } from '@/components/CustomIcon'
 import { default as default_d4048015f466832aa056ed6cce3b1c3f } from '@/components/CustomLogo'
@@ -69,6 +70,7 @@ export const importMap = {
   "/components/customViews/reports/view/ReportCustomView.Server#ReportCustomViewServer": ReportCustomViewServer_dc85aa6e44fdfdbc391d2f33d096d8ae,
   "@/components/ProviderSwitchButton#default": default_a20f84beefaf7bff89229d04d7d4eb4a,
   "@/components/PermissionsField#default": default_f8f53e21d399c183eef1861f029a13c8,
+  "@/components/GoogleLocationSearchField#default": default_1e94e17a9e1a62958198cd0ffe040643,
   "@/components/CustomAvatar#default": default_5dec3e793ba6aa7cec927d03001e4e4f,
   "@/components/CustomIcon#default": default_f36461f98231c4e398d0b070b5454fc5,
   "@/components/CustomLogo#default": default_d4048015f466832aa056ed6cce3b1c3f,

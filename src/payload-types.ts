@@ -78,6 +78,7 @@ export interface Config {
     reports: Report;
     providers: Provider;
     'user-roles': UserRole;
+    locations: Location;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -98,6 +99,7 @@ export interface Config {
     reports: ReportsSelect<false> | ReportsSelect<true>;
     providers: ProvidersSelect<false> | ProvidersSelect<true>;
     'user-roles': UserRolesSelect<false> | UserRolesSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -272,6 +274,7 @@ export interface Provider {
     | null;
   status?: ('active' | 'inactive') | null;
   verificationStatus?: ('pending' | 'verified' | 'rejected') | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -917,6 +920,59 @@ export interface Report {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  name: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  address?: string | null;
+  city?: string | null;
+  state_province?: string | null;
+  country?: string | null;
+  postal_code?: string | null;
+  latitude?: string | null;
+  longitude?: string | null;
+  googlePlaceId?: string | null;
+  phone?: string | null;
+  website?: string | null;
+  status?: ('active' | 'inactive') | null;
+  images?:
+    | {
+        image: number | Media;
+        altText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  provider?: (number | null) | Provider;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1008,6 +1064,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'user-roles';
         value: number | UserRole;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: number | Location;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1447,6 +1507,7 @@ export interface ProvidersSelect<T extends boolean = true> {
   socialLinks?: T;
   status?: T;
   verificationStatus?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1457,6 +1518,36 @@ export interface ProvidersSelect<T extends boolean = true> {
 export interface UserRolesSelect<T extends boolean = true> {
   name?: T;
   permissions?: T;
+  provider?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  address?: T;
+  city?: T;
+  state_province?: T;
+  country?: T;
+  postal_code?: T;
+  latitude?: T;
+  longitude?: T;
+  googlePlaceId?: T;
+  phone?: T;
+  website?: T;
+  status?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        altText?: T;
+        id?: T;
+      };
+  socialLinks?: T;
   provider?: T;
   updatedAt?: T;
   createdAt?: T;
