@@ -47,6 +47,16 @@ const ProviderInfoForm: React.FC<ProviderInfoFormProps> = ({ defaultValues, subm
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Business Handle</label>
+            <input
+              type="text"
+              {...register('slug')}
+              className="w-full min-w-0 py-2 px-4 border border-gray-300 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug.message}</p>}
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input
               type="text"

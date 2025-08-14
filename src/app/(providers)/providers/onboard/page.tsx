@@ -34,6 +34,7 @@ const OnboardingPage = () => {
     provider: {
       email: '',
       name: '',
+      slug: '',
       description: '',
       phone: '',
       socialLinks: [],

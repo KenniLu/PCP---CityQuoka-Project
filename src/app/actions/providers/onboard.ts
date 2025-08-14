@@ -31,6 +31,7 @@ export async function onboardProvider(formData: OnboardingFormData) {
       description,
       phone,
       socialLinks,
+      slug
     } = providerInfoSchema.parse(providerData)
 
 
@@ -42,6 +43,7 @@ export async function onboardProvider(formData: OnboardingFormData) {
         phone: phone,
         email: providerEmail,
         socialLinks: socialLinks,
+        slug
       },
       req: { transactionID: transactionID! },
     })
