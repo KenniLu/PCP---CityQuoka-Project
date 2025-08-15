@@ -34,15 +34,15 @@ export const LocationsSection = ({ locations, providerId, initialSearchQuery }: 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query)
     
-    const params = new URLSearchParams(searchParams.toString())
-    if (query.trim() === '') {
-      params.delete('search')
-    } else {
-      params.set('search', query)
-    }
+    // const params = new URLSearchParams(searchParams.toString())
+    // if (query.trim() === '') {
+    //   params.delete('search')
+    // } else {
+    //   params.set('search', query)
+    // }
     
-    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname
-    router.replace(newUrl, { scroll: false })
+    // const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname
+    // router.replace(newUrl, { scroll: false })
   }
 
   return (
@@ -63,7 +63,7 @@ export const LocationsSection = ({ locations, providerId, initialSearchQuery }: 
         <div className="text-center py-8">
           {searchQuery ? (
             <p className="text-gray-500">
-              No locations found matching "{searchQuery}". Try a different search term.
+              No locations found matching &quot;{searchQuery}&quot;. Try a different search term.
             </p>
           ) : (
             <p className="text-gray-500">
