@@ -15,6 +15,7 @@ import * as migration_20250612_032538_addProviderRelationships from './20250612_
 import * as migration_20250612_035800_addProviderToCategoriesPosts from './20250612_035800_addProviderToCategoriesPosts';
 import * as migration_20250612_064615_removeVenueUniqueContraint from './20250612_064615_removeVenueUniqueContraint';
 import * as migration_20250619_030147_cleanupCollectionMigrations from './20250619_030147_cleanupCollectionMigrations';
+import * as migration_20250815_022208_addSlugToProvider from './20250815_022208_addSlugToProvider';
 
 export const migrations = [
   {
@@ -100,6 +101,11 @@ export const migrations = [
   {
     up: migration_20250619_030147_cleanupCollectionMigrations.up,
     down: migration_20250619_030147_cleanupCollectionMigrations.down,
-    name: '20250619_030147_cleanupCollectionMigrations'
+    name: '20250619_030147_cleanupCollectionMigrations',
+  },
+  {
+    up: migration_20250815_022208_addSlugToProvider.up,
+    down: migration_20250815_022208_addSlugToProvider.down,
+    name: '20250815_022208_addSlugToProvider'
   },
 ];
