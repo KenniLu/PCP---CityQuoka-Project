@@ -18,7 +18,8 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "email": "email dev --dir src/emails"
+    "email": "email dev --dir src/emails",
+    "init-role": "cross-env NODE_OPTIONS=--no-deprecation payload run ./src/scripts/init-role.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.703.0",
