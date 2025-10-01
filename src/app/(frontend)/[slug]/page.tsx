@@ -67,9 +67,9 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <div className="flex flex-col w-full px-3 sm:px-8">
+    <div className="flex flex-col w-full px-3 sm:px-8">df
       {/* <HomeNavBar/> */}
-      <CityGuideNavBar />
+      <CityGuideNavBar />easdcfvgbhjndxfcgvbhjnmsdcfgvhb
       <article>
         <PageClient />
         {/* Allows redirects for valid pages too */}
@@ -91,6 +91,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }): Promise<Metadata> {
   const { slug = 'home' } = await paramsPromise
+
   const page = await fetchPageBySlug(slug)
 
   return generateMeta({ doc: page })
