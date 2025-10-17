@@ -1,9 +1,8 @@
 'use client';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import AppHeader from '@/components/AppHeader'; // ✅ use the global header
 
-import Link from 'next/link';
-import { useState, ChangeEvent, FormEvent } from 'react';
-
-// ✅ Type definition (no external import needed)
+// Local type
 interface UserProfile {
   firstName: string;
   lastName: string;
@@ -15,7 +14,7 @@ interface UserProfile {
   postalCode: string;
 }
 
-export default function MyProfile() {
+export default function Page() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserProfile>({
     firstName: 'Robin',
@@ -54,35 +53,12 @@ export default function MyProfile() {
   };
 
   return (
-    <div className="w-full">
-      {/* 🔶 Top orange buttons */}
-      <div className="w-full bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto flex justify-center items-center h-16">
-          <div className="flex items-center gap-6">
-            <Link
-              href="/account/profile"
-              className="px-6 py-2 rounded-full bg-orange-500 text-white font-semibold shadow hover:bg-orange-600 transition"
-            >
-              My Profile
-            </Link>
-            <Link
-              href="/my-sydney"
-              className="px-6 py-2 rounded-full bg-orange-500 text-white font-semibold shadow hover:bg-orange-600 transition"
-            >
-              My Sydney
-            </Link>
-            <Link
-              href="/offers"
-              className="px-6 py-2 rounded-full bg-orange-500 text-white font-semibold shadow hover:bg-orange-600 transition"
-            >
-              My Offer
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className="w-full min-h-screen bg-gray-50">
+      {/* ✅ Global Header (Hamburger menu across all pages) */}
+      <AppHeader />
 
-      {/* 🔹 Blue info bar + form */}
-      <div className="max-w-4xl mx-auto mt-8">
+      {/* Profile Form */}
+      <div className="max-w-4xl mx-auto mt-8 px-4">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="bg-blue-600 text-white p-6">
             <h1 className="text-2xl font-bold">My Profile</h1>
@@ -93,190 +69,134 @@ export default function MyProfile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* First Name */}
               <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   First Name
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">A</span>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* Last Name */}
               <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Last Name
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">A</span>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* Mobile Number */}
               <div>
-                <label
-                  htmlFor="mobileNumber"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Mobile Number
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">Q</span>
-                  <input
-                    type="tel"
-                    id="mobileNumber"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="tel"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* Email */}
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">☒</span>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* Address */}
               <div className="md:col-span-2">
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Address
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">☺</span>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* City */}
               <div>
-                <label
-                  htmlFor="city"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   City
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">☺</span>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* State */}
               <div>
-                <label
-                  htmlFor="state"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   State
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">☺</span>
-                  <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
 
               {/* Postal Code */}
               <div className="md:col-span-2">
-                <label
-                  htmlFor="postalCode"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Postal Code
                 </label>
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-500">☺</span>
-                  <input
-                    type="text"
-                    id="postalCode"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={formData.postalCode}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                  required
+                />
               </div>
             </div>
 
-            {/* Edit / Save Buttons */}
+            {/* Buttons */}
             <div className="mt-8 flex justify-end">
               {!isEditing ? (
                 <button
