@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import AppHeader from '@/components/AppHeader'; // ✅ use the global header
+import useSWR, {mutate as globalMutate } from 'swr';
+import AppHeader from '@/components/AppHeader'; 
 
 // Local type
 interface UserProfile {
@@ -54,7 +55,6 @@ export default function Page() {
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
-      {/* ✅ Global Header (Hamburger menu across all pages) */}
       <AppHeader />
 
       {/* Profile Form */}

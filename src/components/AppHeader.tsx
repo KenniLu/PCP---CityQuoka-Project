@@ -69,11 +69,11 @@ export default function AppHeader() {
             {/* Links */}
             <div className="p-3 space-y-1">
               <Link
-                href="/my-sydney"
+                href="/my-profile"
                 className="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-800"
                 onClick={() => setOpen(false)}
               >
-                My Sydney
+                My Profile
               </Link>
               <Link
                 href="/my-offers"
@@ -83,11 +83,11 @@ export default function AppHeader() {
                 My Offers
               </Link>
               <Link
-                href="/my-profile"
+                href="/my-sydney"
                 className="block px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-800"
                 onClick={() => setOpen(false)}
               >
-                My Profile
+                My Sydney
               </Link>
               <Link
                 href="/my-articles"
