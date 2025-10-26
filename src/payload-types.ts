@@ -76,6 +76,7 @@ export interface Config {
     programmes: Programme;
     venues: Venue;
     reports: Report;
+    offers: Offer;
     providers: Provider;
     'user-roles': UserRole;
     locations: Location;
@@ -97,6 +98,7 @@ export interface Config {
     programmes: ProgrammesSelect<false> | ProgrammesSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
+    offers: OffersSelect<false> | OffersSelect<true>;
     providers: ProvidersSelect<false> | ProvidersSelect<true>;
     'user-roles': UserRolesSelect<false> | UserRolesSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
@@ -920,6 +922,38 @@ export interface Report {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers".
+ */
+export interface Offer {
+  id: number;
+  title: string;
+  summary: string;
+  status: 'unclaimed' | 'ready' | 'claimed';
+  startsAt?: string | null;
+  expiresAt?: string | null;
+  tags?: ('featured' | 'nearby' | 'this-week')[] | null;
+  coverImage?: (number | null) | Media;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  provider?: (number | null) | Provider;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "locations".
  */
 export interface Location {
@@ -1056,6 +1090,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reports';
         value: number | Report;
+      } | null)
+    | ({
+        relationTo: 'offers';
+        value: number | Offer;
       } | null)
     | ({
         relationTo: 'providers';
@@ -1481,6 +1519,23 @@ export interface ReportsSelect<T extends boolean = true> {
   status?: T;
   errors?: T;
   filename?: T;
+  provider?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers_select".
+ */
+export interface OffersSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  status?: T;
+  startsAt?: T;
+  expiresAt?: T;
+  tags?: T;
+  coverImage?: T;
+  body?: T;
   provider?: T;
   updatedAt?: T;
   createdAt?: T;

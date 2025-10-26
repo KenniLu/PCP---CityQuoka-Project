@@ -49,19 +49,50 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        session.user.firstName = token.firstName as string
-        session.user.lastName = token.lastName as string
-        session.user.email = token.email as string
+        session.user.id = typeof token.id === 'string' ? token.id : session.user.id
+        session.user.email =
+          typeof token.email === 'string' ? token.email : session.user.email ?? null
+        session.user.firstName =
+          typeof token.firstName === 'string' ? token.firstName : session.user.firstName ?? null
+        session.user.lastName =
+          typeof token.lastName === 'string' ? token.lastName : session.user.lastName ?? null
+        session.user.mobileNumber =
+          typeof token.mobileNumber === 'string'
+            ? token.mobileNumber
+            : session.user.mobileNumber ?? null
+        session.user.address =
+          typeof token.address === 'string' ? token.address : session.user.address ?? null
+        session.user.city =
+          typeof token.city === 'string' ? token.city : session.user.city ?? null
+        session.user.state =
+          typeof token.state === 'string' ? token.state : session.user.state ?? null
+        session.user.postalCode =
+          typeof token.postalCode === 'string'
+            ? token.postalCode
+            : session.user.postalCode ?? null
       }
       return session
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id
         token.email = user.email
         token.firstName = user.firstName
         token.lastName = user.lastName
+        token.mobileNumber = user.mobileNumber ?? null
+        token.address = user.address ?? null
+        token.city = user.city ?? null
+        token.state = user.state ?? null
+        token.postalCode = user.postalCode ?? null
+      } else if (trigger === 'update' && session?.user) {
+        token.firstName = session.user.firstName ?? null
+        token.lastName = session.user.lastName ?? null
+        token.email = session.user.email ?? null
+        token.mobileNumber = session.user.mobileNumber ?? null
+        token.address = session.user.address ?? null
+        token.city = session.user.city ?? null
+        token.state = session.user.state ?? null
+        token.postalCode = session.user.postalCode ?? null
       }
       return token
     },

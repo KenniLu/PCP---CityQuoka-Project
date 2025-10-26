@@ -4,7 +4,6 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
-  numeric,
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 
 export const cmsUsers = pgTable(
@@ -16,12 +15,12 @@ export const cmsUsers = pgTable(
     image: text('image'),
     firstName: text('first_name'),
     lastName: text('last_name'),
-    password: text('password'),
-    mobileNumber: numeric('mobile_number'),
+    mobileNumber: text('mobile_number'),
     address: text('address'),
     city: text('city'),
     state: text('state'),
-    postalCode: numeric('postal_code'),
+    postalCode: text('postal_code'),
+    password: text('password'),
     createdAt: timestamp('created_at', { mode: 'string' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
   },
