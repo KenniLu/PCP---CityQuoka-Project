@@ -81,6 +81,11 @@ export async function loginUser(formData: LoginFormValues) {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      mobileNumber: user.mobileNumber,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      postalCode: user.postalCode,
     }
   } catch (error) {
     return null

@@ -18,6 +18,10 @@ interface UserProfile {
 type FormErrors = Partial<Record<keyof UserProfile, string>>;
 
 export default function Page() {
+  const { data: session, update: updateSession } = useSession();
+
+  const [formData, setFormData] = useState<UserProfile | null>(null);
+  const [initialData, setInitialData] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState<UserProfile>({
@@ -98,7 +102,6 @@ export default function Page() {
     <div className="w-full min-h-screen bg-gray-50">
       <AppHeader />
 
-      {/* Profile Form */}
       <div className="max-w-4xl mx-auto mt-8 px-4">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="bg-blue-600 text-white p-6">
@@ -249,35 +252,43 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Buttons */}
-            <div className="mt-8 flex justify-end">
-              {!isEditing ? (
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Edit
-                </button>
-              ) : (
-                <div className="space-x-4">
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Save Changes
-                  </button>
+                <div className="mt-8 flex justify-end">
+                  {!isEditing ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setSaveError(null);
+                        setSuccessMessage(null);
+                      }}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={isSaving}
+                    >
+                      Edit
+                    </button>
+                  ) : (
+                    <div className="space-x-4">
+                      <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={isSaving}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={isSaving}
+                      >
+                        {isSaving ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </form>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>
