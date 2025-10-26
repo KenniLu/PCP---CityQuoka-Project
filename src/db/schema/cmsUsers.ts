@@ -16,15 +16,6 @@ export const cmsUsers = pgTable(
     firstName: text('first_name'),
     lastName: text('last_name'),
     mobileNumber: text('mobile_number'),
-<<<<<<< HEAD
-    address: text('address'),
-    city: text('city'),
-    state: text('state'),
-    postalCode: text('postal_code'),
-    password: text('password'),
-    mobileNumber: numeric('mobile_number'),
-=======
->>>>>>> 066a3544f1e34c9e620d9cfd205dbff7ae699b27
     address: text('address'),
     city: text('city'),
     state: text('state'),

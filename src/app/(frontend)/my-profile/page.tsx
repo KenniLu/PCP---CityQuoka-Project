@@ -1,9 +1,8 @@
 'use client';
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import useSWR, { mutate as globalMutate } from 'swr';
-import AppHeader from '@/components/AppHeader'; 
+import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import { useSession } from 'next-auth/react';
+import AppHeader from '@/components/AppHeader'; // ✅ use the global header
 
-// Local type
 interface UserProfile {
   firstName: string;
   lastName: string;
@@ -23,80 +22,106 @@ export default function Page() {
   const [formData, setFormData] = useState<UserProfile | null>(null);
   const [initialData, setInitialData] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [formData, setFormData] = useState<UserProfile>({
-    firstName: 'Robin', 
-    lastName: 'Nguyen',
-    mobileNumber: '0412345678',
-    email: 'Huy@gmail.com',
-    address: '2/79 Victoria Street',
-    city: 'Dhaka',
-    state: 'NSW',
-    postalCode: '2121',
-  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const isDigitsOnly = (v: string) => /^\d+$/.test(v);
+  useEffect(() => {
+    let isActive = true;
 
-  const validate = () => {
-    const nextErrors: FormErrors = {};
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch('/api/profile', { cache: 'no-store' });
 
-    // Rule: mobile must be numeric and at least 10 digits
-    if (!isDigitsOnly(formData.mobileNumber) || formData.mobileNumber.length < 10) {
-      nextErrors.mobileNumber = 'Please rovide your correct phone number';
-    }
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          const message =
+            typeof payload?.error === 'string' ? payload.error : 'Failed to load profile';
+          throw new Error(message);
+        }
 
-    // Rule: postal code must be numeric and exactly 4 digits
-    if (!isDigitsOnly(formData.postalCode) || formData.postalCode.length !== 4) {
-      nextErrors.postalCode = 'Please provide your correct Postal Code';
-    }
+        const profile: UserProfile = await response.json();
+        if (!isActive) return;
+        setFormData(profile);
+        setInitialData(profile);
+      } catch (err) {
+        if (!isActive) return;
+        setError(err instanceof Error ? err.message : 'Failed to load profile');
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
+      }
+    };
 
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    loadProfile();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleSave = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!formData) return;
 
-    // Clear the error for this field as the user edits
-    if (errors[name as keyof UserProfile]) {
-      setErrors(prev => {
-        const copy = { ...prev };
-        delete copy[name as keyof UserProfile];
-        return copy;
+    setIsSaving(true);
+    setSaveError(null);
+    setSuccessMessage(null);
+
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-    }
-  };
 
-  const handleSave = (e: FormEvent) => {
-    e.preventDefault();
-    if (!validate()) {
-      // Do not save or exit edit mode if validation fails
-      return;
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message =
+          typeof payload?.error === 'string' ? payload.error : 'Failed to update profile';
+        throw new Error(message);
+      }
+
+      const updatedProfile = payload as UserProfile;
+      setFormData(updatedProfile);
+      setInitialData(updatedProfile);
+      setIsEditing(false);
+      setSuccessMessage('Profile updated successfully.');
+
+      if (typeof updateSession === 'function' && session?.user?.id) {
+        await updateSession({
+          user: {
+            ...session.user,
+            ...updatedProfile,
+          },
+        });
+      }
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to update profile');
+    } finally {
+      setIsSaving(false);
     }
-    setIsEditing(false);
-    console.log('Saved data:', formData);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setErrors({});
-    setFormData({
-      firstName: 'Robin',
-      lastName: 'Nguyen',
-      mobileNumber: '0412345678',
-      email: 'Huy@gmail.com',
-      address: '2/79 Victoria Street',
-      city: 'Dhaka',
-      state: 'NSW',
-      postalCode: '2121',
-    });
+    setSaveError(null);
+    setSuccessMessage(null);
+    setFormData(initialData);
   };
 
-  const inputBase =
-    'w-full border rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600';
-  const errorBorder = 'border-red-500';
-  const normalBorder = 'border-gray-300';
+  const disableInputs = !isEditing || isSaving;
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
@@ -109,148 +134,141 @@ export default function Page() {
             <p className="text-blue-100">Manage your personal information</p>
           </div>
 
-          <form onSubmit={handleSave} className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* First Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+          <div className="p-6">
+            {loading ? (
+              <p className="text-gray-600">Loading profile...</p>
+            ) : error ? (
+              <p className="text-red-600">{error}</p>
+            ) : !formData ? (
+              <p className="text-gray-600">No profile data available.</p>
+            ) : (
+              <form onSubmit={handleSave}>
+                <div className="space-y-4 mb-6">
+                  {successMessage && <p className="text-sm text-green-600">{successMessage}</p>}
+                  {saveError && <p className="text-sm text-red-600">{saveError}</p>}
+                </div>
 
-              {/* Last Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* Mobile Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  name="mobileNumber"
-                  value={formData.mobileNumber}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  aria-invalid={!!errors.mobileNumber}
-                  className={`${inputBase} ${
-                    errors.mobileNumber ? errorBorder : normalBorder
-                  }`}
-                  required
-                />
-                {errors.mobileNumber && (
-                  <p className="mt-1 text-sm text-red-600">{errors.mobileNumber}</p>
-                )}
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="mobileNumber"
+                      value={formData.mobileNumber ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* Address */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* City */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* State */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  State
-                </label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`${inputBase} ${normalBorder}`}
-                  required
-                />
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
 
-              {/* Postal Code */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  name="postalCode"
-                  value={formData.postalCode}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  aria-invalid={!!errors.postalCode}
-                  className={`${inputBase} ${
-                    errors.postalCode ? errorBorder : normalBorder
-                  }`}
-                  required
-                />
-                {errors.postalCode && (
-                  <p className="mt-1 text-sm text-red-600">{errors.postalCode}</p>
-                )}
-              </div>
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={formData.state ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Postal Code
+                    </label>
+                    <input
+                      type="text"
+                      name="postalCode"
+                      value={formData.postalCode ?? ''}
+                      onChange={handleInputChange}
+                      disabled={disableInputs}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 disabled:bg-gray-100 disabled:text-gray-600"
+                      required
+                    />
+                  </div>
+                </div>
 
                 <div className="mt-8 flex justify-end">
                   {!isEditing ? (
