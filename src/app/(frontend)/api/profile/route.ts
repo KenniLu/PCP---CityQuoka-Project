@@ -11,6 +11,7 @@ import { ZodError } from 'zod'
 
 type CmsUser = typeof cmsUsers.$inferSelect
 
+// Ensure the client always receives defined strings for its form fields.
 const mapUserProfile = (user: CmsUser) => ({
   firstName: user.firstName ?? '',
   lastName: user.lastName ?? '',
@@ -22,6 +23,7 @@ const mapUserProfile = (user: CmsUser) => ({
   postalCode: user.postalCode ?? '',
 })
 
+// Return the authenticated user's saved profile details.
 export async function GET() {
   const session = await auth()
 
@@ -62,6 +64,7 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const parsed = profileSchema.parse(data)
+    // Normalise casing-sensitive values before persisting them.
     const normalized = {
       ...parsed,
       email: parsed.email.toLowerCase(),
@@ -83,6 +86,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(mapUserProfile(updatedUser))
   } catch (error) {
     if (error instanceof ZodError) {
+      // Surface validation errors so the client can map them to fields.
       return NextResponse.json(
         { error: 'Invalid profile data', issues: error.flatten() },
         { status: 400 },

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+// Shared validation for profile updates coming from the frontend form.
 export const profileSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required'),
   lastName: z.string().trim().min(1, 'Last name is required'),

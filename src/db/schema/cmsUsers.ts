@@ -15,6 +15,7 @@ export const cmsUsers = pgTable(
     image: text('image'),
     firstName: text('first_name'),
     lastName: text('last_name'),
+    // Extra profile attributes managed from the customer profile page.
     mobileNumber: text('mobile_number'),
     address: text('address'),
     city: text('city'),

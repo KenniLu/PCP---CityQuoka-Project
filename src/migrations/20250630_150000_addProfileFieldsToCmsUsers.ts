@@ -1,6 +1,7 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db }: MigrateUpArgs): Promise<void> {
+  // Bring the auth table up to date with the profile form fields.
   await db.execute(sql`
     ALTER TABLE "cms_users"
       ADD COLUMN IF NOT EXISTS "mobile_number" text,
@@ -12,6 +13,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
+  // Drop the additional profile columns if this migration is rolled back.
   await db.execute(sql`
     ALTER TABLE "cms_users"
       DROP COLUMN IF EXISTS "mobile_number",

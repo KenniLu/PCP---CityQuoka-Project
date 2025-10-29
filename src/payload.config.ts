@@ -19,7 +19,6 @@ import { Venues } from './collections/Venues'
 import { Reports } from './collections/Reports'
 import { UserRoles } from './collections/UserRoles'
 import { Locations } from './collections/Locations'
-import { Offers } from './collections/Offers'
 
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -157,7 +156,6 @@ export default buildConfig({
     Programmes,
     Venues,
     Reports,
-    Offers,
     Providers,
     UserRoles,
     Locations

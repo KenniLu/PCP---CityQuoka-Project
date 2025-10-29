@@ -48,6 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   callbacks: {
     async session({ session, token }) {
+      // Copy profile fields stored on the JWT onto the client-visible session.
       if (session.user) {
         session.user.id = typeof token.id === 'string' ? token.id : session.user.id
         session.user.email =
@@ -85,6 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.state = user.state ?? null
         token.postalCode = user.postalCode ?? null
       } else if (trigger === 'update' && session?.user) {
+        // Allow `session.update` to persist fresh profile values.
         token.firstName = session.user.firstName ?? null
         token.lastName = session.user.lastName ?? null
         token.email = session.user.email ?? null

@@ -15,6 +15,7 @@ interface UserProfile {
 }
 
 export default function Page() {
+  // Pull `update` so we can refresh the session once the profile is saved.
   const { data: session, update: updateSession } = useSession();
 
   const [formData, setFormData] = useState<UserProfile | null>(null);
@@ -27,6 +28,7 @@ export default function Page() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    // Guard against state updates when the component unmounts mid-request.
     let isActive = true;
 
     const loadProfile = async () => {
@@ -64,6 +66,7 @@ export default function Page() {
   }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // Keep the controlled inputs in sync with local state.
     const { name, value } = event.target;
     setFormData((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
@@ -98,6 +101,7 @@ export default function Page() {
       setSuccessMessage('Profile updated successfully.');
 
       if (typeof updateSession === 'function' && session?.user?.id) {
+        // Push the latest profile data into the NextAuth session token.
         await updateSession({
           user: {
             ...session.user,
@@ -113,12 +117,14 @@ export default function Page() {
   };
 
   const handleCancel = () => {
+    // Revert unsaved edits and exit edit mode.
     setIsEditing(false);
     setSaveError(null);
     setSuccessMessage(null);
     setFormData(initialData);
   };
 
+  // Lock the form while not editing or while a save is in flight.
   const disableInputs = !isEditing || isSaving;
 
   return (

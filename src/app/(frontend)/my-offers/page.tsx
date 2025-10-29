@@ -1,156 +1,101 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import { Search, CheckCircle2, Clock3, ChevronDown } from 'lucide-react'
 
 import AppHeader from '@/components/AppHeader'
 import ClaimButton from '@/components/ClaimButton'
 
-// Shape returned by the offers API.
 type Offer = {
-  id: number | string
+  id: number
   title: string
-  summary: string
-  status: 'unclaimed' | 'ready' | 'claimed'
-  startsAt: string | null
-  expiresAt: string | null
-  tags: string[]
-  coverImage: null | {
-    id: number | string
-    alt: string | null
-    url: string | null
-  }
+  img: string
+  status: 'Claimed' | 'Ready to use' | 'Unclaimed'
+  featured: boolean
+  nearby: boolean
+  week: boolean
+  perks: { icon: 'check' | 'clock'; text: string }[]
 }
 
-type OfferApiResponse = {
-  docs: Offer[]
-  hasNextPage: boolean
-  nextPage: number | null
-  totalDocs: number
-  totalPages: number
-}
-
-type OfferStatusFilter = 'all' | 'unclaimed' | 'ready' | 'claimed'
-type OfferTab = 'Featured' | 'Nearby' | 'This week'
-
-// Tabs are displayed with friendly names, but the API expects these slug values.
-const TAB_TO_TAG: Record<OfferTab, string> = {
-  Featured: 'featured',
-  Nearby: 'nearby',
-  'This week': 'this-week',
-}
-
-// Dropdown labels shown to the user for each backend status value.
-const STATUS_LABELS: Record<OfferStatusFilter, string> = {
-  all: 'All Offers',
-  unclaimed: 'Unclaimed',
-  ready: 'Ready to Use',
-  claimed: 'Claimed',
-}
-
-// Format incoming ISO strings for the UI while tolerating null or invalid dates.
-const formatDate = (value: string | null) => {
-  if (!value) return null
-  const date = new Date(value)
-  if (Number.isNaN(date.valueOf())) return null
-  return date.toLocaleDateString()
-}
-
-// Convert stored tag slugs into readable titles for the perks list.
-const formatTags = (tags: string[]) =>
-  tags
-    .map((tag) => {
-      switch (tag) {
-        case 'featured':
-          return 'Featured'
-        case 'nearby':
-          return 'Nearby'
-        case 'this-week':
-          return 'This Week'
-        default:
-          return tag
-      }
-    })
-    .join(', ')
+const INITIAL_OFFERS: Offer[] = [
+  {
+    id: 1,
+    title: 'Sydney Harbour Sightseeing Cruise Morning or Afternoon Departure',
+    img: '/sydney.jpg',
+    status: 'Unclaimed',
+    featured: true,
+    nearby: false,
+    week: true,
+    perks: [
+      { icon: 'check', text: 'Free Cancellation' },
+      { icon: 'clock', text: 'Expires in 5 days' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Big Night Out at Parramatta',
+    img: '/parramatta.jpg',
+    status: 'Unclaimed',
+    featured: true,
+    nearby: true,
+    week: true,
+    perks: [
+      { icon: 'check', text: 'Free Cancellation' },
+      { icon: 'clock', text: 'Expires in 5 days' },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Enjoy fine dine this Christmas at Sydney Eye Tower',
+    img: '/tower.jpg',
+    status: 'Ready to use',
+    featured: false,
+    nearby: true,
+    week: false,
+    perks: [
+      { icon: 'check', text: 'Free Cancellation' },
+      { icon: 'clock', text: 'Expires in 40 days' },
+    ],
+  },
+]
 
 export default function MyOffersPage() {
-  const [offers, setOffers] = useState<Offer[]>([])
+  const [offers, setOffers] = useState<Offer[]>(INITIAL_OFFERS)
   const [search, setSearch] = useState('')
-  const [activeTab, setActiveTab] = useState<OfferTab>('Featured')
-  const [statusFilter, setStatusFilter] = useState<OfferStatusFilter>('all')
+  const [activeTab, setActiveTab] = useState<'Featured' | 'Nearby' | 'This week'>('Featured')
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Claimed' | 'Ready to use' | 'Unclaimed'>('All')
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [popupOffer, setPopupOffer] = useState<Offer | null>(null)
 
-  useEffect(() => {
-    const controller = new AbortController()
-
-    // Pull a fresh page of offers whenever the selected tab or status changes.
-    const fetchOffers = async () => {
-      setIsLoading(true)
-      setError(null)
-
-      try {
-        const params = new URLSearchParams()
-        const tag = TAB_TO_TAG[activeTab]
-        if (tag) {
-          params.set('tag', tag)
-        }
-        if (statusFilter !== 'all') {
-          params.set('status', statusFilter)
-        }
-
-        const queryString = params.toString()
-        // Include cookies so Payload can resolve the user and provider context server-side.
-        const response = await fetch(`/api/offers${queryString ? `?${queryString}` : ''}`, {
-          credentials: 'include',
-          signal: controller.signal,
-        })
-
-        const data = await response.json().catch(() => ({}))
-
-        if (!response.ok) {
-          const message = (data as { error?: string }).error || 'Unable to load offers right now.'
-          throw new Error(message)
-        }
-
-        const payload = (data as OfferApiResponse).docs ?? []
-        setOffers(payload)
-      } catch (fetchError) {
-        if (controller.signal.aborted) return
-        // Reset results if the request fails so the UI reflects the empty state.
-        const message =
-          fetchError instanceof Error ? fetchError.message : 'Unable to load offers right now.'
-        setError(message)
-        setOffers([])
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false)
-        }
-      }
+  const handleClaimClick = (offer: Offer) => {
+    if (offer.status === 'Unclaimed') {
+      setPopupOffer(offer)
+    } else if (offer.status === 'Ready to use') {
+      setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, status: 'Claimed' } : o)))
     }
+  }
 
-    fetchOffers()
+  const confirmRedeem = () => {
+    if (popupOffer) {
+      setOffers((prev) =>
+        prev.map((o) => (o.id === popupOffer.id ? { ...o, status: 'Ready to use' } : o)),
+      )
+      setPopupOffer(null)
+    }
+  }
 
-    return () => controller.abort()
-  }, [activeTab, statusFilter])
-
-  // Apply an in-memory text filter on the server results to avoid extra round-trips.
   const filteredOffers = useMemo(() => {
-    if (!search.trim()) {
-      return offers
-    }
-
-    const query = search.trim().toLowerCase()
-    return offers.filter((offer) =>
-      [offer.title, offer.summary, formatTags(offer.tags)]
-        .filter(Boolean)
-        .some((field) => field.toLowerCase().includes(query)),
-    )
-  }, [offers, search])
-
-  const currentStatusLabel = STATUS_LABELS[statusFilter]
+    return offers.filter((o) => {
+      const matchesSearch = o.title.toLowerCase().includes(search.toLowerCase())
+      const matchesTab =
+        (activeTab === 'Featured' && o.featured) ||
+        (activeTab === 'Nearby' && o.nearby) ||
+        (activeTab === 'This week' && o.week)
+      const matchesStatus = statusFilter === 'All' || o.status === statusFilter
+      return matchesSearch && matchesTab && matchesStatus
+    })
+  }, [offers, search, activeTab, statusFilter])
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -163,7 +108,7 @@ export default function MyOffersPage() {
               type="text"
               placeholder="What are you looking for?"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 pr-10 text-[15px] placeholder:text-gray-400 outline-none focus:border-blue-500"
             />
             <Search className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -171,34 +116,27 @@ export default function MyOffersPage() {
 
           <div className="relative">
             <button
-              onClick={() => setDropdownOpen((open) => !open)}
+              onClick={() => setDropdownOpen((o) => !o)}
               className="inline-flex items-center justify-between rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50 min-w-[170px]"
             >
-              {currentStatusLabel}
+              {statusFilter === 'All' ? 'Filter Offers' : statusFilter}
               <ChevronDown className="ml-2 h-4 w-4" />
             </button>
 
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-44 rounded-lg bg-white shadow-lg ring-1 ring-black/10 z-10">
-                {(
-                  [
-                    ['all', 'All'],
-                    ['unclaimed', 'Unclaimed'],
-                    ['ready', 'Ready to Use'],
-                    ['claimed', 'Claimed'],
-                  ] as Array<[OfferStatusFilter, string]>
-                ).map(([value, label]) => (
+                {['All', 'Claimed', 'Ready to use', 'Unclaimed'].map((status) => (
                   <button
-                    key={value}
+                    key={status}
                     onClick={() => {
-                      setStatusFilter(value)
+                      setStatusFilter(status as typeof statusFilter)
                       setDropdownOpen(false)
                     }}
                     className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
-                      statusFilter === value ? 'font-semibold text-black' : 'text-gray-700'
+                      statusFilter === status ? 'font-semibold text-black' : 'text-gray-700'
                     }`}
                   >
-                    {label}
+                    {status}
                   </button>
                 ))}
               </div>
@@ -209,7 +147,7 @@ export default function MyOffersPage() {
         <div className="border-t bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-3 text-center text-[15px] font-medium text-gray-800">
-              {(['Featured', 'Nearby', 'This week'] as OfferTab[]).map((tab) => (
+              {(['Featured', 'Nearby', 'This week'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -227,69 +165,73 @@ export default function MyOffersPage() {
       </div>
 
       <main className="flex-grow flex flex-col bg-gray-100 min-h-[calc(100vh-180px)]">
-        <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 flex flex-col space-y-5">
-          {isLoading && <p className="text-sm text-gray-500">Loading offers...</p>}
+        <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 flex flex-col">
+          {filteredOffers.length > 0 ? (
+            <div className="flex-1 flex flex-col justify-start space-y-5">
+              {filteredOffers.map((offer) => (
+                <article
+                  key={offer.id}
+                  className="flex items-start gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5"
+                >
+                  <div className="relative h-[110px] w-[160px] shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                    <Image src={offer.img} alt={offer.title} fill className="object-cover" />
+                  </div>
 
-          {error && !isLoading && <p className="text-sm text-red-600">{error}</p>}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base md:text-[17px] font-semibold text-gray-900">
+                      {offer.title}
+                    </h3>
 
-          {!isLoading && !error && filteredOffers.length === 0 && (
-            <p className="text-sm text-gray-600">No offers match your filters right now.</p>
-          )}
-
-          {filteredOffers.map((offer) => {
-            const imageUrl = offer.coverImage?.url ?? '/sydney.jpg'
-            const altText = offer.coverImage?.alt || offer.title
-            const formattedStarts = formatDate(offer.startsAt)
-            const formattedExpires = formatDate(offer.expiresAt)
-            const readableTags = offer.tags.length > 0 ? formatTags(offer.tags) : null
-
-            return (
-              <article
-                key={offer.id}
-                className="flex flex-col md:flex-row items-start gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5"
-              >
-                <div className="relative h-[180px] w-full md:h-[140px] md:w-[210px] shrink-0 overflow-hidden rounded-xl bg-gray-200">
-                  <Image src={imageUrl} alt={altText} fill className="object-cover" />
-                </div>
-
-                <div className="flex-1 min-w-0 w-full">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-base md:text-[17px] font-semibold text-gray-900">{offer.title}</h3>
-                      <p className="text-[13px] text-gray-700 leading-relaxed">{offer.summary}</p>
-                    </div>
-
-                    <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-gray-700">
-                      {readableTags && (
-                        <li className="flex items-center gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-[#22c55e]" />
-                          <span>{readableTags}</span>
+                    <ul className="mt-2 space-y-1.5 text-[13px] text-gray-700">
+                      {offer.perks.map((p, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          {p.icon === 'check' ? (
+                            <CheckCircle2 className="h-4 w-4 text-[#22c55e]" />
+                          ) : (
+                            <Clock3 className="h-4 w-4 text-gray-700" />
+                          )}
+                          <span>{p.text}</span>
                         </li>
-                      )}
-                      {formattedStarts && (
-                        <li className="flex items-center gap-2">
-                          <Clock3 className="h-4 w-4 text-gray-700" />
-                          <span>Starts {formattedStarts}</span>
-                        </li>
-                      )}
-                      {formattedExpires && (
-                        <li className="flex items-center gap-2">
-                          <Clock3 className="h-4 w-4 text-gray-700" />
-                          <span>Expires {formattedExpires}</span>
-                        </li>
-                      )}
+                      ))}
                     </ul>
                   </div>
-                </div>
 
-                <div className="md:ml-auto">
-                  <ClaimButton status={offer.status} />
-                </div>
-              </article>
-            )
-          })}
+                  <div className="md:ml-auto">
+                    <ClaimButton />
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-600">No offers match your filters right now.</p>
+          )}
         </div>
       </main>
+
+      {popupOffer && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-900">Redeem Offer?</h2>
+            <p className="mt-3 text-sm text-gray-600">
+              Are you sure you want to mark “{popupOffer.title}” as ready to use?
+            </p>
+            <div className="mt-6 flex justify-center gap-4">
+              <button
+                onClick={() => setPopupOffer(null)}
+                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRedeem}
+                className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-orange-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

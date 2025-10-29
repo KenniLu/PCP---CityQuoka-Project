@@ -1,31 +1,31 @@
 "use client"
 
-type OfferStatus = "unclaimed" | "ready" | "claimed"
+type OfferStatus = "Unclaimed" | "Ready to use" | "Claimed"
 
 type ClaimButtonProps = {
   status: OfferStatus
+  onClick: () => void
 }
 
-// Map backend status codes to the CTA label the user sees.
 const STATUS_LABELS: Record<OfferStatus, string> = {
-  unclaimed: "Claim Now",
-  ready: "Ready to Use",
-  claimed: "Claimed",
+  Unclaimed: "Claim Now",
+  "Ready to use": "Ready to Use",
+  Claimed: "Claimed",
 }
 
-// Apply consistent colouring based on the current claim status.
-const STATUS_STYLES: Record<OfferStatus, string> = {
-  unclaimed: "bg-green-500 text-white",
-  ready: "bg-yellow-500 text-black",
-  claimed: "bg-gray-400 text-white",
+const STATUS_CLASSES: Record<OfferStatus, string> = {
+  Unclaimed: "bg-green-500 text-white",
+  "Ready to use": "bg-yellow-500 text-black",
+  Claimed: "bg-gray-400 text-white",
 }
 
-export default function ClaimButton({ status }: ClaimButtonProps) {
+export default function ClaimButton({ status, onClick }: ClaimButtonProps) {
   return (
     <button
       type="button"
-      className={`px-4 py-2 rounded-full font-semibold transition ${STATUS_STYLES[status]}`}
-      disabled={status === "claimed"}
+      onClick={onClick}
+      className={`px-4 py-2 rounded-full font-semibold transition ${STATUS_CLASSES[status]}`}
+      disabled={status === "Claimed"}
     >
       {STATUS_LABELS[status]}
     </button>
