@@ -197,7 +197,7 @@ export default function MyOffersPage() {
                   </div>
 
                   <div className="md:ml-auto">
-                    <ClaimButton />
+                    <ClaimButton status={offer.status} onClick={() => handleClaimClick(offer)} />
                   </div>
                 </article>
               ))}
