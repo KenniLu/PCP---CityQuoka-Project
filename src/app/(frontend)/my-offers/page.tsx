@@ -1,19 +1,22 @@
-'use client';
-import { useState, useMemo } from 'react';
-import Image from 'next/image';
-import { Search, CheckCircle2, Clock3, ChevronDown, X } from 'lucide-react';
-import AppHeader from '@/components/AppHeader'; // ✅ Global header
+'use client'
+
+import { useMemo, useState } from 'react'
+import Image from 'next/image'
+import { Search, CheckCircle2, Clock3, ChevronDown } from 'lucide-react'
+
+import AppHeader from '@/components/AppHeader'
+import ClaimButton from '@/components/ClaimButton'
 
 type Offer = {
-  id: number;
-  title: string;
-  img: string;
-  status: 'Claimed' | 'Ready to use' | 'Unclaimed';
-  featured: boolean;
-  nearby: boolean;
-  week: boolean;
-  perks: { icon: 'check' | 'clock'; text: string }[];
-};
+  id: number
+  title: string
+  img: string
+  status: 'Claimed' | 'Ready to use' | 'Unclaimed'
+  featured: boolean
+  nearby: boolean
+  week: boolean
+  perks: { icon: 'check' | 'clock'; text: string }[]
+}
 
 const INITIAL_OFFERS: Offer[] = [
   {
@@ -55,69 +58,65 @@ const INITIAL_OFFERS: Offer[] = [
       { icon: 'clock', text: 'Expires in 40 days' },
     ],
   },
-];
+]
 
 export default function MyOffersPage() {
-  const [offers, setOffers] = useState<Offer[]>(INITIAL_OFFERS);
-  const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState<'Featured' | 'Nearby' | 'This week'>('Featured');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Claimed' | 'Ready to use' | 'Unclaimed'>('All');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [popupOffer, setPopupOffer] = useState<Offer | null>(null);
+  const [offers, setOffers] = useState<Offer[]>(INITIAL_OFFERS)
+  const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState<'Featured' | 'Nearby' | 'This week'>('Featured')
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Claimed' | 'Ready to use' | 'Unclaimed'>('All')
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [popupOffer, setPopupOffer] = useState<Offer | null>(null)
 
   const handleClaimClick = (offer: Offer) => {
     if (offer.status === 'Unclaimed') {
-      setPopupOffer(offer);
+      setPopupOffer(offer)
     } else if (offer.status === 'Ready to use') {
-      setOffers(prev => prev.map(o => (o.id === offer.id ? { ...o, status: 'Claimed' } : o)));
+      setOffers((prev) => prev.map((o) => (o.id === offer.id ? { ...o, status: 'Claimed' } : o)))
     }
-  };
+  }
 
   const confirmRedeem = () => {
     if (popupOffer) {
-      setOffers(prev =>
-        prev.map(o => (o.id === popupOffer.id ? { ...o, status: 'Ready to use' } : o))
-      );
-      setPopupOffer(null);
+      setOffers((prev) =>
+        prev.map((o) => (o.id === popupOffer.id ? { ...o, status: 'Ready to use' } : o)),
+      )
+      setPopupOffer(null)
     }
-  };
+  }
 
   const filteredOffers = useMemo(() => {
-    return offers.filter(o => {
-      const matchesSearch = o.title.toLowerCase().includes(search.toLowerCase());
+    return offers.filter((o) => {
+      const matchesSearch = o.title.toLowerCase().includes(search.toLowerCase())
       const matchesTab =
         (activeTab === 'Featured' && o.featured) ||
         (activeTab === 'Nearby' && o.nearby) ||
-        (activeTab === 'This week' && o.week);
-      const matchesStatus = statusFilter === 'All' || o.status === statusFilter;
-      return matchesSearch && matchesTab && matchesStatus;
-    });
-  }, [offers, search, activeTab, statusFilter]);
+        (activeTab === 'This week' && o.week)
+      const matchesStatus = statusFilter === 'All' || o.status === statusFilter
+      return matchesSearch && matchesTab && matchesStatus
+    })
+  }, [offers, search, activeTab, statusFilter])
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      {/* ✅ Global Hamburger Header */}
       <AppHeader />
 
-      {/* ---------- Top Bar ---------- */}
       <div className="bg-white border-b shadow-sm sticky top-16 z-20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-          {/* Search */}
           <div className="relative flex-1">
             <input
               type="text"
               placeholder="What are you looking for?"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 pr-10 text-[15px] placeholder:text-gray-400 outline-none focus:border-blue-500"
             />
             <Search className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
           </div>
 
-          {/* Dropdown Filter */}
           <div className="relative">
             <button
-              onClick={() => setDropdownOpen(o => !o)}
+              onClick={() => setDropdownOpen((o) => !o)}
               className="inline-flex items-center justify-between rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50 min-w-[170px]"
             >
               {statusFilter === 'All' ? 'Filter Offers' : statusFilter}
@@ -126,12 +125,12 @@ export default function MyOffersPage() {
 
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-44 rounded-lg bg-white shadow-lg ring-1 ring-black/10 z-10">
-                {['All', 'Claimed', 'Ready to use', 'Unclaimed'].map(status => (
+                {['All', 'Claimed', 'Ready to use', 'Unclaimed'].map((status) => (
                   <button
                     key={status}
                     onClick={() => {
-                      setStatusFilter(status as any);
-                      setDropdownOpen(false);
+                      setStatusFilter(status as typeof statusFilter)
+                      setDropdownOpen(false)
                     }}
                     className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
                       statusFilter === status ? 'font-semibold text-black' : 'text-gray-700'
@@ -145,11 +144,10 @@ export default function MyOffersPage() {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="border-t bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-3 text-center text-[15px] font-medium text-gray-800">
-              {(['Featured', 'Nearby', 'This week'] as const).map(tab => (
+              {(['Featured', 'Nearby', 'This week'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -166,12 +164,11 @@ export default function MyOffersPage() {
         </div>
       </div>
 
-      {/* ---------- Offer List ---------- */}
       <main className="flex-grow flex flex-col bg-gray-100 min-h-[calc(100vh-180px)]">
         <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 flex flex-col">
           {filteredOffers.length > 0 ? (
             <div className="flex-1 flex flex-col justify-start space-y-5">
-              {filteredOffers.map(offer => (
+              {filteredOffers.map((offer) => (
                 <article
                   key={offer.id}
                   className="flex items-start gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5"
@@ -197,63 +194,44 @@ export default function MyOffersPage() {
                         </li>
                       ))}
                     </ul>
+                  </div>
 
-                    <div className="mt-3">
-                      <button
-                        onClick={() => handleClaimClick(offer)}
-                        disabled={offer.status === 'Claimed'}
-                        className={`rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all ${
-                          offer.status === 'Claimed'
-                            ? 'bg-gray-400 cursor-default'
-                            : offer.status === 'Ready to use'
-                            ? 'bg-amber-500 hover:bg-amber-600'
-                            : 'bg-emerald-500 hover:bg-emerald-600'
-                        }`}
-                      >
-                        {offer.status === 'Claimed'
-                          ? 'Claimed'
-                          : offer.status === 'Ready to use'
-                          ? 'Ready to use'
-                          : 'Claim Now'}
-                      </button>
-                    </div>
+                  <div className="md:ml-auto">
+                    <ClaimButton status={offer.status} onClick={() => handleClaimClick(offer)} />
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center">
-              <p className="text-gray-600">No offers found</p>
-            </div>
+            <p className="text-sm text-gray-600">No offers match your filters right now.</p>
           )}
         </div>
       </main>
 
-      {/* ---------- Redeem Popup ---------- */}
       {popupOffer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="relative bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md text-center">
-            <button
-              onClick={() => setPopupOffer(null)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <h2 className="text-lg font-semibold mb-4">
-              Redeem “{popupOffer.title}” now?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Once redeemed, this offer will move to “Ready to use”.
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-900">Redeem Offer?</h2>
+            <p className="mt-3 text-sm text-gray-600">
+              Are you sure you want to mark “{popupOffer.title}” as ready to use?
             </p>
-            <button
-              onClick={confirmRedeem}
-              className="rounded-md bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 text-sm font-semibold"
-            >
-              Redeem Now
-            </button>
+            <div className="mt-6 flex justify-center gap-4">
+              <button
+                onClick={() => setPopupOffer(null)}
+                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRedeem}
+                className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-orange-600"
+              >
+                Confirm
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }

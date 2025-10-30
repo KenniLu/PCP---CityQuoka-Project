@@ -1,18 +1,10 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Search,
-  Plus,
-  Trash2,
-  MapPin,
-  Menu,
-  X,
-  FolderPlus,
-  Folder as FolderIcon,
-  CheckCircle2,
+  Search, Plus, Trash2, MapPin, Menu, X, FolderPlus, Folder as FolderIcon, CheckCircle2,
 } from 'lucide-react';
 import GoogleMap, { SavedPlace } from '@/components/GoogleMap/GoogleMap';
-import AppHeader from '@/components/AppHeader'; // ✅ added
+import AppHeader from '@/components/AppHeader'; 
 
 type Folder = {
   id: string;

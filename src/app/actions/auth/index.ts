@@ -76,11 +76,17 @@ export async function loginUser(formData: LoginFormValues) {
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
     if (!isPasswordValid) return null
+    // Populate the NextAuth JWT with the extra profile attributes.
     return {
       id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      mobileNumber: user.mobileNumber,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      postalCode: user.postalCode,
     }
   } catch (error) {
     return null

@@ -1,26 +1,33 @@
-"use client";
-import { useState } from "react";
+"use client"
 
-export default function ClaimButton() {
-  const statuses = ["Claim Now", "Ready to Use", "Claimed"];
-  const [statusIndex, setStatusIndex] = useState(0);
+type OfferStatus = "Unclaimed" | "Ready to use" | "Claimed"
 
-  const handleClick = () => {
-    setStatusIndex((prevIndex) => (prevIndex + 1) % statuses.length);
-  };
+type ClaimButtonProps = {
+  status: OfferStatus
+  onClick: () => void
+}
 
+const STATUS_LABELS: Record<OfferStatus, string> = {
+  Unclaimed: "Claim Now",
+  "Ready to use": "Ready to Use",
+  Claimed: "Claimed",
+}
+
+const STATUS_CLASSES: Record<OfferStatus, string> = {
+  Unclaimed: "bg-green-500 text-white",
+  "Ready to use": "bg-yellow-500 text-black",
+  Claimed: "bg-gray-400 text-white",
+}
+
+export default function ClaimButton({ status, onClick }: ClaimButtonProps) {
   return (
     <button
-      onClick={handleClick}
-      className={`px-4 py-2 rounded-full font-semibold transition ${
-        statusIndex === 0
-          ? "bg-green-500 text-white"
-          : statusIndex === 1
-          ? "bg-yellow-500 text-black"
-          : "bg-gray-400 text-white"
-      }`}
+      type="button"
+      onClick={onClick}
+      className={`px-4 py-2 rounded-full font-semibold transition ${STATUS_CLASSES[status]}`}
+      disabled={status === "Claimed"}
     >
-      {statuses[statusIndex]}
+      {STATUS_LABELS[status]}
     </button>
-  );
+  )
 }
